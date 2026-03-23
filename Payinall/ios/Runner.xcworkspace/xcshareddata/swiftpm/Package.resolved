@@ -1,0 +1,33 @@
+{
+  "originHash" : "f15602dc20710c75bb03a560ac4565de1f50d3580532f660619e6397d429a08d",
+  "pins" : [
+    {
+      "identity" : "arkfacespm",
+      "kind" : "remoteSourceControl",
+      "location" : "http://ark-gitea.arksigner.com:3000/ark-gitea/ArkFaceSPM.git",
+      "state" : {
+        "revision" : "6abedba157167df2ce441d7590c475f61857a61c",
+        "version" : "1.0.5"
+      }
+    },
+    {
+      "identity" : "arknfcspm",
+      "kind" : "remoteSourceControl",
+      "location" : "http://erpaliveauth%40liveauth.com:jyJqib-6rasxe-tyqhew@ark-gitea.arksigner.com:3000/ark-gitea/ArkNFCSPM.git",
+      "state" : {
+        "revision" : "a4c3090fe907dbbc36a869f36062ddaef118de46",
+        "version" : "2.0.0"
+      }
+    },
+    {
+      "identity" : "arktckkspm",
+      "kind" : "remoteSourceControl",
+      "location" : "https://erpaliveauth%40liveauth.com:jyJqib-6rasxe-tyqhew@ark-gitea.arksigner.com/ark-gitea/ArkTCKKSPM.git",
+      "state" : {
+        "revision" : "02cbf49abc3bd93a9536eab70780d92c0913ca3a",
+        "version" : "1.0.9"
+      }
+    }
+  ],
+  "version" : 3
+}

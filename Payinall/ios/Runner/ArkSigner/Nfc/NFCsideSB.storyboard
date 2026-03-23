@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0"
+    toolsVersion="22505" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none"
+    useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_12" orientation="portrait" appearance="light" />
+    <dependencies>
+        <deployment identifier="iOS" />
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="22504" />
+        <capability name="Safe area layout guides" minToolsVersion="9.0" />
+        <capability name="System colors in document resources" minToolsVersion="11.0" />
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0" />
+    </dependencies>
+    <scenes>
+        <scene sceneID="s0d-6b-0kx">
+            <objects>
+                <viewController storyboardIdentifier="NFCSideVC" id="Y6W-OH-hqX"
+                    customClass="NFCSideVC" customModule="Runner" customModuleProvider="target"
+                    sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="5EZ-qb-Rvc">
+                        <rect key="frame" x="0.0" y="0.0" width="393" height="852" />
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES"
+                            heightSizable="YES" />
+                        <subviews>
+                            <view contentMode="scaleToFill"
+                                translatesAutoresizingMaskIntoConstraints="NO" id="y6C-M1-BCG"
+                                customClass="ArkNfcDataReader" customModule="ArkNfcStatic">
+                                <rect key="frame" x="0.0" y="59" width="393" height="759" />
+                                <subviews>
+                                    <imageView clipsSubviews="YES" userInteractionEnabled="NO"
+                                        contentMode="scaleAspectFit" horizontalHuggingPriority="251"
+                                        verticalHuggingPriority="251"
+                                        translatesAutoresizingMaskIntoConstraints="NO"
+                                        id="LsF-8F-Gav">
+                                        <rect key="frame" x="0.0" y="0.0" width="393" height="759" />
+                                    </imageView>
+                                </subviews>
+                                <color key="backgroundColor" white="0.0" alpha="0.0"
+                                    colorSpace="custom"
+                                    customColorSpace="genericGamma22GrayColorSpace" />
+                                <constraints>
+                                    <constraint firstAttribute="trailing" secondItem="LsF-8F-Gav"
+                                        secondAttribute="trailing" id="MKB-lH-qUu" />
+                                    <constraint firstItem="LsF-8F-Gav" firstAttribute="top"
+                                        secondItem="y6C-M1-BCG" secondAttribute="top"
+                                        id="m68-6z-L4N" />
+                                    <constraint firstAttribute="bottom" secondItem="LsF-8F-Gav"
+                                        secondAttribute="bottom" id="rdp-5u-gcR" />
+                                    <constraint firstItem="LsF-8F-Gav" firstAttribute="leading"
+                                        secondItem="y6C-M1-BCG" secondAttribute="leading"
+                                        id="uR8-WP-Yx7" />
+                                </constraints>
+                            </view>
+                        </subviews>
+                        <viewLayoutGuide key="safeArea" id="vDu-zF-Fre" />
+                        <color key="backgroundColor" systemColor="systemBackgroundColor" />
+                        <constraints>
+                            <constraint firstItem="vDu-zF-Fre" firstAttribute="bottom"
+                                secondItem="y6C-M1-BCG" secondAttribute="bottom" id="qAe-1T-qFT" />
+                            <constraint firstItem="vDu-zF-Fre" firstAttribute="trailing"
+                                secondItem="y6C-M1-BCG" secondAttribute="trailing" id="rSG-YD-VlS" />
+                            <constraint firstItem="y6C-M1-BCG" firstAttribute="top"
+                                secondItem="vDu-zF-Fre" secondAttribute="top" id="x1o-L1-9Gu" />
+                            <constraint firstItem="y6C-M1-BCG" firstAttribute="leading"
+                                secondItem="vDu-zF-Fre" secondAttribute="leading" id="z3s-uF-Zr4" />
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="animationgif" destination="LsF-8F-Gav" id="p5N-pS-49G" />
+                        <outlet property="arkNfcReader" destination="y6C-M1-BCG" id="PpO-O7-jQe" />
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Ief-a0-LHa"
+                    userLabel="First Responder" customClass="UIResponder"
+                    sceneMemberID="firstResponder" />
+            </objects>
+            <point key="canvasLocation" x="-204" y="-35" />
+        </scene>
+    </scenes>
+    <resources>
+        <systemColor name="systemBackgroundColor">
+            <color white="1" alpha="1" colorSpace="custom"
+                customColorSpace="genericGamma22GrayColorSpace" />
+        </systemColor>
+    </resources>
+</document>

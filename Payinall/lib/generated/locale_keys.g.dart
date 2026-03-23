@@ -1,0 +1,722 @@
+// DO NOT EDIT. This is code generated via package:easy_localization/generate.dart
+
+// ignore_for_file: constant_identifier_names
+
+abstract class LocaleKeys {
+  static const error = 'error';
+  static const server_error = 'server_error';
+  static const ssl_error = 'ssl_error';
+  static const cache_error = 'cache_error';
+  static const no_internet = 'no_internet';
+  static const session_expired = 'session_expired';
+  static const unknown_error = 'unknown_error';
+  static const no_connection = 'no_connection';
+  static const no_data = 'no_data';
+  static const data_error = 'data_error';
+  static const mapping_error = 'mapping_error';
+  static const validation_error = 'validation_error';
+  static const enter_email = 'enter_email';
+  static const forbidden_error = 'forbidden_error';
+  static const enter_password = 'enter_password';
+  static const password_length = 'password_length';
+  static const passwords_not_match = 'passwords_not_match';
+  static const form = 'form';
+  static const enter_phone_number = 'enter_phone_number';
+  static const invalid_phone_number = 'invalid_phone_number';
+  static const required_field = 'required_field';
+  static const success = 'success';
+  static const failed = 'failed';
+  static const success_with_message = 'success_with_message';
+  static const cancel_request = 'cancel_request';
+  static const connection_timeout = 'connection_timeout';
+  static const request_new_code = 'request_new_code';
+  static const selfie_error_unknown = 'selfie_error_unknown';
+  static const selfie_error_multiple_faces = 'selfie_error_multiple_faces';
+  static const selfie_error_face_lost = 'selfie_error_face_lost';
+  static const selfie_error_no_camera = 'selfie_error_no_camera';
+  static const selfie_error_low_brightness = 'selfie_error_low_brightness';
+  static const selfie_error_permission_denied_perm =
+      'selfie_error_permission_denied_perm';
+  static const selfie_error_permission_denied =
+      'selfie_error_permission_denied';
+  static const selfie_error_wrong_direction = 'selfie_error_wrong_direction';
+  static const back_side_error_not_read = 'back_side_error_not_read';
+  static const front_side_error_not_read = 'front_side_error_not_read';
+  static const camera_permission_denied = 'camera_permission_denied';
+  static const no_camera_available = 'no_camera_available';
+  static const timeout_invalid = 'timeout_invalid';
+  static const nfc_error_unknown = 'nfc_error_unknown';
+  static const nfc_error_chip_read = 'nfc_error_chip_read';
+  static const nfc_error_invalid_value = 'nfc_error_invalid_value';
+  static const nfc_error_not_available = 'nfc_error_not_available';
+  static const nfc_error_chip_not_supported = 'nfc_error_chip_not_supported';
+  static const nfc_error_connect_failed = 'nfc_error_connect_failed';
+  static const nfc_error_comm_lost = 'nfc_error_comm_lost';
+  static const nfc_error_validation_failed = 'nfc_error_validation_failed';
+  static const nfc_error_feature_disabled = 'nfc_error_feature_disabled';
+  static const face_scan_title = 'face_scan_title';
+  static const face_scan_description = 'face_scan_description';
+  static const onboarding_welcome_title = 'onboarding_welcome_title';
+  static const onboarding_welcome2_title = 'onboarding_welcome2_title';
+  static const onboarding_welcome3_title = 'onboarding_welcome3_title';
+  static const onboarding_welcome_description =
+      'onboarding_welcome_description';
+  static const onboarding_welcome2_description =
+      'onboarding_welcome2_description';
+  static const onboarding_welcome3_description =
+      'onboarding_welcome3_description';
+  static const skip = 'skip';
+  static const next = 'next';
+  static const continue_text = 'continue_text';
+  static const open_settings = 'open_settings';
+  static const login = 'login';
+  static const login_with = 'login_with';
+  static const phone_number = 'phone_number';
+  static const wallet_address = 'wallet_address';
+  static const address = 'address';
+  static const phone = 'phone';
+  static const wallet = 'wallet';
+  static const enter_wallet_address = 'enter_wallet_address';
+  static const tc_number = 'tc_number';
+  static const password = 'password';
+  static const forgot_password = 'forgot_password';
+  static const create_account = 'create_account';
+  static const enter_tc_number = 'enter_tc_number';
+  static const invalid_tc_number = 'invalid_tc_number';
+  static const agreement = 'agreement';
+  static const accept = 'accept';
+  static const decline = 'decline';
+  static const remember_me = 'remember_me';
+  static const register_success = 'register_success';
+  static const register_success_message = 'register_success_message';
+  static const already_have_account = 'already_have_account';
+  static const login_campaign_description = 'login_campaign_description';
+  static const register_title = 'register_title';
+  static const register_description = 'register_description';
+  static const register_agreement_suffix = 'register_agreement_suffix';
+  static const continue_button = 'continue_button';
+  static const contract_confirm = 'contract_confirm';
+  static const address_information = 'address_information';
+  static const agreements_and_policies = 'agreements_and_policies';
+  static const agreements_and_policies_description =
+      'agreements_and_policies_description';
+  static const accept_all_agreements = 'accept_all_agreements';
+  static const hakem_heyeti = 'hakem_heyeti';
+  static const guvenlik_sozlesmesi = 'guvenlik_sozlesmesi';
+  static const bilgilendirme_metni = 'bilgilendirme_metni';
+  static const adres_bilgisi_sozlesmesi = 'adres_bilgisi_sozlesmesi';
+  static const kullanici_cerceve_sozlesmesi = 'kullanici_cerceve_sozlesmesi';
+  static const musteri_edinimi_uzaktan_kimlik_tespiti_aydinlatma_metni =
+      'musteri_edinimi_uzaktan_kimlik_tespiti_aydinlatma_metni';
+  static const odeme_hizmeti_kullanicilari_aydinlatma_metni =
+      'odeme_hizmeti_kullanicilari_aydinlatma_metni';
+  static const biyometrik_veri_rizasi = 'biyometrik_veri_rizasi';
+  static const verify = 'verify';
+  static const verification_resend_code = 'verification_resend_code';
+  static const verification = 'verification';
+  static const verification_title = 'verification_title';
+  static const verification_description = 'verification_description';
+  static const verification_code_length = 'verification_code_length';
+  static const verification_wait_for_resend = 'verification_wait_for_resend';
+  static const forgot_password_title = 'forgot_password_title';
+  static const forgot_password_description = 'forgot_password_description';
+  static const forgot_password_security_description =
+      'forgot_password_security_description';
+  static const give_up = 'give_up';
+  static const forgot_password_send = 'forgot_password_send';
+  static const reset_password_title = 'reset_password_title';
+  static const reset_password_description = 'reset_password_description';
+  static const new_password = 'new_password';
+  static const confirm_password = 'confirm_password';
+  static const reset_password_submit = 'reset_password_submit';
+  static const password_reset_success = 'password_reset_success';
+  static const account_verification_title = 'account_verification_title';
+  static const account_verification_description =
+      'account_verification_description';
+  static const first_name = 'first_name';
+  static const last_name = 'last_name';
+  static const birth_date = 'birth_date';
+  static const email = 'email';
+  static const set_password_title = 'set_password_title';
+  static const set_password_description = 'set_password_description';
+  static const set_password_submit = 'set_password_submit';
+  static const security = 'security';
+  static const password_confirmation_title = 'password_confirmation_title';
+  static const password_confirmation_description =
+      'password_confirmation_description';
+  static const first_name_length = 'first_name_length';
+  static const last_name_length = 'last_name_length';
+  static const enter_first_name = 'enter_first_name';
+  static const enter_last_name = 'enter_last_name';
+  static const forget_me = 'forget_me';
+  static const home_title = 'home_title';
+  static const transactions_title = 'transactions_title';
+  static const payments_title = 'payments_title';
+  static const profile_title = 'profile_title';
+  static const send = 'send';
+  static const load = 'load';
+  static const request = 'request';
+  static const campaigns = 'campaigns';
+  static const no_active_campaigns = 'no_active_campaigns';
+  static const campaign_detail = 'campaign_detail';
+  static const campaign_details = 'campaign_details';
+  static const participating_merchants = 'participating_merchants';
+  static const general_error = 'general_error';
+  static const qr_scan = 'qr_scan';
+  static const qr_generate = 'qr_generate';
+  static const welcome = 'welcome';
+  static const balance = 'balance';
+  static const try_again = 'try_again';
+  static const last_transactions = 'last_transactions';
+  static const copied_to_clipboard = 'copied_to_clipboard';
+  static const scan_qr = 'scan_qr';
+  static const generate_qr = 'generate_qr';
+  static const qr_operations = 'qr_operations';
+  static const qr_operations_description = 'qr_operations_description';
+  static const soon = 'soon';
+  static const all = 'all';
+  static const view_all = 'view_all';
+  static const incoming = 'incoming';
+  static const outgoing = 'outgoing';
+  static const transaction_history_empty_message =
+      'transaction_history_empty_message';
+  static const transaction_history_incoming_empty_message =
+      'transaction_history_incoming_empty_message';
+  static const transaction_history_outgoing_empty_message =
+      'transaction_history_outgoing_empty_message';
+  static const qr_display_title = 'qr_display_title';
+  static const qr_display_description = 'qr_display_description';
+  static const amount = 'amount';
+  static const close = 'close';
+  static const qr_generate_error_message = 'qr_generate_error_message';
+  static const qr_generate_description = 'qr_generate_description';
+  static const qr_scan_invalid_url = 'qr_scan_invalid_url';
+  static const qr_scan_permission_required = 'qr_scan_permission_required';
+  static const allow = 'allow';
+  static const cancel = 'cancel';
+  static const back = 'back';
+  static const qr_scan_permission_denied = 'qr_scan_permission_denied';
+  static const camera_start_error = 'camera_start_error';
+  static const qr_scan_canceled = 'qr_scan_canceled';
+  static const scan_iban_qr = 'scan_iban_qr';
+  static const invalid_iban_qr = 'invalid_iban_qr';
+  static const logout = 'logout';
+  static const logout_description = 'logout_description';
+  static const change_password = 'change_password';
+  static const account_limits = 'account_limits';
+  static const bank_accounts = 'bank_accounts';
+  static const notification_settings = 'notification_settings';
+  static const pending_money_requests = 'pending_money_requests';
+  static const faq = 'faq';
+  static const commission_rates = 'commission_rates';
+  static const notifications = 'notifications';
+  static const clear_all = 'clear_all';
+  static const minutes_ago = 'minutes_ago';
+  static const hours_ago = 'hours_ago';
+  static const days_ago = 'days_ago';
+  static const no_notifications = 'no_notifications';
+  static const no_notifications_description = 'no_notifications_description';
+  static const clear_all_description = 'clear_all_description';
+  static const notification_deleted = 'notification_deleted';
+  static const all_notifications_deleted = 'all_notifications_deleted';
+  static const contact_information = 'contact_information';
+  static const contact_info_description = 'contact_info_description';
+  static const contact_info_title = 'contact_info_title';
+  static const faq_empty_list_title = 'faq_empty_list_title';
+  static const faq_empty_list_description = 'faq_empty_list_description';
+  static const account_limits_empty_description =
+      'account_limits_empty_description';
+  static const remaining_transaction_count = 'remaining_transaction_count';
+  static const remaining_amount = 'remaining_amount';
+  static const transfer_limit = 'transfer_limit';
+  static const notification_settings_description =
+      'notification_settings_description';
+  static const notification_settings_updated = 'notification_settings_updated';
+  static const password_change_success = 'password_change_success';
+  static const password_change_description = 'password_change_description';
+  static const current_password = 'current_password';
+  static const delete_bank_account = 'delete_bank_account';
+  static const iban = 'iban';
+  static const bank_empty_list_title = 'bank_empty_list_title';
+  static const bank_account = 'bank_account';
+  static const bank_empty_list_description = 'bank_empty_list_description';
+  static const delete_bank_account_description =
+      'delete_bank_account_description';
+  static const delete = 'delete';
+  static const invalid_iban = 'invalid_iban';
+  static const enter_iban = 'enter_iban';
+  static const save = 'save';
+  static const account_name = 'account_name';
+  static const add_bank_account = 'add_bank_account';
+  static const bank_account_saved = 'bank_account_saved';
+  static const personal_account_note = 'personal_account_note';
+  static const money_request_reject_success = 'money_request_reject_success';
+  static const go_main_page = 'go_main_page';
+  static const money_request_approve_success = 'money_request_approve_success';
+  static const incoming_requests = 'incoming_requests';
+  static const outgoing_requests = 'outgoing_requests';
+  static const incoming_requests_empty_state = 'incoming_requests_empty_state';
+  static const outgoing_requests_empty_state = 'outgoing_requests_empty_state';
+  static const incoming_request = 'incoming_request';
+  static const outgoing_request = 'outgoing_request';
+  static const pending = 'pending';
+  static const approved = 'approved';
+  static const rejected = 'rejected';
+  static const reject = 'reject';
+  static const approve = 'approve';
+  static const waiting_for_approval = 'waiting_for_approval';
+  static const reject_request = 'reject_request';
+  static const reject_request_confirmation = 'reject_request_confirmation';
+  static const approve_request = 'approve_request';
+  static const approve_request_description = 'approve_request_description';
+  static const delete_request = 'delete_request';
+  static const delete_request_confirmation = 'delete_request_confirmation';
+  static const money_request_delete_success = 'money_request_delete_success';
+  static const yes_reject = 'yes_reject';
+  static const yes_delete = 'yes_delete';
+  static const ok = 'ok';
+  static const yes_send = 'yes_send';
+  static const request_sent_successfully = 'request_sent_successfully';
+  static const request_amount = 'request_amount';
+  static const recipient = 'recipient';
+  static const request_confirmation_description =
+      'request_confirmation_description';
+  static const request_money = 'request_money';
+  static const transfer_money = 'transfer_money';
+  static const transfer_method = 'transfer_method';
+  static const transfer_method_description = 'transfer_method_description';
+  static const transfer_amount = 'transfer_amount';
+  static const transfer_amount_description = 'transfer_amount_description';
+  static const transfer_confirmation = 'transfer_confirmation';
+  static const transfer_confirmation_description =
+      'transfer_confirmation_description';
+  static const transfer_details = 'transfer_details';
+  static const receiver = 'receiver';
+  static const transfer_success = 'transfer_success';
+  static const go_to_home = 'go_to_home';
+  static const confirm_transfer = 'confirm_transfer';
+  static const select_bank_account = 'select_bank_account';
+  static const transaction_number = 'transaction_number';
+  static const open_in_browser = 'open_in_browser';
+  static const transfer_confirmation_warning = 'transfer_confirmation_warning';
+  static const transaction_fee = 'transaction_fee';
+  static const total = 'total';
+  static const description = 'description';
+  static const enter_amount = 'enter_amount';
+  static const invalid_amount = 'invalid_amount';
+  static const block_balance = 'block_balance';
+  static const customer_type = 'customer_type';
+  static const commission_rate = 'commission_rate';
+  static const process_limit = 'process_limit';
+  static const commission_amount = 'commission_amount';
+  static const limit_amount = 'limit_amount';
+  static const commission_from = 'commission_from';
+  static const process_prev_amount = 'process_prev_amount';
+  static const process_prev_time = 'process_prev_time';
+  static const process_prev_count = 'process_prev_count';
+  static const process_prev_info_text = 'process_prev_info_text';
+  static const time_period = 'time_period';
+  static const fill_all_fields = 'fill_all_fields';
+  static const notification_type_none = 'notification_type_none';
+  static const notification_type_sms = 'notification_type_sms';
+  static const notification_type_mail = 'notification_type_mail';
+  static const notification_type_firebase = 'notification_type_firebase';
+  static const notification_type_all = 'notification_type_all';
+  static const notification_type_none_description =
+      'notification_type_none_description';
+  static const notification_type_sms_description =
+      'notification_type_sms_description';
+  static const notification_type_mail_description =
+      'notification_type_mail_description';
+  static const notification_type_firebase_description =
+      'notification_type_firebase_description';
+  static const notification_type_all_description =
+      'notification_type_all_description';
+  static const new_password_same_as_current_password =
+      'new_password_same_as_current_password';
+  static const deposit_description = 'deposit_description';
+  static const deposit_description_wallet_address =
+      'deposit_description_wallet_address';
+  static const account_owner = 'account_owner';
+  static const change_phone = 'change_phone';
+  static const change_phone_number_description =
+      'change_phone_number_description';
+  static const new_phone_number = 'new_phone_number';
+  static const bank = 'bank';
+  static const view_receipt = 'view_receipt';
+  static const date = 'date';
+  static const front_side_scan_title = 'front_side_scan_title';
+  static const front_side_scan_description = 'front_side_scan_description';
+  static const back_side_scan_title = 'back_side_scan_title';
+  static const back_side_scan_description = 'back_side_scan_description';
+  static const nfc_scan_title = 'nfc_scan_title';
+  static const nfc_scan_description = 'nfc_scan_description';
+  static const success_and_navigate = 'success_and_navigate';
+  static const success_and_send_to_review = 'success_and_send_to_review';
+  static const info_arksigner = 'info_arksigner';
+  static const info_scorequestion = 'info_scorequestion';
+  static const camera_permission_required = 'camera_permission_required';
+  static const camera_permission_description = 'camera_permission_description';
+  static const front_id_scan_error = 'front_id_scan_error';
+  static const back_id_scan_error = 'back_id_scan_error';
+  static const face_scan_error = 'face_scan_error';
+  static const nfc_scan_error = 'nfc_scan_error';
+  static const uploading = 'uploading';
+  static const uploading_description = 'uploading_description';
+  static const security_question = 'security_question';
+  static const security_question_answer = 'security_question_answer';
+  static const verification_code = 'verification_code';
+  static const enter_pin = 'enter_pin';
+  static const invalid_pin = 'invalid_pin';
+  static const security_question_required = 'security_question_required';
+  static const delete_account = 'delete_account';
+  static const delete_account_description = 'delete_account_description';
+  static const under_18 = 'under_18';
+  static const invalid_date = 'invalid_date';
+  static const security_change_phone_title = 'security_change_phone_title';
+  static const security_change_phone_description =
+      'security_change_phone_description';
+  static const warning_select_bank_account = 'warning_select_bank_account';
+  static const warning_enter_wallet_address = 'warning_enter_wallet_address';
+  static const bank_account_add = 'bank_account_add';
+  static const bank_account_add_description = 'bank_account_add_description';
+  static const cancel_process_home_page = 'cancel_process_home_page';
+  static const add = 'add';
+  static const address_confirmation_title = 'address_confirmation_title';
+  static const address_confirmation_description =
+      'address_confirmation_description';
+  static const address_confirmation_address_title =
+      'address_confirmation_address_title';
+  static const address_confirmation_address_number_title =
+      'address_confirmation_address_number_title';
+  static const session_expired_title = 'session_expired_title';
+  static const session_expired_message = 'session_expired_message';
+  static const another_device_login = 'another_device_login';
+  static const scan_iban_qr_instruction = 'scan_iban_qr_instruction';
+  static const iban_scanned = 'iban_scanned';
+  static const select_from_contacts = 'select_from_contacts';
+  static const select_from_contacts_description =
+      'select_from_contacts_description';
+  static const contacts_permission_denied = 'contacts_permission_denied';
+  static const contact_selection_cancelled = 'contact_selection_cancelled';
+  static const contact_selected = 'contact_selected';
+  static const invalid_phone_number_format = 'invalid_phone_number_format';
+  static const contacts_access_error = 'contacts_access_error';
+  static const select_date_range = 'select_date_range';
+  static const confirm = 'confirm';
+  static const invalid_date_format = 'invalid_date_format';
+  static const invalid_date_range = 'invalid_date_range';
+  static const start_date = 'start_date';
+  static const end_date = 'end_date';
+  static const different_address = 'different_address';
+  static const address_preview_success = 'address_preview_success';
+  static const please_enter_correct_address = 'please_enter_correct_address';
+  static const address_hint = 'address_hint';
+  static const please_enter_address = 'please_enter_address';
+  static const info_address = 'info_address';
+  static const info_reject_address = 'info_reject_address';
+  static const address_preview_title = 'address_preview_title';
+  static const user_info_form = 'user_info_form';
+  static const work_type = 'work_type';
+  static const profession = 'profession';
+  static const income = 'income';
+  static const monthly_transactions = 'monthly_transactions';
+  static const income_sources = 'income_sources';
+  static const customer_service_company = 'customer_service_company';
+  static const no_results_found = 'no_results_found';
+  static const campaign_details_navigate = 'campaign_details_navigate';
+  static const info = 'info';
+  static const address_info = 'address_info';
+  static const address_preview_instruction = 'address_preview_instruction';
+  static const email_address = 'email_address';
+  static const search = 'search';
+  static const search_placeholder = 'search_placeholder';
+  static const customer_service = 'customer_service';
+  static const framework_agreement = 'framework_agreement';
+  static const clarification_text = 'clarification_text';
+  static const user_info_form_description = 'user_info_form_description';
+  static const address_number = 'address_number';
+  static const money_load = 'money_load';
+  static const money_withdraw = 'money_withdraw';
+  static const withdraw = 'withdraw';
+  static const sender = 'sender';
+  static const contact_limited_access_error = 'contact_limited_access_error';
+  static const warning = 'warning';
+  static const wrong_login_attempts_title = 'wrong_login_attempts_title';
+  static const wrong_login_attempt = 'wrong_login_attempt';
+  static const wrong_login_attempts_empty_title =
+      'wrong_login_attempts_empty_title';
+  static const wrong_login_attempts_empty_description =
+      'wrong_login_attempts_empty_description';
+  static const ip_address = 'ip_address';
+  static const platform = 'platform';
+  static const customer_number = 'customer_number';
+  static const contact_us = 'contact_us';
+  static const questions = 'questions';
+  static const questions_description = 'questions_description';
+  static const later = 'later';
+  static const verify_now = 'verify_now';
+  static const complete_now = 'complete_now';
+  static const update_now = 'update_now';
+  static const user_info_form_title = 'user_info_form_title';
+  static const user_info_form_verification_title =
+      'user_info_form_verification_title';
+  static const user_info_form_address_title = 'user_info_form_address_title';
+  static const user_info_form_address_update_title =
+      'user_info_form_address_update_title';
+  static const user_verification_required_description =
+      'user_verification_required_description';
+  static const scoring_questions_required_description =
+      'scoring_questions_required_description';
+  static const address_verification_pending_description =
+      'address_verification_pending_description';
+  static const address_verification_rejected_description =
+      'address_verification_rejected_description';
+  static const bill_payment = 'bill_payment';
+  static const loading_bill_types = 'loading_bill_types';
+  static const select_bill_type = 'select_bill_type';
+  static const tap_to_select = 'tap_to_select';
+  static const select_institution = 'select_institution';
+  static const tap_to_continue = 'tap_to_continue';
+  static const bill_inquiry = 'bill_inquiry';
+  static const selected_institution = 'selected_institution';
+  static const subscriber_number = 'subscriber_number';
+  static const enter_subscriber_number = 'enter_subscriber_number';
+  static const inquiry_bill = 'inquiry_bill';
+  static const bill_inquiry_info = 'bill_inquiry_info';
+  static const bill_payment_confirmation = 'bill_payment_confirmation';
+  static const bill_details = 'bill_details';
+  static const institution = 'institution';
+  static const subscriber_name = 'subscriber_name';
+  static const bill_number = 'bill_number';
+  static const due_date = 'due_date';
+  static const pay_now = 'pay_now';
+  static const payment_warning = 'payment_warning';
+  static const subscriber_no_required = 'subscriber_no_required';
+  static const product_not_selected = 'product_not_selected';
+  static const payment_data_incomplete = 'payment_data_incomplete';
+  static const bill_payment_success = 'bill_payment_success';
+  static const no_products_available = 'no_products_available';
+  static const product_not_found = 'product_not_found';
+  static const my_limits = 'my_limits';
+  static const my_limits_description = 'my_limits_description';
+  static const rates = 'rates';
+  static const rates_description = 'rates_description';
+  static const unlimited = 'unlimited';
+  static const cashback = 'cashback';
+  static const sectors = 'sectors';
+  static const token_not_ready = 'token_not_ready';
+  static const seri_no_length = 'seri_no_length';
+  static const seri_no = 'seri_no';
+  static const admin_panel = 'admin_panel';
+  static const statistics = 'statistics';
+  static const user_count = 'user_count';
+  static const merchant_count = 'merchant_count';
+  static const commission = 'commission';
+  static const wallet_transfer_total = 'wallet_transfer_total';
+  static const deposit_total = 'deposit_total';
+  static const withdraw_total = 'withdraw_total';
+  static const daily = 'daily';
+  static const monthly = 'monthly';
+  static const yearly = 'yearly';
+  static const one_day_ago = 'one_day_ago';
+  static const two_days_ago = 'two_days_ago';
+  static const three_days_ago = 'three_days_ago';
+  static const four_days_ago = 'four_days_ago';
+  static const five_days_ago = 'five_days_ago';
+  static const six_days_ago = 'six_days_ago';
+  static const seven_days_ago = 'seven_days_ago';
+  static const one_month_ago = 'one_month_ago';
+  static const two_months_ago = 'two_months_ago';
+  static const three_months_ago = 'three_months_ago';
+  static const four_months_ago = 'four_months_ago';
+  static const one_year_ago = 'one_year_ago';
+  static const dark_mode = 'dark_mode';
+  static const page_search = 'page_search';
+  static const page_search_description = 'page_search_description';
+  static const search_pages = 'search_pages';
+  static const no_pages_found = 'no_pages_found';
+  static const no_pages_found_description = 'no_pages_found_description';
+  static const language_selection = 'language_selection';
+  static const turkish = 'turkish';
+  static const english = 'english';
+  static const german = 'german';
+  static const french = 'french';
+  static const language = 'language';
+  static const page_search_account_limits_title =
+      'page_search_account_limits_title';
+  static const page_search_account_limits_description =
+      'page_search_account_limits_description';
+  static const page_search_add_bank_account_title =
+      'page_search_add_bank_account_title';
+  static const page_search_add_bank_account_description =
+      'page_search_add_bank_account_description';
+  static const page_search_bank_accounts_title =
+      'page_search_bank_accounts_title';
+  static const page_search_bank_accounts_description =
+      'page_search_bank_accounts_description';
+  static const page_search_bank_list_title = 'page_search_bank_list_title';
+  static const page_search_bank_list_description =
+      'page_search_bank_list_description';
+  static const page_search_campaigns_title = 'page_search_campaigns_title';
+  static const page_search_campaigns_description =
+      'page_search_campaigns_description';
+  static const page_search_change_password_title =
+      'page_search_change_password_title';
+  static const page_search_change_password_description =
+      'page_search_change_password_description';
+  static const page_search_commission_rates_title =
+      'page_search_commission_rates_title';
+  static const page_search_commission_rates_description =
+      'page_search_commission_rates_description';
+  static const page_search_contact_info_title =
+      'page_search_contact_info_title';
+  static const page_search_contact_info_description =
+      'page_search_contact_info_description';
+  static const page_search_faq_title = 'page_search_faq_title';
+  static const page_search_faq_description = 'page_search_faq_description';
+  static const page_search_notifications_title =
+      'page_search_notifications_title';
+  static const page_search_notifications_description =
+      'page_search_notifications_description';
+  static const page_search_notification_settings_title =
+      'page_search_notification_settings_title';
+  static const page_search_notification_settings_description =
+      'page_search_notification_settings_description';
+  static const page_search_pending_money_requests_title =
+      'page_search_pending_money_requests_title';
+  static const page_search_pending_money_requests_description =
+      'page_search_pending_money_requests_description';
+  static const page_search_qr_generate_title = 'page_search_qr_generate_title';
+  static const page_search_qr_generate_description =
+      'page_search_qr_generate_description';
+  static const page_search_qr_scan_title = 'page_search_qr_scan_title';
+  static const page_search_qr_scan_description =
+      'page_search_qr_scan_description';
+  static const page_search_request_money_title =
+      'page_search_request_money_title';
+  static const page_search_request_money_description =
+      'page_search_request_money_description';
+  static const page_search_security_change_phone_title =
+      'page_search_security_change_phone_title';
+  static const page_search_security_change_phone_description =
+      'page_search_security_change_phone_description';
+  static const page_search_wrong_login_attempts_title =
+      'page_search_wrong_login_attempts_title';
+  static const page_search_wrong_login_attempts_description =
+      'page_search_wrong_login_attempts_description';
+  static const page_search_bill_payment_description =
+      'page_search_bill_payment_description';
+  static const page_search_transfer_method_description =
+      'page_search_transfer_method_description';
+  static const face_scan_agreement_title = 'face_scan_agreement_title';
+  static const face_scan_agreement_description =
+      'face_scan_agreement_description';
+  static const view_agreements = 'view_agreements';
+  static const bank_accounts_header_title = 'bank_accounts_header_title';
+  static const bank_accounts_header_description =
+      'bank_accounts_header_description';
+  static const reset_password_from_forgot_password =
+      'reset_password_from_forgot_password';
+  static const bank_account_owner_company = 'bank_account_owner_company';
+  static const generate_qr_code = 'generate_qr_code';
+  static const campaign_qr_title = 'campaign_qr_title';
+  static const campaign_qr_description = 'campaign_qr_description';
+  static const qr_expires_in = 'qr_expires_in';
+  static const remaining_time = 'remaining_time';
+  static const qr_code_expired = 'qr_code_expired';
+  static const qr_code_expired_description = 'qr_code_expired_description';
+  static const please_specify_iwallet_payment =
+      'please_specify_iwallet_payment';
+  static const tell_cashier_code_shopping = 'tell_cashier_code_shopping';
+  static const or = 'or';
+  static const manual_iban_transfer = 'manual_iban_transfer';
+  static const qr_code_regenerating = 'qr_code_regenerating';
+  static const login_type_individual = 'login_type_individual';
+  static const login_type_merchant = 'login_type_merchant';
+  static const merchant_password_reset_process_code_required =
+      'merchant_password_reset_process_code_required';
+  static const enter_customer_number = 'enter_customer_number';
+  static const customer_number_length = 'customer_number_length';
+  static const iban_required = 'iban_required';
+  static const description_required = 'description_required';
+  static const amount_required = 'amount_required';
+  static const first_name_required = 'first_name_required';
+  static const last_name_required = 'last_name_required';
+  static const international_money_transfer = 'international_money_transfer';
+  static const retry = 'retry';
+  static const currency = 'currency';
+  static const country_code = 'country_code';
+  static const beneficiary_information = 'beneficiary_information';
+  static const required_information = 'required_information';
+  static const send_reason = 'send_reason';
+  static const money_resource = 'money_resource';
+  static const beneficiary_nationality = 'beneficiary_nationality';
+  static const sender_recipient_relationship = 'sender_recipient_relationship';
+  static const sender_occupation = 'sender_occupation';
+  static const please_select = 'please_select';
+  static const recipient_info = 'recipient_info';
+  static const received_amount = 'received_amount';
+  static const transfer_result = 'transfer_result';
+  static const beneficiary_name = 'beneficiary_name';
+  static const beneficiary_surname = 'beneficiary_surname';
+  static const beneficiary_phone = 'beneficiary_phone';
+  static const send_transfer = 'send_transfer';
+  static const transfer_completed_description =
+      'transfer_completed_description';
+  static const beneficiary_country = 'beneficiary_country';
+  static const corporation = 'corporation';
+  static const page_search_international_money_transfer_title =
+      'page_search_international_money_transfer_title';
+  static const page_search_international_money_transfer_description =
+      'page_search_international_money_transfer_description';
+  static const abroad = 'abroad';
+  static const country_az = 'country_az';
+  static const country_uz = 'country_uz';
+  static const country_kg = 'country_kg';
+  static const country_kz = 'country_kz';
+  static const country_ru = 'country_ru';
+  static const country_al = 'country_al';
+  static const country_bg = 'country_bg';
+  static const country_br = 'country_br';
+  static const country_gr = 'country_gr';
+  static const country_kv = 'country_kv';
+  static const country_ge = 'country_ge';
+  static const country_md = 'country_md';
+  static const country_ua = 'country_ua';
+  static const country_mn = 'country_mn';
+  static const country_il = 'country_il';
+  static const country_jo = 'country_jo';
+  static const country_kw = 'country_kw';
+  static const country_lb = 'country_lb';
+  static const country_qa = 'country_qa';
+  static const country_ye = 'country_ye';
+  static const country_bd = 'country_bd';
+  static const country_kh = 'country_kh';
+  static const country_in = 'country_in';
+  static const country_id = 'country_id';
+  static const country_np = 'country_np';
+  static const country_pk = 'country_pk';
+  static const country_ph = 'country_ph';
+  static const country_lk = 'country_lk';
+  static const country_vn = 'country_vn';
+  static const country_dj = 'country_dj';
+  static const country_ma = 'country_ma';
+  static const country_so = 'country_so';
+  static const country_bh = 'country_bh';
+  static const country_ae = 'country_ae';
+  static const country_eg = 'country_eg';
+  static const country_om = 'country_om';
+  static const country_iq = 'country_iq';
+  static const country_sy = 'country_sy';
+  static const select_country = 'select_country';
+  static const select_your_avatar = 'select_your_avatar';
+  static const select_avatar_description = 'select_avatar_description';
+  static const update_secret_question = 'update_secret_question';
+  static const secret_question_updated = 'secret_question_updated';
+  static const delete_account_has_balance = 'delete_account_has_balance';
+  static const jailbreak_warning_description = 'jailbreak_warning_description';
+  static const select_your_language = 'select_your_language';
+  static const select_language_description = 'select_language_description';
+  static const continue_button = 'continue_button';
+}

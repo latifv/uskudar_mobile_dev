@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+<!-- TODO: Kontrol edilcek -->
+    <string name="ready_to_scan">Tarama İçin Hazır</string>
+    <string name="title_cancel">İptal</string>
+    <string name="intent_request_code">requestCode</string>
+</resources>

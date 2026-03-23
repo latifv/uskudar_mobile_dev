@@ -1,0 +1,2 @@
+# Dil dosyalarını oluşturmak kullanılır tr.json'a birşey ekledikten sonra ana dizindeyken çalıştırın: sh scripts/languages.sh
+flutter pub run easy_localization:generate  -O lib/core/generated -f keys -o locale_keys.g.dart -S assets/translations

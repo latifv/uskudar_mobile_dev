@@ -1,0 +1,33 @@
+{
+  "originHash" : "f45ab5e6ebed25f181eb28be080cd59c49f6173d37a3abee5a1a7cf79eec0d26",
+  "pins" : [
+    {
+      "identity" : "arkfacespm",
+      "kind" : "remoteSourceControl",
+      "location" : "http://ark-gitea.arksigner.com:3000/ark-gitea/ArkFaceSPM.git",
+      "state" : {
+        "revision" : "6abedba157167df2ce441d7590c475f61857a61c",
+        "version" : "1.0.5"
+      }
+    },
+    {
+      "identity" : "arknfcspm",
+      "kind" : "remoteSourceControl",
+      "location" : "http://ark-gitea.arksigner.com:3000/ark-gitea/ArkNFCSPM.git",
+      "state" : {
+        "revision" : "a4c3090fe907dbbc36a869f36062ddaef118de46",
+        "version" : "2.0.0"
+      }
+    },
+    {
+      "identity" : "arktckkspm",
+      "kind" : "remoteSourceControl",
+      "location" : "https://ark-gitea.arksigner.com/ark-gitea/ArkTCKKSPM.git",
+      "state" : {
+        "revision" : "02cbf49abc3bd93a9536eab70780d92c0913ca3a",
+        "version" : "1.0.9"
+      }
+    }
+  ],
+  "version" : 3
+}
