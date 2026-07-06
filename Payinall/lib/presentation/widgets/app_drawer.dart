@@ -6,6 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:payinall/core/generated/locale_keys.g.dart';
 import 'package:payinall/core/managers/user_info_manager.dart';
 import 'package:payinall/di/di.dart';
+import 'package:payinall/presentation/pages/paycore_cards/paycore_cards_screen.dart';
 import 'package:payinall/presentation/pages/profile/bloc/profile_bloc.dart';
 import 'package:payinall/presentation/route/app_router.dart';
 import 'package:payinall/presentation/shared/components/toast_component.dart';
@@ -28,11 +29,13 @@ final class AppDrawer extends StatefulWidget {
 
 final class _AppDrawerState extends State<AppDrawer> {
   late final ProfileBloc _profileBloc;
+  late final UserInfoManager _userInfoManager;
 
   @override
   void initState() {
     super.initState();
     _profileBloc = getIt<ProfileBloc>();
+    _userInfoManager = getIt<UserInfoManager>();
   }
 
   @override
@@ -187,6 +190,22 @@ final class _AppDrawerState extends State<AppDrawer> {
             unawaited(context.router.push(const AccountLimitsRoute()));
           },
         ),
+        if (!_userInfoManager.isMerchant)
+          _buildNavigationItem(
+            context,
+            title: 'Kartlarım',
+            icon: Icons.credit_card_rounded,
+            onTap: () {
+              context.router.pop();
+              unawaited(
+                Navigator.of(context).push(
+                  MaterialPageRoute<void>(
+                    builder: (_) => const PaycoreCardsScreen(),
+                  ),
+                ),
+              );
+            },
+          ),
         _buildDivider(context),
 
         _buildSectionHeader(

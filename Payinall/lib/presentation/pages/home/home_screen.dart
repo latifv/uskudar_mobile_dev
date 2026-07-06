@@ -9,6 +9,7 @@ import 'package:payinall/presentation/pages/home/widgets/feature_cards_banner.da
 import 'package:payinall/presentation/pages/home/widgets/home_action_buttons.dart';
 import 'package:payinall/presentation/pages/home/widgets/home_app_bar.dart';
 import 'package:payinall/presentation/pages/home/widgets/home_balance_section.dart';
+import 'package:payinall/presentation/pages/home/widgets/home_paycore_cards_carousel.dart';
 import 'package:payinall/presentation/pages/home/widgets/home_tab_section.dart';
 import 'package:payinall/presentation/pages/home/widgets/user_info_card.dart';
 import 'package:payinall/presentation/shared/extensions/padding_extension.dart';
@@ -105,14 +106,25 @@ final class _HomeScreenState extends State<HomeScreen> with HomeMixin {
           onLoadMoneyPressed: navigateToLoadMoney,
           isMerchant: userInfoManager.isMerchant,
         ),
-
-        context.spacingLowHeight,
-        HomeActionButtons(
-          onSendPressed: navigateToSendMoney,
-          onWithdrawPressed: navigateToWithdrawMoney,
-          onRequestPressed: navigateToRequestMoney,
-          isMerchant: userInfoManager.isMerchant,
-        ),
+        if (!userInfoManager.isMerchant) ...[
+          context.spacingLowHeight,
+          HomePaycoreCardsCarousel(
+            onPressed: navigateToPaycoreCards,
+            onSendPressed: navigateToSendMoney,
+            onRequestPressed: navigateToRequestMoney,
+            onWithdrawPressed: navigateToWithdrawMoney,
+            refreshSeed:
+                '${state.walletAddress ?? ''}_${state.balance ?? 0}_${state.blockBalance ?? 0}_${state.transactions?.length ?? 0}',
+          ),
+        ] else ...[
+          context.spacingLowHeight,
+          HomeActionButtons(
+            onSendPressed: navigateToSendMoney,
+            onWithdrawPressed: navigateToWithdrawMoney,
+            onRequestPressed: navigateToRequestMoney,
+            isMerchant: userInfoManager.isMerchant,
+          ),
+        ],
         if (!userInfoManager.isMerchant) ...[
           context.spacingLowHeight,
           const CampaignBanner(),

@@ -268,6 +268,12 @@ final class _ProfileScreenState extends State<ProfileScreen> with ProfileMixin {
         navigateToBankAccounts,
       ),
       _buildDivider(),
+      _buildMenuItem(
+        'Kartlarım',
+        Icons.credit_card_rounded,
+        navigateToPaycoreCards,
+      ),
+      _buildDivider(),
       if (!userInfoManager.isMerchant) ...[
         _buildMenuItem(
           LocaleKeys.pending_money_requests.translate,

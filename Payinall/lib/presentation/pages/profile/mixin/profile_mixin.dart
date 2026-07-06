@@ -10,6 +10,7 @@ import 'package:payinall/core/utils/app_utils.dart';
 import 'package:payinall/data/datasources/local/app_local_data_source.dart';
 import 'package:payinall/di/di.dart';
 import 'package:payinall/presentation/pages/home/bloc/home_bloc.dart';
+import 'package:payinall/presentation/pages/paycore_cards/paycore_cards_screen.dart';
 import 'package:payinall/presentation/pages/profile/bloc/profile_bloc.dart';
 import 'package:payinall/presentation/route/app_router.dart';
 import 'package:payinall/presentation/widgets/language_selection_dialog.dart';
@@ -65,6 +66,16 @@ mixin ProfileMixin<T extends StatefulWidget> on State<T> {
 
   void navigateToBankAccounts() {
     unawaited(context.router.push(const BankAccountsRoute()));
+  }
+
+  void navigateToPaycoreCards() {
+    unawaited(
+      Navigator.of(context).push(
+        MaterialPageRoute<void>(
+          builder: (_) => const PaycoreCardsScreen(),
+        ),
+      ),
+    );
   }
 
   void navigateToNotificationSettings() {

@@ -88,6 +88,18 @@ final class _CampaignBannerState extends State<CampaignBanner> {
     return BlocBuilder<CampaignsBloc, CampaignsState>(
       bloc: _campaignsBloc,
       builder: (context, state) {
+        final campaigns = state.campaigns ?? [];
+        final hasCampaigns = campaigns.isNotEmpty &&
+            campaigns.expand((campaign) => campaign.campaignMerchants).isNotEmpty;
+
+        if (state.status == CampaignsStatus.error) {
+          return const SizedBox.shrink();
+        }
+
+        if (state.status == CampaignsStatus.loaded && !hasCampaigns) {
+          return const SizedBox.shrink();
+        }
+
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -100,7 +112,7 @@ final class _CampaignBannerState extends State<CampaignBanner> {
                   style: context.textTheme.titleSmall?.copyWith(),
                 ),
                 if (state.status == CampaignsStatus.loaded &&
-                    (state.campaigns?.isNotEmpty ?? false))
+                    hasCampaigns)
                   TextButton(
                     onPressed: _navigateToCampaigns,
                     child: Text(

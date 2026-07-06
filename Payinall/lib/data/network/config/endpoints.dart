@@ -75,6 +75,26 @@ final class Endpoints {
   static const String wallet = '$wallets/getActive';
   static const String merchantWallet = '$wallets/getMerchantWallet';
 
+  static const String payCoreCustomers = '/PayCoreCustomers';
+  static const String createPayCoreCustomer =
+      '$payCoreCustomers/create-customer';
+  static const String createPayCorePrepaidCard =
+      '$payCoreCustomers/create-prepaid-card';
+  static const String updatePayCoreCustomerAddress =
+      '$payCoreCustomers/update-customer-address';
+  static String getPayCoreCustomerInfo(String customerNumber) =>
+      '$payCoreCustomers/get-customer-info/$customerNumber';
+
+  static const String payCoreCards = '/PayCoreCards';
+  static const String getMyPayCoreCards = '$payCoreCards/my-cards';
+  static const String getMyPayCoreCustomerInfo = '$payCoreCards/customer-info';
+  static String getPayCorePinStatus(int cardId) =>
+      '$payCoreCards/get-last-pin-set-date/$cardId';
+  static const String setPayCorePin = '$payCoreCards/set-pin';
+  static const String setPayCoreRandomPin = '$payCoreCards/set-random-pin';
+  static const String sendPayCorePinBySms = '$payCoreCards/send-pin-by-sms';
+  static const String setPayCorePrimaryCard = '$payCoreCards/set-primary-card';
+
   static const String transfers = '/Transfers';
   static const String walletTransfer = '$transfers/walletTransfer';
   static const String merchantTransfer = '$transfers/merchantTransfer';

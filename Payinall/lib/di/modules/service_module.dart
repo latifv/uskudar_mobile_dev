@@ -2,6 +2,7 @@ import 'package:get_it/get_it.dart';
 import 'package:payinall/core/services/contact_service.dart';
 import 'package:payinall/core/services/device_info_service.dart';
 import 'package:payinall/core/services/image_picker_service.dart';
+import 'package:payinall/core/services/paycore_mobile_service.dart';
 import 'package:payinall/core/services/permission_service.dart';
 import 'package:payinall/core/services/qr_code_service/qr_code_service.dart';
 import 'package:payinall/core/services/root_check_service.dart';
@@ -22,6 +23,9 @@ final class ServiceModule extends DIModule {
       ..registerLazySingleton<ImagePickerService>(ImagePickerServiceImpl.new)
       ..registerSingleton<RootCheckService>(RootCheckServiceImpl())
       ..registerLazySingleton<QRCodeService>(QRCodeServiceImpl.new)
+      ..registerLazySingleton<PaycoreMobileService>(
+        () => PaycoreMobileService(getIt()),
+      )
       ..registerLazySingleton<SignalRService>(SignalRServiceImpl.new);
   }
 }
