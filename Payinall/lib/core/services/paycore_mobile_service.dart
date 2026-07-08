@@ -71,7 +71,7 @@ final class PaycoreMobileService extends BaseRemoteDataSource {
     return NetworkResponse.fromJson<void>(responseJson as Map<String, dynamic>);
   }
 
-  Future<NetworkResponse<void>> createPrepaidCard({
+  Future<NetworkResponse<PaycoreCreatePrepaidCardResult>> createPrepaidCard({
     required PaycoreCardCreationProfile cardProfile,
     required String cityCode,
     required String cityName,
@@ -97,7 +97,17 @@ final class PaycoreMobileService extends BaseRemoteDataSource {
       },
     );
 
-    return NetworkResponse.fromJson<void>(responseJson as Map<String, dynamic>);
+    final response = NetworkResponse.fromJson<Map<String, dynamic>>(
+      responseJson as Map<String, dynamic>,
+      fromJsonT: (json) {
+        if (json is Map<String, dynamic>) {
+          return json;
+        }
+        throw const MappingException();
+      },
+    );
+
+    return response.map(PaycoreCreatePrepaidCardResult.fromJson);
   }
 
   Future<NetworkResponse<void>> updateCustomerAddress({
@@ -143,11 +153,22 @@ final class PaycoreMobileService extends BaseRemoteDataSource {
 
   Future<NetworkResponse<void>> setPin(
     int cardId,
-    String newPin,
-  ) async {
+    String newPin, {
+    String? cardNo,
+  }) async {
+    final payload = <String, dynamic>{
+      'cardId': cardId,
+      'newPin': newPin,
+    };
+
+    final normalizedCardNo = cardNo?.trim();
+    if (normalizedCardNo?.isNotEmpty ?? false) {
+      payload['cardNo'] = normalizedCardNo;
+    }
+
     final responseJson = await put(
       endpoint: Endpoints.setPayCorePin,
-      data: <String, dynamic>{'cardId': cardId, 'newPin': newPin},
+      data: payload,
     );
 
     return NetworkResponse.fromJson<void>(responseJson as Map<String, dynamic>);
@@ -155,14 +176,22 @@ final class PaycoreMobileService extends BaseRemoteDataSource {
 
   Future<NetworkResponse<Map<String, dynamic>>> setRandomPin(
     int cardId, {
+    String? cardNo,
     bool isSendPinBySms = false,
   }) async {
+    final payload = <String, dynamic>{
+      'cardId': cardId,
+      'isSendPinBySms': isSendPinBySms,
+    };
+
+    final normalizedCardNo = cardNo?.trim();
+    if (normalizedCardNo?.isNotEmpty ?? false) {
+      payload['cardNo'] = normalizedCardNo;
+    }
+
     final responseJson = await put(
       endpoint: Endpoints.setPayCoreRandomPin,
-      data: <String, dynamic>{
-        'cardId': cardId,
-        'isSendPinBySms': isSendPinBySms,
-      },
+      data: payload,
     );
 
     return NetworkResponse.fromJson<Map<String, dynamic>>(
@@ -176,10 +205,20 @@ final class PaycoreMobileService extends BaseRemoteDataSource {
     );
   }
 
-  Future<NetworkResponse<void>> sendPinBySms(int cardId) async {
+  Future<NetworkResponse<void>> sendPinBySms(
+    int cardId, {
+    String? cardNo,
+  }) async {
+    final payload = <String, dynamic>{'cardId': cardId};
+
+    final normalizedCardNo = cardNo?.trim();
+    if (normalizedCardNo?.isNotEmpty ?? false) {
+      payload['cardNo'] = normalizedCardNo;
+    }
+
     final responseJson = await post(
       endpoint: Endpoints.sendPayCorePinBySms,
-      data: <String, dynamic>{'cardId': cardId},
+      data: payload,
     );
 
     return NetworkResponse.fromJson<void>(responseJson as Map<String, dynamic>);

@@ -5,8 +5,8 @@ import 'package:payinall/core/models/paycore_mobile_models.dart';
 import 'package:payinall/core/services/paycore_mobile_service.dart';
 import 'package:payinall/data/network/network_client.dart';
 import 'package:payinall/di/di.dart';
-import 'package:payinall/presentation/shared/constants/paycore_card_asset_constants.dart';
 import 'package:payinall/presentation/shared/extensions/theme_extension.dart';
+import 'package:payinall/presentation/shared/widgets/paycore_card_visual.dart';
 
 final class HomePaycoreCardsCarousel extends StatefulWidget {
   const HomePaycoreCardsCarousel({
@@ -189,115 +189,89 @@ final class _HomePaycoreCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final backgroundAsset = PaycoreCardAssetConstants.frontForSummary(card);
-
-    return InkWell(
-      borderRadius: BorderRadius.circular(18),
+    return PaycoreCardVisual(
+      card: card,
       onTap: onTap,
-      child: Ink(
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(18),
-          image: DecorationImage(
-            image: AssetImage(backgroundAsset),
-            fit: BoxFit.cover,
-          ),
-          boxShadow: [
-            BoxShadow(
-              color: const Color(0xFF1D2D87).withValues(alpha: 0.16),
-              blurRadius: 12,
-              offset: const Offset(0, 6),
-            ),
-          ],
+      boxShadow: [
+        BoxShadow(
+          color: const Color(0xFF1D2D87).withValues(alpha: 0.16),
+          blurRadius: 12,
+          offset: const Offset(0, 6),
         ),
-        child: Container(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(18),
-            gradient: LinearGradient(
-              colors: [
-                Colors.black.withValues(alpha: 0.04),
-                Colors.black.withValues(alpha: 0.18),
-                Colors.black.withValues(alpha: 0.32),
-              ],
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-            ),
-          ),
-          padding: const EdgeInsets.all(12),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+      ],
+      frontChild: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
             children: [
-              Row(
-                children: [
-                  _buildBadge(
-                    context,
-                    card.isPrimary ? 'Ana Kart' : card.statusName,
-                  ),
-                  const SizedBox(width: 4),
-                  _buildBadge(
-                    context,
-                    card.isActive ? 'Aktif' : 'Pasif',
-                  ),
-                ],
+              _buildBadge(
+                context,
+                card.isPrimary ? 'Ana Kart' : card.statusName,
               ),
-              const Spacer(),
-              Text(
-                card.maskedCardNo,
-                style: context.textTheme.headlineSmall?.copyWith(
-                  color: Colors.white,
-                  fontWeight: FontWeight.w800,
-                  letterSpacing: 0.8,
-                  fontSize: 16,
-                  shadows: const [
-                    Shadow(
-                      color: Color(0x6B000000),
-                      blurRadius: 10,
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 3),
-              Text(
-                '${card.profileLabel} • ${card.cardTypeName}',
-                style: context.textTheme.bodyMedium?.copyWith(
-                  color: Colors.white.withValues(alpha: 0.92),
-                  fontWeight: FontWeight.w600,
-                  fontSize: 11.5,
-                  shadows: const [
-                    Shadow(
-                      color: Color(0x6B000000),
-                      blurRadius: 8,
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 4),
-              Row(
-                children: [
-                  Expanded(
-                    child: Text(
-                      card.embossName?.isNotEmpty ?? false
-                          ? card.embossName!
-                          : 'Kartını yönetmek için dokun',
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: context.textTheme.bodyMedium?.copyWith(
-                        color: Colors.white,
-                        fontWeight: FontWeight.w700,
-                        fontSize: 12,
-                        shadows: const [
-                          Shadow(
-                            color: Color(0x6B000000),
-                            blurRadius: 8,
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ],
+              const SizedBox(width: 4),
+              _buildBadge(
+                context,
+                card.isActive ? 'Aktif' : 'Pasif',
               ),
             ],
           ),
-        ),
+          const Spacer(),
+          Text(
+            card.maskedCardNo,
+            style: context.textTheme.headlineSmall?.copyWith(
+              color: Colors.white,
+              fontWeight: FontWeight.w800,
+              letterSpacing: 0.8,
+              fontSize: 16,
+              shadows: const [
+                Shadow(
+                  color: Color(0x6B000000),
+                  blurRadius: 10,
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 3),
+          Text(
+            '${card.profileLabel} • ${card.cardTypeName}',
+            style: context.textTheme.bodyMedium?.copyWith(
+              color: Colors.white.withValues(alpha: 0.92),
+              fontWeight: FontWeight.w600,
+              fontSize: 11.5,
+              shadows: const [
+                Shadow(
+                  color: Color(0x6B000000),
+                  blurRadius: 8,
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 4),
+          Row(
+            children: [
+              Expanded(
+                child: Text(
+                  card.embossName?.isNotEmpty ?? false
+                      ? card.embossName!
+                      : 'Kartını yönetmek için dokun',
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: context.textTheme.bodyMedium?.copyWith(
+                    color: Colors.white,
+                    fontWeight: FontWeight.w700,
+                    fontSize: 12,
+                    shadows: const [
+                      Shadow(
+                        color: Color(0x6B000000),
+                        blurRadius: 8,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ],
       ),
     );
   }

@@ -5,6 +5,8 @@ enum PaycoreCardCreationProfile {
   masterPhysical,
 }
 
+enum PaycoreCardBrand { visa, troy, mastercard, unknown }
+
 extension PaycoreCardCreationProfileX on PaycoreCardCreationProfile {
   String get apiValue => switch (this) {
     PaycoreCardCreationProfile.troyVirtual => 'troy_virtual',
@@ -39,6 +41,15 @@ extension PaycoreCardCreationProfileX on PaycoreCardCreationProfile {
   };
 }
 
+extension PaycoreCardBrandX on PaycoreCardBrand {
+  String get label => switch (this) {
+    PaycoreCardBrand.visa => 'Visa',
+    PaycoreCardBrand.troy => 'Troy',
+    PaycoreCardBrand.mastercard => 'Mastercard',
+    PaycoreCardBrand.unknown => 'Bilinmeyen',
+  };
+}
+
 final class PaycoreCardSummary {
   const PaycoreCardSummary({
     required this.id,
@@ -52,13 +63,18 @@ final class PaycoreCardSummary {
     required this.statusName,
     required this.cardTypeName,
     required this.isPrimary,
+    required this.brand,
+    this.brandHint,
+    this.fullCardNo,
   });
 
   factory PaycoreCardSummary.fromJson(Map<String, dynamic> json) {
+    final brand = _resolvePaycoreCardBrand(json);
     return PaycoreCardSummary(
       id: (json['id'] as num?)?.toInt() ?? 0,
       cardReference: json['cardReference'] as String? ?? '',
       maskedCardNo: json['maskedCardNo'] as String? ?? '-',
+      fullCardNo: _resolvePaycoreFullCardNo(json),
       productCode: json['productCode'] as String?,
       embossName: json['embossName'] as String?,
       expiryDate: json['expiryDate'] as String?,
@@ -67,12 +83,15 @@ final class PaycoreCardSummary {
       statusName: json['statusName'] as String? ?? '-',
       cardTypeName: json['cardTypeName'] as String? ?? '-',
       isPrimary: json['isPrimary'] as bool? ?? false,
+      brand: brand,
+      brandHint: _resolvePaycoreCardBrandHint(json),
     );
   }
 
   final int id;
   final String cardReference;
   final String maskedCardNo;
+  final String? fullCardNo;
   final String? productCode;
   final String? embossName;
   final String? expiryDate;
@@ -81,6 +100,8 @@ final class PaycoreCardSummary {
   final String statusName;
   final String cardTypeName;
   final bool isPrimary;
+  final PaycoreCardBrand brand;
+  final String? brandHint;
 
   String get profileLabel {
     final normalizedProductCode = productCode?.trim().toUpperCase();
@@ -108,6 +129,114 @@ final class PaycoreCardSummary {
 
     return '${normalizedProductCode ?? '-'} • ${isDigitalCard ? 'Sanal' : 'Fiziki'}';
   }
+}
+
+final class PaycoreCreatePrepaidCardResult {
+  const PaycoreCreatePrepaidCardResult({
+    required this.maskedCardNo,
+    required this.cardProfile,
+    required this.productCode,
+    required this.isDigitalCard,
+    required this.expiryDate,
+    required this.isNewCardCreated,
+  });
+
+  factory PaycoreCreatePrepaidCardResult.fromJson(Map<String, dynamic> json) {
+    return PaycoreCreatePrepaidCardResult(
+      maskedCardNo: json['maskedCardNo'] as String? ?? '-',
+      cardProfile: json['cardProfile'] as String? ?? '',
+      productCode: json['productCode'] as String? ?? '',
+      isDigitalCard: json['isDigitalCard'] as bool? ?? false,
+      expiryDate: json['expiryDate'] as String?,
+      isNewCardCreated: json['isNewCardCreated'] as bool?,
+    );
+  }
+
+  final String maskedCardNo;
+  final String cardProfile;
+  final String productCode;
+  final bool isDigitalCard;
+  final String? expiryDate;
+  final bool? isNewCardCreated;
+}
+
+PaycoreCardBrand _resolvePaycoreCardBrand(Map<String, dynamic> json) {
+  for (final hint in _brandHints(json)) {
+    final normalized = _normalizeBrandHint(hint);
+    if (normalized.contains('mastercard') ||
+        normalized == 'master' ||
+        normalized == 'mc' ||
+        normalized.startsWith('mc')) {
+      return PaycoreCardBrand.mastercard;
+    }
+    if (normalized.contains('troy') || normalized.startsWith('try')) {
+      return PaycoreCardBrand.troy;
+    }
+    if (normalized.contains('visa') || normalized.startsWith('vis')) {
+      return PaycoreCardBrand.visa;
+    }
+  }
+
+  return PaycoreCardBrand.unknown;
+}
+
+String? _resolvePaycoreCardBrandHint(Map<String, dynamic> json) {
+  for (final hint in _brandHints(json)) {
+    if (hint.trim().isNotEmpty) {
+      return hint.trim();
+    }
+  }
+  return null;
+}
+
+String? _resolvePaycoreFullCardNo(Map<String, dynamic> json) {
+  const keys = <String>[
+    'cardNo',
+    'fullCardNo',
+    'pan',
+    'cardNumber',
+    'realCardNo',
+  ];
+
+  for (final key in keys) {
+    final value = json[key];
+    if (value is! String) {
+      continue;
+    }
+
+    final normalized = value.replaceAll(RegExp('[^0-9]'), '').trim();
+    if (normalized.length >= 12) {
+      return normalized;
+    }
+  }
+
+  return null;
+}
+
+Iterable<String> _brandHints(Map<String, dynamic> json) sync* {
+  const keys = <String>[
+    'cardBrand',
+    'cardType',
+    'scheme',
+    'brand',
+    'paymentSystem',
+    'cardScheme',
+    'cardNetwork',
+    'network',
+    'cardTypeName',
+    'productCode',
+  ];
+
+  for (final key in keys) {
+    final value = json[key];
+    if (value is String && value.trim().isNotEmpty) {
+      yield value;
+    }
+  }
+}
+
+String _normalizeBrandHint(String value) {
+  return value.trim().toLowerCase().replaceAll(RegExp('[^a-z0-9]+'), '');
 }
 
 final class PaycorePinStatus {

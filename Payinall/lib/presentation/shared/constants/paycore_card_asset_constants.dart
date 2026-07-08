@@ -27,21 +27,29 @@ final class PaycoreCardAssetConstants {
   }
 
   static String frontForSummary(PaycoreCardSummary card) {
-    return _isMasterCard(card)
-        ? ImageAssetsConstants.paycoreMasterFront
-        : ImageAssetsConstants.paycoreTroyFront;
+    return frontForBrand(card.brand);
   }
 
   static String backForSummary(PaycoreCardSummary card) {
-    return _isMasterCard(card)
-        ? ImageAssetsConstants.paycoreMasterBack
-        : ImageAssetsConstants.paycoreTroyBack;
+    return backForBrand(card.brand);
   }
 
-  static bool _isMasterCard(PaycoreCardSummary card) {
-    final productCode = card.productCode?.trim().toUpperCase() ?? '';
-    final profileLabel = card.profileLabel.toUpperCase();
+  static String frontForBrand(PaycoreCardBrand brand) {
+    return switch (brand) {
+      PaycoreCardBrand.troy => ImageAssetsConstants.paycoreTroyFront,
+      PaycoreCardBrand.mastercard => ImageAssetsConstants.paycoreMasterFront,
+      PaycoreCardBrand.visa ||
+      PaycoreCardBrand.unknown => ImageAssetsConstants.paycoreTroyFront,
+    };
+  }
 
-    return productCode.startsWith('MC') || profileLabel.contains('MASTER');
+  static String backForBrand(PaycoreCardBrand brand) {
+    return switch (brand) {
+      PaycoreCardBrand.visa ||
+      PaycoreCardBrand.troy ||
+      PaycoreCardBrand.mastercard ||
+      PaycoreCardBrand.visa ||
+      PaycoreCardBrand.unknown => ImageAssetsConstants.paycoreTroyBack,
+    };
   }
 }
