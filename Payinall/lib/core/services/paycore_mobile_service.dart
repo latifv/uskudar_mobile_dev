@@ -1,6 +1,7 @@
 import 'package:payinall/core/error/exceptions.dart';
 import 'package:payinall/core/models/paycore_mobile_models.dart';
 import 'package:payinall/data/core/base_remote_data_source.dart';
+import 'package:payinall/data/network/config/api_constants.dart';
 import 'package:payinall/data/network/config/endpoints.dart';
 import 'package:payinall/data/network/models/network_response.dart';
 
@@ -11,9 +12,55 @@ final class PaycoreMobileService extends BaseRemoteDataSource {
     final responseJson = await get(
       endpoint: Endpoints.getMyPayCoreCustomerInfo,
     );
+    return _mapCustomerInfoResponse(
+      responseJson,
+      fallbackMessage: 'Müşteri bilgisi alınamadı.',
+    );
+  }
+
+  Future<NetworkResponse<PaycoreCustomerInfo>> getCustomerInfoByCustomerNumber(
+    String customerNumber,
+  ) async {
+    final responseJson = await get(
+      endpoint: Endpoints.getPayCoreCustomerInfo(customerNumber),
+    );
+    return _mapCustomerInfoResponse(
+      responseJson,
+      fallbackMessage: 'Müşteri bilgisi alınamadı.',
+    );
+  }
+
+  Future<NetworkResponse<PaycoreCustomerInfo>> getCustomerInfoFromManagement(
+    String customerNumber,
+  ) async {
+    final managementBaseUrl = _resolveManagementBaseUrl(ApiConstants.baseUrl);
+
+    final responseJson = await get(
+      endpoint:
+          '$managementBaseUrl/PayCoreManagement/get-customer-info/$customerNumber',
+    );
+    return _mapCustomerInfoResponse(
+      responseJson,
+      fallbackMessage: 'Management müşteri bilgisi alınamadı.',
+    );
+  }
+
+  NetworkResponse<PaycoreCustomerInfo> _mapCustomerInfoResponse(
+    dynamic responseJson, {
+    required String fallbackMessage,
+  }) {
+    if (responseJson is! Map<String, dynamic>) {
+      return NetworkResponse.fromJson<PaycoreCustomerInfo>(
+        <String, dynamic>{
+          'isSuccess': false,
+          'message': fallbackMessage,
+          'data': null,
+        },
+      );
+    }
 
     final response = NetworkResponse.fromJson<Map<String, dynamic>>(
-      responseJson as Map<String, dynamic>,
+      responseJson,
       fromJsonT: (json) {
         if (json is Map<String, dynamic>) {
           return json;
@@ -22,7 +69,17 @@ final class PaycoreMobileService extends BaseRemoteDataSource {
       },
     );
 
-    return response.map(PaycoreCustomerInfo.fromJson);
+    try {
+      return response.map(PaycoreCustomerInfo.fromJson);
+    } on Object {
+      return NetworkResponse.fromJson<PaycoreCustomerInfo>(
+        <String, dynamic>{
+          'isSuccess': false,
+          'message': response.message ?? fallbackMessage,
+          'data': null,
+        },
+      );
+    }
   }
 
   Future<NetworkResponse<List<PaycoreCardSummary>>> getMyCards() async {
@@ -50,6 +107,7 @@ final class PaycoreMobileService extends BaseRemoteDataSource {
     required String gender,
     required String cityName,
     required String townName,
+    required String district,
     required String townCode,
     required String cityCode,
     required String postalCode,
@@ -61,6 +119,7 @@ final class PaycoreMobileService extends BaseRemoteDataSource {
         'gender': gender,
         'cityName': cityName,
         'townName': townName,
+        'district': district,
         'townCode': townCode,
         'cityCode': cityCode,
         'postalCode': postalCode,
@@ -113,6 +172,7 @@ final class PaycoreMobileService extends BaseRemoteDataSource {
   Future<NetworkResponse<void>> updateCustomerAddress({
     required String cityName,
     required String townName,
+    required String district,
     required String townCode,
     required String cityCode,
     required String postalCode,
@@ -123,6 +183,7 @@ final class PaycoreMobileService extends BaseRemoteDataSource {
       data: <String, dynamic>{
         'cityName': cityName,
         'townName': townName,
+        'district': district,
         'townCode': townCode,
         'cityCode': cityCode,
         'postalCode': postalCode,
@@ -231,5 +292,44 @@ final class PaycoreMobileService extends BaseRemoteDataSource {
     );
 
     return NetworkResponse.fromJson<void>(responseJson as Map<String, dynamic>);
+  }
+
+  String _resolveManagementBaseUrl(String apiBaseUrl) {
+    final normalizedBaseUrl = apiBaseUrl.trim().replaceAll(RegExp(r'/+$'), '');
+
+    if (normalizedBaseUrl.contains('payinallwalletapi.erpapay.com')) {
+      return normalizedBaseUrl.replaceFirst(
+        'payinallwalletapi.erpapay.com',
+        'payinallwalletapp.erpapay.com',
+      );
+    }
+
+    final parsedUri = Uri.tryParse(normalizedBaseUrl);
+    if (parsedUri == null) {
+      return normalizedBaseUrl;
+    }
+
+    final isLocalHost =
+        parsedUri.host == 'localhost' ||
+        parsedUri.host == '127.0.0.1' ||
+        parsedUri.host == '10.0.2.2';
+
+    if (!isLocalHost) {
+      return normalizedBaseUrl;
+    }
+
+    final nextPort = switch (parsedUri.port) {
+      5093 => 5072,
+      7087 => 7052,
+      _ => parsedUri.port,
+    };
+
+    return parsedUri
+        .replace(port: nextPort)
+        .toString()
+        .replaceAll(
+          RegExp(r'/+$'),
+          '',
+        );
   }
 }

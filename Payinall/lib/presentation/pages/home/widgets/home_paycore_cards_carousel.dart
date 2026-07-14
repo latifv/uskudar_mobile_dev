@@ -211,6 +211,11 @@ final class _HomePaycoreCard extends StatelessWidget {
               const SizedBox(width: 4),
               _buildBadge(
                 context,
+                card.cardModeLabel,
+              ),
+              const SizedBox(width: 4),
+              _buildBadge(
+                context,
                 card.isActive ? 'Aktif' : 'Pasif',
               ),
             ],

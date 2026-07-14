@@ -65,6 +65,7 @@ final class PaycoreCardSummary {
     required this.isPrimary,
     required this.brand,
     this.brandHint,
+    this.cvv,
     this.fullCardNo,
   });
 
@@ -75,6 +76,7 @@ final class PaycoreCardSummary {
       cardReference: json['cardReference'] as String? ?? '',
       maskedCardNo: json['maskedCardNo'] as String? ?? '-',
       fullCardNo: _resolvePaycoreFullCardNo(json),
+      cvv: _resolvePaycoreCvv(json),
       productCode: json['productCode'] as String?,
       embossName: json['embossName'] as String?,
       expiryDate: json['expiryDate'] as String?,
@@ -92,6 +94,7 @@ final class PaycoreCardSummary {
   final String cardReference;
   final String maskedCardNo;
   final String? fullCardNo;
+  final String? cvv;
   final String? productCode;
   final String? embossName;
   final String? expiryDate;
@@ -103,14 +106,39 @@ final class PaycoreCardSummary {
   final PaycoreCardBrand brand;
   final String? brandHint;
 
+  bool get isVirtualProduct {
+    final normalizedProductCode = productCode?.trim().toUpperCase();
+    return normalizedProductCode == 'TRYSNL' ||
+        normalizedProductCode == 'MCPVB';
+  }
+
+  bool get isPhysicalProduct {
+    final normalizedProductCode = productCode?.trim().toUpperCase();
+    return normalizedProductCode == 'TRYFZKSL' ||
+        normalizedProductCode == 'MCFZKSL' ||
+        normalizedProductCode == 'MCPSB';
+  }
+
+  bool get resolvedIsDigitalCard {
+    if (isVirtualProduct) {
+      return true;
+    }
+    if (isPhysicalProduct) {
+      return false;
+    }
+    return isDigitalCard;
+  }
+
+  String get cardModeLabel =>
+      resolvedIsDigitalCard ? 'Sanal Kart' : 'Fiziki Kart';
+
   String get profileLabel {
     final normalizedProductCode = productCode?.trim().toUpperCase();
 
-    if (normalizedProductCode == 'TRYSNL' && isDigitalCard) {
+    if (normalizedProductCode == 'TRYSNL') {
       return 'Troy Sanal';
     }
-    if (normalizedProductCode == 'TRYSNL' ||
-        normalizedProductCode == 'TRYFZKSL') {
+    if (normalizedProductCode == 'TRYFZKSL') {
       return 'Troy Fiziki';
     }
     if (normalizedProductCode == 'MCPVB') {
@@ -121,14 +149,27 @@ final class PaycoreCardSummary {
       return 'Master Fiziki';
     }
     if (normalizedProductCode?.startsWith('MC') ?? false) {
-      return isDigitalCard ? 'Master Sanal' : 'Master Fiziki';
+      return resolvedIsDigitalCard ? 'Master Sanal' : 'Master Fiziki';
     }
     if (normalizedProductCode?.startsWith('TRY') ?? false) {
-      return isDigitalCard ? 'Troy Sanal' : 'Troy Fiziki';
+      return resolvedIsDigitalCard ? 'Troy Sanal' : 'Troy Fiziki';
     }
 
-    return '${normalizedProductCode ?? '-'} • ${isDigitalCard ? 'Sanal' : 'Fiziki'}';
+    return '${normalizedProductCode ?? '-'} • ${resolvedIsDigitalCard ? 'Sanal' : 'Fiziki'}';
   }
+}
+
+String? _resolvePaycoreCvv(Map<String, dynamic> json) {
+  const keys = <String>['cvv', 'cvv2'];
+
+  for (final key in keys) {
+    final value = json[key];
+    if (value is String && value.trim().isNotEmpty) {
+      return value.trim();
+    }
+  }
+
+  return null;
 }
 
 final class PaycoreCreatePrepaidCardResult {
@@ -193,9 +234,11 @@ String? _resolvePaycoreFullCardNo(Map<String, dynamic> json) {
   const keys = <String>[
     'cardNo',
     'fullCardNo',
+    'cardReference',
     'pan',
     'cardNumber',
     'realCardNo',
+    'actualCardNo',
   ];
 
   for (final key in keys) {
@@ -264,12 +307,65 @@ final class PaycoreCustomerInfo {
     required this.bankingCustomerNo,
     required this.customerNo,
     required this.name,
+    required this.midname,
     required this.surname,
     required this.primaryCardNo,
+    required this.statCode,
+    required this.commLanguage,
+    required this.riskCode,
     required this.customerGroupCode,
+    required this.profession,
+    required this.customerEmbossNameExt,
+    required this.companyName,
+    required this.companyNo,
+    required this.title,
+    required this.workPlace,
+    required this.graduation,
+    required this.disabledType,
+    required this.guarantor,
+    required this.guarantorProfession,
+    required this.branchCode,
+    required this.digitalSlipType,
+    required this.lastCardIssuingDate,
+    required this.firstCreditCardDate,
+    required this.statChangeDate,
+    required this.isGuaranteed,
+    required this.isBusiness,
+    required this.isIdentityPresented,
+    required this.hasCar,
+    required this.hasRealEstate,
+    required this.isAllowedShareCstInfo,
+    required this.shareCstInfoChgDate,
     required this.gender,
+    required this.nationality,
     required this.nationalIdentityNo,
     required this.birthDate,
+    required this.birthPlace,
+    required this.identityType,
+    required this.taxNo,
+    required this.taxDepartmentName,
+    required this.fatherName,
+    required this.motherName,
+    required this.maidenName,
+    required this.partnerName,
+    required this.identitySerialNo,
+    required this.identityIssuedBy,
+    required this.identityIssueDate,
+    required this.identityValidUntil,
+    required this.identityCityCode,
+    required this.identityTownCode,
+    required this.followUpStat,
+    required this.stmtStatCode,
+    required this.stmtDelinqPeriod,
+    required this.nplCount,
+    required this.minPayCount,
+    required this.prevMinPayCount,
+    required this.minPayChangeDate,
+    required this.minPayDelinq,
+    required this.firstDelayDate,
+    required this.lastTxnDate,
+    required this.activityStat,
+    required this.activityStatCount,
     required this.addresses,
     required this.communications,
     required this.limits,
@@ -301,18 +397,77 @@ final class PaycoreCustomerInfo {
         .toList();
 
     final rawBirthDate = identity['birthDate'];
+    final stmtAccountStat =
+        (payload['stmtAccountStat'] as Map<String, dynamic>?) ??
+        const <String, dynamic>{};
+    final lastActivity =
+        (payload['crdAccountLastActivity'] as Map<String, dynamic>?) ??
+        const <String, dynamic>{};
     return PaycoreCustomerInfo(
       bankingCustomerNo: payload['bankingCustomerNo'] as String? ?? '',
       customerNo: payload['customerNo'] as String? ?? '',
       name: payload['name'] as String? ?? '',
+      midname: payload['midname'] as String?,
       surname: payload['surname'] as String? ?? '',
       primaryCardNo: payload['primaryCardNo'] as String?,
+      statCode: payload['statCode'] as String?,
+      commLanguage: payload['commLanguage'] as String?,
+      riskCode: payload['riskCode'] as String?,
       customerGroupCode: payload['customerGroupCode'] as String?,
+      profession: payload['profession'] as String?,
+      customerEmbossNameExt: payload['customerEmbossNameExt'] as String?,
+      companyName: payload['companyName'] as String?,
+      companyNo: payload['companyNo'] as String?,
+      title: payload['title'] as String?,
+      workPlace: payload['workPlace'] as String?,
+      graduation: payload['graduation'] as String?,
+      disabledType: payload['disabledType'] as String?,
+      guarantor: payload['guarantor'] as String?,
+      guarantorProfession: payload['guarantorProfession'] as String?,
+      branchCode: (payload['branchCode'] as num?)?.toInt(),
+      digitalSlipType: (payload['digitalSlipType'] as num?)?.toInt(),
+      lastCardIssuingDate: _tryParseDateTime(payload['lastCardIssuingDate']),
+      firstCreditCardDate: _tryParseDateTime(payload['firstCreditCardDate']),
+      statChangeDate: _tryParseDateTime(payload['statChangeDate']),
+      isGuaranteed: payload['isGuaranteed'] as bool?,
+      isBusiness: payload['isBusiness'] as bool?,
+      isIdentityPresented: payload['isIdentityPresented'] as bool?,
+      hasCar: payload['hasCar'] as bool?,
+      hasRealEstate: payload['hasRealEstate'] as bool?,
+      isAllowedShareCstInfo: payload['isAllowedShareCstInfo'] as bool?,
+      shareCstInfoChgDate: _tryParseDateTime(payload['shareCstInfoChgDate']),
       gender: identity['gender'] as String?,
+      nationality: identity['nationality'] as String?,
       nationalIdentityNo: identity['nationalIdentityNo'] as String?,
       birthDate: rawBirthDate is String && rawBirthDate.isNotEmpty
           ? DateTime.tryParse(rawBirthDate)
           : null,
+      birthPlace: identity['birthPlace'] as String?,
+      identityType: identity['identityType'] as String?,
+      taxNo: identity['taxNo'] as String?,
+      taxDepartmentName: identity['taxDepartmentName'] as String?,
+      fatherName: identity['fatherName'] as String?,
+      motherName: identity['motherName'] as String?,
+      maidenName: identity['maidenName'] as String?,
+      partnerName: identity['partnerName'] as String?,
+      identitySerialNo: identity['identitySerialNo'] as String?,
+      identityIssuedBy: identity['identityIssuedBy'] as String?,
+      identityIssueDate: _tryParseDateTime(identity['identityIssueDate']),
+      identityValidUntil: _tryParseDateTime(identity['identityValidUntil']),
+      identityCityCode: identity['identityCityCode'] as String?,
+      identityTownCode: identity['identityTownCode'] as String?,
+      followUpStat: stmtAccountStat['followUpStat'] as String?,
+      stmtStatCode: stmtAccountStat['stmtStatCode'] as String?,
+      stmtDelinqPeriod: (stmtAccountStat['stmtDelinqPeriod'] as num?)?.toInt(),
+      nplCount: (stmtAccountStat['nplCount'] as num?)?.toInt(),
+      minPayCount: (stmtAccountStat['minPayCount'] as num?)?.toInt(),
+      prevMinPayCount: (stmtAccountStat['prevMinPayCount'] as num?)?.toInt(),
+      minPayChangeDate: _tryParseDateTime(stmtAccountStat['minPayChangeDate']),
+      minPayDelinq: (stmtAccountStat['minPayDelinq'] as num?)?.toInt(),
+      firstDelayDate: _tryParseDateTime(stmtAccountStat['firstDelayDate']),
+      lastTxnDate: _tryParseDateTime(lastActivity['lastTxnDate']),
+      activityStat: lastActivity['activityStat'] as String?,
+      activityStatCount: (lastActivity['activityStatCount'] as num?)?.toInt(),
       addresses: addresses,
       communications: communications,
       limits: limits,
@@ -320,21 +475,84 @@ final class PaycoreCustomerInfo {
     );
   }
 
-  String get fullName => '$name $surname'.trim();
+  String get fullName => [name, midname, surname]
+      .where((value) => value?.trim().isNotEmpty ?? false)
+      .map((value) => value!.trim())
+      .join(' ');
 
   final String bankingCustomerNo;
   final String customerNo;
   final String name;
+  final String? midname;
   final String surname;
   final String? primaryCardNo;
+  final String? statCode;
+  final String? commLanguage;
+  final String? riskCode;
   final String? customerGroupCode;
+  final String? profession;
+  final String? customerEmbossNameExt;
+  final String? companyName;
+  final String? companyNo;
+  final String? title;
+  final String? workPlace;
+  final String? graduation;
+  final String? disabledType;
+  final String? guarantor;
+  final String? guarantorProfession;
+  final int? branchCode;
+  final int? digitalSlipType;
+  final DateTime? lastCardIssuingDate;
+  final DateTime? firstCreditCardDate;
+  final DateTime? statChangeDate;
+  final bool? isGuaranteed;
+  final bool? isBusiness;
+  final bool? isIdentityPresented;
+  final bool? hasCar;
+  final bool? hasRealEstate;
+  final bool? isAllowedShareCstInfo;
+  final DateTime? shareCstInfoChgDate;
   final String? gender;
+  final String? nationality;
   final String? nationalIdentityNo;
   final DateTime? birthDate;
+  final String? birthPlace;
+  final String? identityType;
+  final String? taxNo;
+  final String? taxDepartmentName;
+  final String? fatherName;
+  final String? motherName;
+  final String? maidenName;
+  final String? partnerName;
+  final String? identitySerialNo;
+  final String? identityIssuedBy;
+  final DateTime? identityIssueDate;
+  final DateTime? identityValidUntil;
+  final String? identityCityCode;
+  final String? identityTownCode;
+  final String? followUpStat;
+  final String? stmtStatCode;
+  final int? stmtDelinqPeriod;
+  final int? nplCount;
+  final int? minPayCount;
+  final int? prevMinPayCount;
+  final DateTime? minPayChangeDate;
+  final int? minPayDelinq;
+  final DateTime? firstDelayDate;
+  final DateTime? lastTxnDate;
+  final String? activityStat;
+  final int? activityStatCount;
   final List<PaycoreCustomerAddress> addresses;
   final List<PaycoreCustomerCommunication> communications;
   final List<PaycoreCustomerLimit> limits;
   final Map<String, dynamic> raw;
+}
+
+DateTime? _tryParseDateTime(Object? value) {
+  if (value is String && value.trim().isNotEmpty) {
+    return DateTime.tryParse(value);
+  }
+  return null;
 }
 
 final class PaycoreCustomerAddress {
