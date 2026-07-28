@@ -30,7 +30,7 @@ final class _PaycoreTownCodeDefinition {
   factory _PaycoreTownCodeDefinition.fromJson(Map<String, dynamic> json) {
     return _PaycoreTownCodeDefinition(
       name: json['name'] as String? ?? '',
-      code: json['code'] as String? ?? '',
+      code: _normalizePaycoreTownCodeValue(json['code'] as String? ?? ''),
     );
   }
 
@@ -49,7 +49,7 @@ final class _PaycoreCityCodeDefinition {
     final rawTowns = json['towns'];
     return _PaycoreCityCodeDefinition(
       city: json['city'] as String? ?? '',
-      cityCode: json['cityCode'] as String? ?? '',
+      cityCode: _normalizePaycoreCityCodeValue(json['cityCode'] as String? ?? ''),
       towns: rawTowns is List
           ? rawTowns
                 .whereType<Map<String, dynamic>>()
@@ -64,6 +64,19 @@ final class _PaycoreCityCodeDefinition {
   final List<_PaycoreTownCodeDefinition> towns;
 }
 
+String _normalizePaycoreCityCodeValue(String value) {
+  final digits = value.trim().replaceAll(RegExp(r'\D+'), '');
+  if (digits.isEmpty) {
+    return '';
+  }
+
+  return digits.padLeft(3, '0');
+}
+
+String _normalizePaycoreTownCodeValue(String value) {
+  return value.trim().replaceAll(RegExp(r'\D+'), '');
+}
+
 final class PaycoreCardsScreen extends StatefulWidget {
   const PaycoreCardsScreen({super.key});
 
@@ -73,6 +86,12 @@ final class PaycoreCardsScreen extends StatefulWidget {
 
 final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
   static const Duration _loadTimeout = Duration(seconds: 15);
+  static const List<PaycoreCardCreationProfile> _availableCardProfiles = <
+      PaycoreCardCreationProfile>[
+    PaycoreCardCreationProfile.troyPhysical,
+    PaycoreCardCreationProfile.troyVirtual,
+    PaycoreCardCreationProfile.masterPhysical,
+  ];
   late final PaycoreMobileService _paycoreService;
   late final UserInfoManager _userInfoManager;
   late final TokenManager _tokenManager;
@@ -85,6 +104,7 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
   final Set<int> _cvvPeekCards = <int>{};
 
   PaycoreCustomerInfo? _customerInfo;
+  bool _hasPaycoreCustomerRecord = false;
   PaycoreCustomerAddress? _localCustomerAddressOverride;
   List<PaycoreCardSummary> _cards = const [];
   Map<int, PaycorePinStatus> _pinStatuses = const <int, PaycorePinStatus>{};
@@ -300,6 +320,7 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
   }
 
   void _cacheLocalCustomerAddress({
+    required String addressType,
     required String cityName,
     required String townName,
     required String district,
@@ -310,7 +331,7 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
   }) {
     _localCustomerAddressOverride = PaycoreCustomerAddress(
       idx: 1,
-      addressType: 'P',
+      addressType: addressType,
       address1: address,
       address2: null,
       city: cityName,
@@ -335,9 +356,7 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
       localAddress,
       ...customer.addresses.where(
         (item) =>
-            item.address1.trim() != localAddress.address1.trim() ||
-            (item.city?.trim() ?? '') != (localAddress.city?.trim() ?? '') ||
-            (item.town?.trim() ?? '') != (localAddress.town?.trim() ?? ''),
+            item.addressType != localAddress.addressType,
       ),
     ];
 
@@ -459,6 +478,7 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
       setState(() {
         _cards = const <PaycoreCardSummary>[];
         _customerInfo = null;
+        _hasPaycoreCustomerRecord = false;
         _isLoading = false;
         _loadError = loadError;
       });
@@ -468,6 +488,8 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
     final cards = cardsResponse.data ?? const <PaycoreCardSummary>[];
     final fallbackCustomerInfo = _buildLocalCustomerInfoFallback();
     final customerInfo = customerResponse?.data ?? fallbackCustomerInfo;
+    final hasPaycoreCustomerRecord =
+        customerResponse?.isSuccess == true && customerResponse?.data != null;
     final hasAnyData = cards.isNotEmpty || customerInfo != null;
     final message = cardsResponse.message ?? customerResponse?.message;
 
@@ -484,6 +506,7 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
     setState(() {
       _cards = cards;
       _customerInfo = customerInfo;
+      _hasPaycoreCustomerRecord = hasPaycoreCustomerRecord;
       _loadError = null;
       _isLoading = false;
     });
@@ -713,17 +736,17 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
           Row(
             children: [
               Expanded(
-                child: _buildTextField(
+              child: _buildTextField(
                   controller: townCodeController,
-                  label: 'İlçe Kodu',
+                  label: 'İlçe kodu',
                   keyboardType: TextInputType.number,
                 ),
               ),
               const SizedBox(width: 12),
               Expanded(
-                child: _buildTextField(
+              child: _buildTextField(
                   controller: cityCodeController,
-                  label: 'İl Kodu',
+                  label: 'Şehir kodu',
                   keyboardType: TextInputType.number,
                 ),
               ),
@@ -746,7 +769,7 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
     return Column(
       children: [
         _buildDropdownField(
-          label: 'Şehir',
+          label: 'Şehir adı',
           value: selectedCity?.city,
           items: _sortLocationLabels(
             _paycoreCityCodes.map((city) => city.city),
@@ -762,7 +785,7 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
           },
         ),
         _buildDropdownField(
-          label: 'İlçe',
+          label: 'İlçe adı',
           value: selectedTown?.name,
           items: _sortLocationLabels(
             selectedCity?.towns.map((town) => town.name) ?? const <String>[],
@@ -781,7 +804,7 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
             Expanded(
               child: _buildTextField(
                 controller: townCodeController,
-                label: 'İlçe Kodu',
+                label: 'İlçe kodu',
                 readOnly: true,
                 hint: 'İlçe seçince otomatik dolar',
               ),
@@ -790,7 +813,7 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
             Expanded(
               child: _buildTextField(
                 controller: cityCodeController,
-                label: 'İl Kodu',
+                label: 'Şehir kodu',
                 readOnly: true,
                 hint: 'Şehir seçince otomatik dolar',
               ),
@@ -820,8 +843,8 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
     if (_metropolCities.isEmpty) {
       return Column(
         children: [
-          _buildTextField(controller: cityNameController, label: 'İl'),
-          _buildTextField(controller: townNameController, label: 'İlçe'),
+          _buildTextField(controller: cityNameController, label: 'Şehir adı'),
+          _buildTextField(controller: townNameController, label: 'İlçe adı'),
         ],
       );
     }
@@ -829,7 +852,7 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
     return Column(
       children: [
         _buildDropdownField(
-          label: 'İl',
+          label: 'Şehir adı',
           value: selectedCity,
           items: _sortLocationLabels(
             _metropolCities.map((city) => city.city),
@@ -842,7 +865,7 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
           },
         ),
         _buildDropdownField(
-          label: 'İlçe',
+          label: 'İlçe adı',
           value: selectedCounty,
           items: counties,
           onChanged: (value) {
@@ -913,6 +936,7 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
 
       setState(() {
         _customerInfo = nextCustomerInfo;
+        _hasPaycoreCustomerRecord = response.isSuccess && response.data != null;
       });
     }
 
@@ -922,90 +946,198 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
       return;
     }
 
-    await showModalBottomSheet<void>(
-      context: context,
-      isScrollControlled: true,
-      showDragHandle: true,
-      builder: (sheetContext) => SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.fromLTRB(20, 8, 20, 24),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'Müşteri Bilgisi',
-                style: sheetContext.textTheme.titleLarge?.copyWith(
-                  fontWeight: FontWeight.w700,
-                ),
-              ),
-              const SizedBox(height: 16),
-              _buildInfoGroup(
-                'Özet',
-                [
-                  _buildInfoRow('Ad Soyad', customer.fullName),
-                  _buildInfoRow(
-                    'Banking Customer No',
-                    customer.bankingCustomerNo,
+    await Navigator.of(context).push<void>(
+      MaterialPageRoute(
+        builder: (pageContext) => Scaffold(
+          appBar: AppBar(
+            title: const Text('Müşteri Bilgisi'),
+            leading: IconButton(
+              icon: const Icon(Icons.arrow_back_rounded),
+              onPressed: () => Navigator.of(pageContext).maybePop(),
+            ),
+          ),
+          body: SafeArea(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.fromLTRB(16, 12, 16, 24),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _buildSurfaceCard(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            Icon(
+                              Icons.verified_user_outlined,
+                              color: context.colorScheme.primary,
+                            ),
+                            const SizedBox(width: 10),
+                            Expanded(
+                              child: Text(
+                                customer.fullName,
+                                style: context.textTheme.titleMedium?.copyWith(
+                                  fontWeight: FontWeight.w700,
+                                  fontSize: 16,
+                                  height: 1.15,
+                                ),
+                              ),
+                            ),
+                            _buildPrimaryPill('Kart Sistemi Aktif'),
+                          ],
+                        ),
+                        const SizedBox(height: 14),
+                        _buildInfoGroup('Özet', [
+                          ..._buildCustomerInfoRows([
+                            ('Ad Soyad', customer.fullName),
+                            ('Banking Customer No', customer.bankingCustomerNo),
+                            ('Customer No', customer.customerNo),
+                            ('Ana Kart', customer.primaryCardNo),
+                            ('TC Kimlik No', customer.nationalIdentityNo),
+                            ('Cinsiyet', customer.gender),
+                            ('Doğum Tarihi', _formatDateValue(customer.birthDate)),
+                            ('Statü', customer.statCode),
+                            ('Risk Kodu', customer.riskCode),
+                            ('Müşteri Grubu', customer.customerGroupCode),
+                            ('İletişim Dili', customer.commLanguage),
+                          ]),
+                        ]),
+                        if (_hasCustomerIdentityInfo(customer)) ...[
+                          const SizedBox(height: 12),
+                          _buildInfoGroup('Kimlik', [
+                            ..._buildCustomerInfoRows([
+                              ('Doğum Yeri', customer.birthPlace),
+                              ('Uyruk', customer.nationality),
+                              ('Kimlik Tipi', customer.identityType),
+                              ('Vergi No', customer.taxNo),
+                              ('Vergi Dairesi', customer.taxDepartmentName),
+                              ('Baba Adı', customer.fatherName),
+                              ('Anne Adı', customer.motherName),
+                              ('Kızlık Soyadı', customer.maidenName),
+                              ('Eş / Partner', customer.partnerName),
+                              ('Kimlik Seri No', customer.identitySerialNo),
+                              ('Kimlik Veren', customer.identityIssuedBy),
+                              (
+                                'Kimlik Veriliş',
+                                _formatDateValue(customer.identityIssueDate),
+                              ),
+                              (
+                                'Kimlik Geçerlilik',
+                                _formatDateValue(customer.identityValidUntil),
+                              ),
+                              ('Kimlik İl Kodu', customer.identityCityCode),
+                              ('Kimlik İlçe Kodu', customer.identityTownCode),
+                            ]),
+                          ]),
+                        ],
+                      ],
+                    ),
                   ),
-                  _buildInfoRow('Customer No', customer.customerNo),
-                  _buildInfoRow('TC No', customer.nationalIdentityNo ?? '-'),
-                  _buildInfoRow('Cinsiyet', customer.gender ?? '-'),
-                  _buildInfoRow(
-                    'Doğum Tarihi',
-                    _formatDate(customer.birthDate),
-                  ),
-                  _buildInfoRow(
-                    'Primary Card',
-                    customer.primaryCardNo?.isNotEmpty ?? false
-                        ? customer.primaryCardNo!
-                        : '-',
-                  ),
+                  if (customer.communications.isNotEmpty) ...[
+                    const SizedBox(height: 16),
+                    _buildSectionTitle('İletişim Bilgileri'),
+                    const SizedBox(height: 10),
+                    ...customer.communications.map(
+                      (item) => _buildSurfaceCard(
+                        margin: const EdgeInsets.only(bottom: 10),
+                        child: Row(
+                          children: [
+                            Icon(
+                              item.communicationType == 'EM'
+                                  ? Icons.alternate_email_rounded
+                                  : Icons.phone_iphone_rounded,
+                              color: context.colorScheme.primary,
+                            ),
+                            const SizedBox(width: 12),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    _getCommunicationTypeLabel(
+                                      item.communicationType,
+                                    ),
+                                    style: context.textTheme.bodySmall?.copyWith(
+                                      color: context
+                                          .colorScheme
+                                          .onSurfaceVariant,
+                                      fontSize: 11.5,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 4),
+                                  Text(
+                                    item.info,
+                                    style: context.textTheme.bodyMedium
+                                        ?.copyWith(
+                                          fontWeight: FontWeight.w700,
+                                          fontSize: 14,
+                                        ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            if (item.isDefault) _buildPrimaryPill('Varsayılan'),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                  if (customer.addresses.isNotEmpty) ...[
+                    const SizedBox(height: 16),
+                    _buildSectionTitle('Adresler'),
+                    const SizedBox(height: 10),
+                    ...customer.addresses.map(
+                      (address) => _buildSurfaceCard(
+                        margin: const EdgeInsets.only(bottom: 12),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: Text(
+                                    _getAddressTypeLabel(address.addressType),
+                                    style: context.textTheme.titleSmall
+                                        ?.copyWith(
+                                          fontWeight: FontWeight.w700,
+                                          fontSize: 14,
+                                        ),
+                                  ),
+                                ),
+                                if (address.isDefault)
+                                  _buildPrimaryPill('Varsayılan'),
+                              ],
+                            ),
+                            const SizedBox(height: 10),
+                            Text(
+                              _buildAddressSummary(address),
+                              style: context.textTheme.bodyMedium,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                  if (customer.limits.isNotEmpty) ...[
+                    const SizedBox(height: 16),
+                    _buildSectionTitle('Limitler'),
+                    const SizedBox(height: 10),
+                    ...customer.limits.map(
+                      (limit) => _buildSurfaceCard(
+                        margin: const EdgeInsets.only(bottom: 10),
+                        child: _buildTwoColumnInfo(
+                          leftLabel: 'Limit',
+                          leftValue:
+                              '${limit.currentLimit.toStringAsFixed(2)} ₺',
+                          rightLabel: 'Durum',
+                          rightValue: limit.isLimitBlocked ? 'Blokeli' : 'Açık',
+                        ),
+                      ),
+                    ),
+                  ],
                 ],
               ),
-              if (customer.communications.isNotEmpty) ...[
-                const SizedBox(height: 16),
-                _buildInfoGroup(
-                  'İletişim',
-                  customer.communications
-                      .map(
-                        (item) => _buildInfoRow(
-                          _getCommunicationTypeLabel(item.communicationType),
-                          '${item.info}${item.isDefault ? ' • Varsayılan' : ''}',
-                        ),
-                      )
-                      .toList(),
-                ),
-              ],
-              if (customer.addresses.isNotEmpty) ...[
-                const SizedBox(height: 16),
-                _buildInfoGroup(
-                  'Adresler',
-                  customer.addresses
-                      .map(
-                        (address) => _buildInfoRow(
-                          _getAddressTypeLabel(address.addressType),
-                          _buildAddressSummary(address),
-                        ),
-                      )
-                      .toList(),
-                ),
-              ],
-              if (customer.limits.isNotEmpty) ...[
-                const SizedBox(height: 16),
-                _buildInfoGroup(
-                  'Limitler',
-                  customer.limits
-                      .map(
-                        (limit) => _buildInfoRow(
-                          'Kullanılabilir Limit',
-                          '${limit.currentLimit.toStringAsFixed(2)} ₺'
-                              '${limit.isLimitBlocked ? ' • Blokeli' : ''}',
-                        ),
-                      )
-                      .toList(),
-                ),
-              ],
-            ],
+            ),
           ),
         ),
       ),
@@ -1140,6 +1272,7 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
                 }
 
                 _cacheLocalCustomerAddress(
+                  addressType: 'P',
                   cityName: cityName,
                   townName: townName,
                   district: district,
@@ -1302,6 +1435,9 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
     }
 
     _showSuccess(successMessage ?? 'Müşteri kaydı oluşturuldu.');
+    setState(() {
+      _hasPaycoreCustomerRecord = true;
+    });
     await _loadData(silent: true);
     if (!mounted) {
       return;
@@ -1417,6 +1553,7 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
                 }
 
                 _cacheLocalCustomerAddress(
+                  addressType: address?.addressType ?? 'D',
                   cityName: cityName,
                   townName: townName,
                   district: district,
@@ -1550,205 +1687,236 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
       return;
     }
 
+    final cityNameController = TextEditingController(text: address.cityName);
+    final townNameController = TextEditingController(text: address.townName);
+    final cityCodeController = TextEditingController(text: address.cityCode);
+    final townCodeController = TextEditingController(text: address.townCode);
+    final districtController = TextEditingController(text: address.district);
+    final zipCodeController = TextEditingController(text: address.zipCode ?? '');
+    final address1Controller = TextEditingController(text: address.address1);
+    final address2Controller = TextEditingController(
+      text: _normalizeSecondaryAddressLine(address.address2) ?? '',
+    );
+    _syncPaycoreLocationControllers(
+      cityNameController: cityNameController,
+      townNameController: townNameController,
+      cityCodeController: cityCodeController,
+      townCodeController: townCodeController,
+    );
+
     var isSubmitting = false;
     var selectedProfile = PaycoreCardCreationProfile.troyPhysical;
 
-    await showModalBottomSheet<void>(
-      context: context,
-      isScrollControlled: true,
-      showDragHandle: true,
-      builder: (sheetContext) => Padding(
-        padding: EdgeInsets.only(
-          left: 20,
-          right: 20,
-          top: 8,
-          bottom: MediaQuery.of(sheetContext).viewInsets.bottom + 24,
-        ),
-        child: StatefulBuilder(
-          builder: (modalContext, setSheetState) {
-            Future<void> submit() async {
-              setSheetState(() {
-                isSubmitting = true;
-              });
+    try {
+      await Navigator.of(context).push<void>(
+        MaterialPageRoute(
+          builder: (pageContext) => StatefulBuilder(
+            builder: (modalContext, setSheetState) {
+              Future<void> submit() async {
+                final cityName = cityNameController.text.trim();
+                final townName = townNameController.text.trim();
+                final cityCode = cityCodeController.text.trim();
+                final townCode = townCodeController.text.trim();
+                final district = districtController.text.trim();
+                final zipCode = zipCodeController.text.trim();
+                final address1 = address1Controller.text.trim();
+                final address2 = _normalizeSecondaryAddressLine(
+                  address2Controller.text,
+                );
 
-              final response = await _paycoreService.createPrepaidCard(
-                cardProfile: selectedProfile,
-                cityCode: address.cityCode,
-                cityName: address.cityName,
-                townCode: address.townCode,
-                townName: address.townName,
-                district: address.district,
-                address1: address.address1,
-                address2: address.address2,
-                zipCode: address.zipCode,
-              );
+                if (selectedProfile == PaycoreCardCreationProfile.masterVirtual) {
+                  _showError(
+                    'Master sanal kart ürünü bu ortamda tanımlı değil. Şimdilik Troy sanal veya Master fiziki kullanın.',
+                  );
+                  return;
+                }
 
-              if (!mounted || !sheetContext.mounted) {
-                return;
+                if ([cityName, townName, cityCode, townCode, district, address1]
+                    .any((value) => value.isEmpty)) {
+                  _showError(
+                    'Kart oluşturmak için zorunlu PayCore alanlarını tamamlayın.',
+                  );
+                  return;
+                }
+
+                setSheetState(() {
+                  isSubmitting = true;
+                });
+
+                final response = await _paycoreService.createPrepaidCard(
+                  cardProfile: selectedProfile,
+                  cityCode: cityCode,
+                  cityName: cityName,
+                  townCode: townCode,
+                  townName: townName,
+                  district: district,
+                  address1: address1,
+                  address2: address2,
+                  zipCode: zipCode.isEmpty ? null : zipCode,
+                );
+
+                if (!mounted || !pageContext.mounted) {
+                  return;
+                }
+
+                setSheetState(() {
+                  isSubmitting = false;
+                });
+
+                if (!response.isSuccess) {
+                  _showError(_buildCreateCardErrorMessage(response.message));
+                  return;
+                }
+
+                Navigator.of(pageContext).pop();
+                _showSuccess(_buildCreateCardSuccessMessage(response));
+                await _loadData(silent: true);
+                setState(() {
+                  _selectedModule = _PaycoreModule.cards;
+                });
               }
 
-              setSheetState(() {
-                isSubmitting = false;
-              });
-
-              if (!response.isSuccess) {
-                _showError(_buildCreateCardErrorMessage(response.message));
-                return;
-              }
-
-              Navigator.of(sheetContext).pop();
-              _showSuccess(_buildCreateCardSuccessMessage(response));
-              await _loadData(silent: true);
-              setState(() {
-                _selectedModule = _PaycoreModule.cards;
-              });
-            }
-
-            return SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  _buildSheetHeader(
-                    icon: Icons.add_card_rounded,
-                    title: 'Yeni Kart Açılışı',
-                    description:
-                        'Kart tipini seç, kayıtlı adresi kontrol et ve fiziksel ya da sanal kart üretimini başlat.',
+              return Scaffold(
+                appBar: AppBar(
+                  title: const Text('Yeni Kart Açılışı'),
+                  leading: IconButton(
+                    icon: const Icon(Icons.arrow_back_rounded),
+                    onPressed: () => Navigator.of(pageContext).maybePop(),
                   ),
-                  const SizedBox(height: 18),
-                  _buildSheetSection(
-                    title: 'Kart Profili',
-                    description:
-                        'Kartın kullanım tipini seç. Seçilen profil tasarımı aşağıdaki ön izlemelerde gösterilir.',
+                ),
+                body: SafeArea(
+                  child: SingleChildScrollView(
+                    padding: EdgeInsets.fromLTRB(
+                      20,
+                      12,
+                      20,
+                      MediaQuery.of(pageContext).viewInsets.bottom + 24,
+                    ),
                     child: Column(
-                      children: PaycoreCardCreationProfile.values.map((
-                        profile,
-                      ) {
-                        final isSelected = profile == selectedProfile;
-                        return Padding(
-                          padding: const EdgeInsets.only(bottom: 10),
-                          child: InkWell(
-                            borderRadius: BorderRadius.circular(18),
-                            onTap: isSubmitting
-                                ? null
-                                : () {
-                                    setSheetState(() {
-                                      selectedProfile = profile;
-                                    });
-                                  },
-                            child: AnimatedContainer(
-                              duration: const Duration(milliseconds: 180),
-                              padding: const EdgeInsets.all(14),
-                              decoration: BoxDecoration(
-                                color: isSelected
-                                    ? modalContext.colorScheme.primaryContainer
-                                    : modalContext
-                                          .colorScheme
-                                          .surfaceContainerHighest
-                                          .withValues(alpha: 0.34),
-                                borderRadius: BorderRadius.circular(18),
-                                border: Border.all(
-                                  color: isSelected
-                                      ? modalContext.colorScheme.primary
-                                      : modalContext.colorScheme.outlineVariant
-                                            .withValues(alpha: 0.7),
-                                  width: isSelected ? 1.5 : 1,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        _buildSheetHeader(
+                          icon: Icons.add_card_rounded,
+                          title: 'Yeni Kart Açılışı',
+                          description:
+                              'Kart tipini seç, teslimat bilgilerini kontrol et ve fiziksel ya da sanal kart üretimini başlat.',
+                        ),
+                        const SizedBox(height: 18),
+                        _buildSheetSection(
+                          title: 'Kart Bilgileri',
+                          description:
+                              'Kart profili seçin ve teslimat adresini eksiksiz girin.',
+                          child: Column(
+                            children: [
+                              _buildDropdownField(
+                                label: 'Kart profili',
+                                value: selectedProfile.title,
+                                items: _availableCardProfiles
+                                    .map((profile) => profile.title)
+                                    .toList(),
+                                onChanged: (value) {
+                                  final nextProfile =
+                                      _availableCardProfiles
+                                          .firstWhere(
+                                            (profile) => profile.title == value,
+                                            orElse:
+                                                () => PaycoreCardCreationProfile
+                                                    .troyPhysical,
+                                          );
+                                  setSheetState(() {
+                                    selectedProfile = nextProfile;
+                                  });
+                                },
+                              ),
+                              Align(
+                                alignment: Alignment.centerLeft,
+                                child: Padding(
+                                  padding: const EdgeInsets.only(bottom: 8),
+                                  child: Text(
+                                    selectedProfile.description,
+                                    style: modalContext.textTheme.bodySmall
+                                        ?.copyWith(
+                                          color: modalContext
+                                              .colorScheme
+                                              .onSurfaceVariant,
+                                          height: 1.4,
+                                        ),
+                                  ),
                                 ),
                               ),
-                              child: Row(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  SizedBox(
-                                    width: 100,
-                                    child: _buildProfilePreview(profile),
-                                  ),
-                                  const SizedBox(width: 14),
-                                  Expanded(
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          profile.title,
-                                          style: modalContext
-                                              .textTheme
-                                              .titleSmall
-                                              ?.copyWith(
-                                                fontWeight: FontWeight.w800,
-                                              ),
-                                        ),
-                                        const SizedBox(height: 4),
-                                        Text(
-                                          profile.description,
-                                          style: modalContext
-                                              .textTheme
-                                              .bodySmall
-                                              ?.copyWith(
-                                                color: modalContext
-                                                    .colorScheme
-                                                    .onSurfaceVariant,
-                                                height: 1.4,
-                                              ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  const SizedBox(width: 10),
-                                  Icon(
-                                    isSelected
-                                        ? Icons.check_circle_rounded
-                                        : Icons.radio_button_unchecked_rounded,
-                                    color: isSelected
-                                        ? modalContext.colorScheme.primary
-                                        : modalContext.colorScheme.outline,
-                                  ),
-                                ],
+                              _buildPaycoreLocationSelectors(
+                                setSheetState: setSheetState,
+                                cityNameController: cityNameController,
+                                townNameController: townNameController,
+                                cityCodeController: cityCodeController,
+                                townCodeController: townCodeController,
                               ),
+                              _buildTextField(
+                                controller: districtController,
+                                label: 'Semt / Mahalle',
+                              ),
+                              _buildTextField(
+                                controller: zipCodeController,
+                                label: 'Posta Kodu',
+                              ),
+                              _buildTextField(
+                                controller: address1Controller,
+                                label: 'Teslimat adresi',
+                              ),
+                              _buildTextField(
+                                controller: address2Controller,
+                                label: 'Adres satırı 2',
+                                hint: 'Apartman, blok, kat vb. (opsiyonel)',
+                              ),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(height: 24),
+                        SizedBox(
+                          width: double.infinity,
+                          child: FilledButton.icon(
+                            onPressed: isSubmitting ? null : submit,
+                            style: FilledButton.styleFrom(
+                              minimumSize: const Size.fromHeight(56),
+                            ),
+                            icon: isSubmitting
+                                ? const SizedBox(
+                                    width: 18,
+                                    height: 18,
+                                    child: CircularProgressIndicator(
+                                      strokeWidth: 2,
+                                    ),
+                                  )
+                                : const Icon(Icons.add_card_rounded),
+                            label: Text(
+                              isSubmitting ? 'Gönderiliyor...' : 'Kart Oluştur',
                             ),
                           ),
-                        );
-                      }).toList(),
+                        ),
+                      ],
                     ),
                   ),
-                  const SizedBox(height: 14),
-                  _buildInfoCallout(
-                    title: 'Kayıtlı Adres Kullanılacak',
-                    message:
-                        '${_buildResolvedCreateCardAddressSummary(address)}\n\nNot: Şehir ve ilçe kodları mevcut PayCore müşteri kaydından alınır.',
-                  ),
-                  const SizedBox(height: 24),
-                  SizedBox(
-                    width: double.infinity,
-                    child: FilledButton.icon(
-                      onPressed: isSubmitting ? null : submit,
-                      style: FilledButton.styleFrom(
-                        minimumSize: const Size.fromHeight(56),
-                      ),
-                      icon: isSubmitting
-                          ? const SizedBox(
-                              width: 18,
-                              height: 18,
-                              child: CircularProgressIndicator(strokeWidth: 2),
-                            )
-                          : const Icon(Icons.add_card_rounded),
-                      label: Text(
-                        isSubmitting ? 'Gönderiliyor...' : 'Kart Oluştur',
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            );
-          },
+                ),
+              );
+            },
+          ),
         ),
-      ),
-    );
+      );
+    } finally {
+      cityNameController.dispose();
+      townNameController.dispose();
+      cityCodeController.dispose();
+      townCodeController.dispose();
+      districtController.dispose();
+      zipCodeController.dispose();
+      address1Controller.dispose();
+      address2Controller.dispose();
+    }
   }
 
   Future<void> _handleCreateCardPressed() async {
     var customer = _customerInfo;
-    final hasCustomerIdentity =
-        _resolveCurrentCustomerNumber().isNotEmpty || _cards.isNotEmpty;
+    var hasPaycoreCustomerRecord = _hasPaycoreCustomerRecord;
 
     if (customer == null) {
       final response = await _fetchCustomerInfo();
@@ -1762,17 +1930,15 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
       if (resolvedCustomer != null) {
         setState(() {
           _customerInfo = resolvedCustomer;
+          _hasPaycoreCustomerRecord =
+              response.isSuccess && response.data != null;
         });
         customer = resolvedCustomer;
+        hasPaycoreCustomerRecord = response.isSuccess && response.data != null;
       }
     }
 
-    if (customer == null) {
-      if (hasCustomerIdentity) {
-        _showError('Müşteri kaydı bulundu, kart için önce teslimat adresini tamamla.');
-        await _showAddressEditSheet(null);
-        return;
-      }
+    if (!hasPaycoreCustomerRecord) {
       _showError('Önce müşteri kaydını oluşturman gerekiyor.');
       await _showCreateCustomerSheet();
       return;
@@ -1783,8 +1949,9 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
       return;
     }
 
-    final editableAddress = customer.addresses.isNotEmpty
-        ? customer.addresses.first
+    final customerAddresses = customer?.addresses ?? const <PaycoreCustomerAddress>[];
+    final editableAddress = customerAddresses.isNotEmpty
+        ? customerAddresses.first
         : null;
 
     if (editableAddress != null) {
@@ -2960,14 +3127,16 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
                 style: _moduleFilledActionStyle(),
                 icon: const Icon(Icons.person_add_alt_1_rounded),
                 label: Text(
-                  customer == null ? 'Müşteri Oluştur' : 'Yeniden Oluştur',
+                  _hasPaycoreCustomerRecord
+                      ? 'Yeniden Oluştur'
+                      : 'Müşteri Oluştur',
                 ),
               ),
             ),
           ],
         ),
         const SizedBox(height: 16),
-        if (customer == null)
+        if (!_hasPaycoreCustomerRecord || customer == null)
           _buildEmptyBlock(
             title: 'Müşteri kaydı bulunamadı',
             description:
@@ -2977,6 +3146,10 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
             onPressed: _showCreateCustomerSheet,
           )
         else ...[
+          ...(() {
+            final currentCustomer = customer!;
+
+            return [
           _buildSurfaceCard(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -2990,7 +3163,7 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
                     const SizedBox(width: 10),
                     Expanded(
                       child: Text(
-                        customer.fullName,
+                        currentCustomer.fullName,
                         style: context.textTheme.titleMedium?.copyWith(
                           fontWeight: FontWeight.w700,
                           fontSize: 16,
@@ -3004,132 +3177,132 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
                 const SizedBox(height: 14),
                 _buildInfoGroup('Özet', [
                   ..._buildCustomerInfoRows([
-                    ('Ad Soyad', customer.fullName),
-                    ('Banking Customer No', customer.bankingCustomerNo),
-                    ('Customer No', customer.customerNo),
-                    ('Ana Kart', customer.primaryCardNo),
-                    ('Statü', customer.statCode),
-                    ('Risk Kodu', customer.riskCode),
-                    ('Müşteri Grubu', customer.customerGroupCode),
-                    ('İletişim Dili', customer.commLanguage),
-                    ('Meslek', customer.profession),
-                    ('Emboss', customer.customerEmbossNameExt),
-                    ('Şirket Adı', customer.companyName),
-                    ('Şirket No', customer.companyNo),
-                    ('Ünvan', customer.title),
-                    ('İşyeri', customer.workPlace),
-                    ('Mezuniyet', customer.graduation),
-                    ('Engel Tipi', customer.disabledType),
-                    ('Şube Kodu', customer.branchCode?.toString()),
-                    ('Dijital Slip Tipi', customer.digitalSlipType?.toString()),
+                    ('Ad Soyad', currentCustomer.fullName),
+                    ('Banking Customer No', currentCustomer.bankingCustomerNo),
+                    ('Customer No', currentCustomer.customerNo),
+                    ('Ana Kart', currentCustomer.primaryCardNo),
+                    ('Statü', currentCustomer.statCode),
+                    ('Risk Kodu', currentCustomer.riskCode),
+                    ('Müşteri Grubu', currentCustomer.customerGroupCode),
+                    ('İletişim Dili', currentCustomer.commLanguage),
+                    ('Meslek', currentCustomer.profession),
+                    ('Emboss', currentCustomer.customerEmbossNameExt),
+                    ('Şirket Adı', currentCustomer.companyName),
+                    ('Şirket No', currentCustomer.companyNo),
+                    ('Ünvan', currentCustomer.title),
+                    ('İşyeri', currentCustomer.workPlace),
+                    ('Mezuniyet', currentCustomer.graduation),
+                    ('Engel Tipi', currentCustomer.disabledType),
+                    ('Şube Kodu', currentCustomer.branchCode?.toString()),
+                    ('Dijital Slip Tipi', currentCustomer.digitalSlipType?.toString()),
                   ]),
                 ]),
-                if (_hasCustomerIdentityInfo(customer)) ...[
+                if (_hasCustomerIdentityInfo(currentCustomer)) ...[
                   const SizedBox(height: 12),
                   _buildInfoGroup('Kimlik', [
                     ..._buildCustomerInfoRows([
-                      ('TC Kimlik No', customer.nationalIdentityNo),
-                      ('Cinsiyet', customer.gender),
-                      ('Doğum Tarihi', _formatDateValue(customer.birthDate)),
-                      ('Doğum Yeri', customer.birthPlace),
-                      ('Uyruk', customer.nationality),
-                      ('Kimlik Tipi', customer.identityType),
-                      ('Vergi No', customer.taxNo),
-                      ('Vergi Dairesi', customer.taxDepartmentName),
-                      ('Baba Adı', customer.fatherName),
-                      ('Anne Adı', customer.motherName),
-                      ('Kızlık Soyadı', customer.maidenName),
-                      ('Eş / Partner', customer.partnerName),
-                      ('Kimlik Seri No', customer.identitySerialNo),
-                      ('Kimlik Veren', customer.identityIssuedBy),
+                      ('TC Kimlik No', currentCustomer.nationalIdentityNo),
+                      ('Cinsiyet', currentCustomer.gender),
+                      ('Doğum Tarihi', _formatDateValue(currentCustomer.birthDate)),
+                      ('Doğum Yeri', currentCustomer.birthPlace),
+                      ('Uyruk', currentCustomer.nationality),
+                      ('Kimlik Tipi', currentCustomer.identityType),
+                      ('Vergi No', currentCustomer.taxNo),
+                      ('Vergi Dairesi', currentCustomer.taxDepartmentName),
+                      ('Baba Adı', currentCustomer.fatherName),
+                      ('Anne Adı', currentCustomer.motherName),
+                      ('Kızlık Soyadı', currentCustomer.maidenName),
+                      ('Eş / Partner', currentCustomer.partnerName),
+                      ('Kimlik Seri No', currentCustomer.identitySerialNo),
+                      ('Kimlik Veren', currentCustomer.identityIssuedBy),
                       (
                         'Kimlik Veriliş',
-                        _formatDateValue(customer.identityIssueDate),
+                        _formatDateValue(currentCustomer.identityIssueDate),
                       ),
                       (
                         'Kimlik Geçerlilik',
-                        _formatDateValue(customer.identityValidUntil),
+                        _formatDateValue(currentCustomer.identityValidUntil),
                       ),
-                      ('Kimlik İl Kodu', customer.identityCityCode),
-                      ('Kimlik İlçe Kodu', customer.identityTownCode),
+                      ('Kimlik İl Kodu', currentCustomer.identityCityCode),
+                      ('Kimlik İlçe Kodu', currentCustomer.identityTownCode),
                     ]),
                   ]),
                 ],
-                if (_hasCustomerStatusInfo(customer)) ...[
+                if (_hasCustomerStatusInfo(currentCustomer)) ...[
                   const SizedBox(height: 12),
                   _buildInfoGroup('Durum ve Aktivite', [
                     ..._buildCustomerInfoRows([
-                      ('Takip Durumu', customer.followUpStat),
-                      ('Ekstre Statü', customer.stmtStatCode),
+                      ('Takip Durumu', currentCustomer.followUpStat),
+                      ('Ekstre Statü', currentCustomer.stmtStatCode),
                       (
                         'Gecikme Periyodu',
-                        customer.stmtDelinqPeriod?.toString(),
+                        currentCustomer.stmtDelinqPeriod?.toString(),
                       ),
-                      ('NPL Adedi', customer.nplCount?.toString()),
-                      ('Min Ödeme Adedi', customer.minPayCount?.toString()),
+                      ('NPL Adedi', currentCustomer.nplCount?.toString()),
+                      ('Min Ödeme Adedi', currentCustomer.minPayCount?.toString()),
                       (
                         'Önceki Min Ödeme',
-                        customer.prevMinPayCount?.toString(),
+                        currentCustomer.prevMinPayCount?.toString(),
                       ),
                       (
                         'Min Ödeme Değişim',
-                        _formatDateValue(customer.minPayChangeDate),
+                        _formatDateValue(currentCustomer.minPayChangeDate),
                       ),
-                      ('Min Ödeme Gecikme', customer.minPayDelinq?.toString()),
+                      ('Min Ödeme Gecikme', currentCustomer.minPayDelinq?.toString()),
                       (
                         'İlk Gecikme Tarihi',
-                        _formatDateValue(customer.firstDelayDate),
+                        _formatDateValue(currentCustomer.firstDelayDate),
                       ),
                       (
                         'Son İşlem Tarihi',
-                        _formatDateTimeValue(customer.lastTxnDate),
+                        _formatDateTimeValue(currentCustomer.lastTxnDate),
                       ),
-                      ('Aktivite Statü', customer.activityStat),
+                      ('Aktivite Statü', currentCustomer.activityStat),
                       (
                         'Aktivite Sayaç',
-                        customer.activityStatCount?.toString(),
+                        currentCustomer.activityStatCount?.toString(),
                       ),
                       (
                         'Son Kart Basım',
-                        _formatDateValue(customer.lastCardIssuingDate),
+                        _formatDateValue(currentCustomer.lastCardIssuingDate),
                       ),
                       (
                         'İlk Kredi Kartı',
-                        _formatDateValue(customer.firstCreditCardDate),
+                        _formatDateValue(currentCustomer.firstCreditCardDate),
                       ),
                       (
                         'Statü Değişim',
-                        _formatDateValue(customer.statChangeDate),
+                        _formatDateValue(currentCustomer.statChangeDate),
                       ),
-                      ('Garantili', _formatBoolValue(customer.isGuaranteed)),
-                      ('Tüzel Müşteri', _formatBoolValue(customer.isBusiness)),
+                      ('Garantili', _formatBoolValue(currentCustomer.isGuaranteed)),
+                      ('Tüzel Müşteri', _formatBoolValue(currentCustomer.isBusiness)),
                       (
                         'Kimlik İbraz',
-                        _formatBoolValue(customer.isIdentityPresented),
+                        _formatBoolValue(currentCustomer.isIdentityPresented),
                       ),
-                      ('Araç Sahibi', _formatBoolValue(customer.hasCar)),
-                      ('Gayrimenkul', _formatBoolValue(customer.hasRealEstate)),
+                      ('Araç Sahibi', _formatBoolValue(currentCustomer.hasCar)),
+                      ('Gayrimenkul', _formatBoolValue(currentCustomer.hasRealEstate)),
                       (
                         'Bilgi Paylaşım İzni',
-                        _formatBoolValue(customer.isAllowedShareCstInfo),
+                        _formatBoolValue(currentCustomer.isAllowedShareCstInfo),
                       ),
                       (
                         'Bilgi Paylaşım Güncelleme',
-                        _formatDateValue(customer.shareCstInfoChgDate),
+                        _formatDateValue(currentCustomer.shareCstInfoChgDate),
                       ),
-                      ('Kefil', customer.guarantor),
-                      ('Kefil Meslek', customer.guarantorProfession),
+                      ('Kefil', currentCustomer.guarantor),
+                      ('Kefil Meslek', currentCustomer.guarantorProfession),
                     ]),
                   ]),
                 ],
               ],
             ),
           ),
-          if (customer.communications.isNotEmpty) ...[
+          if (currentCustomer.communications.isNotEmpty) ...[
             const SizedBox(height: 16),
             _buildSectionTitle('İletişim Bilgileri'),
             const SizedBox(height: 10),
-            ...customer.communications.map(
+            ...currentCustomer.communications.map(
               (item) => _buildSurfaceCard(
                 margin: const EdgeInsets.only(bottom: 10),
                 child: Row(
@@ -3169,11 +3342,11 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
               ),
             ),
           ],
-          if (customer.addresses.isNotEmpty) ...[
+          if (currentCustomer.addresses.isNotEmpty) ...[
             const SizedBox(height: 16),
             _buildSectionTitle('Adresler'),
             const SizedBox(height: 10),
-            ...customer.addresses.map(
+            ...currentCustomer.addresses.map(
               (address) => _buildSurfaceCard(
                 margin: const EdgeInsets.only(bottom: 12),
                 child: Column(
@@ -3214,11 +3387,11 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
               ),
             ),
           ],
-          if (customer.limits.isNotEmpty) ...[
+          if (currentCustomer.limits.isNotEmpty) ...[
             const SizedBox(height: 16),
             _buildSectionTitle('Limitler'),
             const SizedBox(height: 10),
-            ...customer.limits.map(
+            ...currentCustomer.limits.map(
               (limit) => _buildSurfaceCard(
                 margin: const EdgeInsets.only(bottom: 10),
                 child: _buildTwoColumnInfo(
@@ -3230,6 +3403,8 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
               ),
             ),
           ],
+            ];
+          })(),
         ],
       ],
     );
@@ -3275,7 +3450,7 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      _customerInfo == null
+                      !_hasPaycoreCustomerRecord
                           ? 'Kart açmadan önce müşteri kaydı oluşturulacak.'
                           : (_resolvedCreateCardAddress == null
                                 ? 'Kart açmadan önce adres bilgisi tamamlanacak.'
@@ -3421,7 +3596,7 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
                 Row(
                   children: [
                     Expanded(
-                      child: FilledButton.tonalIcon(
+                      child: OutlinedButton.icon(
                         onPressed: isBusy || card.isPrimary
                             ? null
                             : () => unawaited(
@@ -3430,9 +3605,8 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
                                   () => _setPrimaryCard(card),
                                 ),
                               ),
-                        style: FilledButton.styleFrom(
+                        style: OutlinedButton.styleFrom(
                           foregroundColor: const Color(0xFF143D9C),
-                          backgroundColor: Colors.white,
                           visualDensity: VisualDensity.compact,
                           padding: const EdgeInsets.symmetric(
                             horizontal: 10,
@@ -3441,6 +3615,11 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
                           textStyle: const TextStyle(
                             fontSize: 12,
                             fontWeight: FontWeight.w700,
+                          ),
+                          side: BorderSide(
+                            color: card.isPrimary
+                                ? context.colorScheme.outlineVariant
+                                : const Color(0xFF1E1E1E),
                           ),
                         ),
                         icon: const Icon(

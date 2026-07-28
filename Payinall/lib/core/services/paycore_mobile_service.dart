@@ -113,6 +113,9 @@ final class PaycoreMobileService extends BaseRemoteDataSource {
     required String postalCode,
     required String address,
   }) async {
+    final normalizedCityCode = _normalizePaycoreCityCode(cityCode);
+    final normalizedTownCode = _normalizePaycoreTownCode(townCode);
+
     final responseJson = await post(
       endpoint: Endpoints.createPayCoreCustomer,
       data: <String, dynamic>{
@@ -120,8 +123,8 @@ final class PaycoreMobileService extends BaseRemoteDataSource {
         'cityName': cityName,
         'townName': townName,
         'district': district,
-        'townCode': townCode,
-        'cityCode': cityCode,
+        'townCode': normalizedTownCode,
+        'cityCode': normalizedCityCode,
         'postalCode': postalCode,
         'address': address,
       },
@@ -141,13 +144,16 @@ final class PaycoreMobileService extends BaseRemoteDataSource {
     String? address2,
     String? zipCode,
   }) async {
+    final normalizedCityCode = _normalizePaycoreCityCode(cityCode);
+    final normalizedTownCode = _normalizePaycoreTownCode(townCode);
+
     final responseJson = await post(
       endpoint: Endpoints.createPayCorePrepaidCard,
       data: <String, dynamic>{
         'cardProfile': cardProfile.apiValue,
-        'cityCode': cityCode,
+        'cityCode': normalizedCityCode,
         'cityName': cityName,
-        'townCode': townCode,
+        'townCode': normalizedTownCode,
         'townName': townName,
         'district': district,
         'address1': address1,
@@ -178,14 +184,17 @@ final class PaycoreMobileService extends BaseRemoteDataSource {
     required String postalCode,
     required String address,
   }) async {
+    final normalizedCityCode = _normalizePaycoreCityCode(cityCode);
+    final normalizedTownCode = _normalizePaycoreTownCode(townCode);
+
     final responseJson = await put(
       endpoint: Endpoints.updatePayCoreCustomerAddress,
       data: <String, dynamic>{
         'cityName': cityName,
         'townName': townName,
         'district': district,
-        'townCode': townCode,
-        'cityCode': cityCode,
+        'townCode': normalizedTownCode,
+        'cityCode': normalizedCityCode,
         'postalCode': postalCode,
         'address': address,
       },
@@ -331,5 +340,18 @@ final class PaycoreMobileService extends BaseRemoteDataSource {
           RegExp(r'/+$'),
           '',
         );
+  }
+
+  String _normalizePaycoreCityCode(String value) {
+    final digits = value.trim().replaceAll(RegExp(r'\D+'), '');
+    if (digits.isEmpty) {
+      return '';
+    }
+
+    return digits.padLeft(3, '0');
+  }
+
+  String _normalizePaycoreTownCode(String value) {
+    return value.trim().replaceAll(RegExp(r'\D+'), '');
   }
 }

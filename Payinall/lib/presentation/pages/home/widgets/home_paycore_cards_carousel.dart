@@ -42,7 +42,7 @@ final class _HomePaycoreCardsCarouselState
   void initState() {
     super.initState();
     _paycoreMobileService = PaycoreMobileService(getIt<NetworkClient>());
-    _pageController = PageController(viewportFraction: 0.9);
+    _pageController = PageController(viewportFraction: 0.94);
     _pageController.addListener(_handlePageChange);
     unawaited(_loadCards());
   }
@@ -134,7 +134,7 @@ final class _HomePaycoreCardsCarouselState
         ),
         const SizedBox(height: 6),
         SizedBox(
-          height: 156,
+          height: 168,
           child: PageView.builder(
             controller: _pageController,
             itemCount: _cards.length,
@@ -142,7 +142,7 @@ final class _HomePaycoreCardsCarouselState
               final card = _cards[index];
               return Padding(
                 padding: EdgeInsets.only(
-                  right: index == _cards.length - 1 ? 0 : 6,
+                  right: index == _cards.length - 1 ? 0 : 4,
                 ),
                 child: _HomePaycoreCard(
                   card: card,

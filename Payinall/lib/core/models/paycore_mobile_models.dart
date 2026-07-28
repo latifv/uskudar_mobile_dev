@@ -579,8 +579,8 @@ final class PaycoreCustomerAddress {
       address2: json['address2'] as String?,
       city: json['city'] as String?,
       town: json['town'] as String?,
-      cityCode: json['cityCode'] as String?,
-      townCode: json['townCode'] as String?,
+      cityCode: _normalizePaycoreCityCode(json['cityCode']),
+      townCode: _normalizePaycoreTownCode(json['townCode']),
       district: json['district'] as String?,
       zipCode: json['zipCode'] as String?,
       countryCode: json['countryCode'] as String?,
@@ -600,6 +600,30 @@ final class PaycoreCustomerAddress {
   final String? zipCode;
   final String? countryCode;
   final bool isDefault;
+}
+
+String? _normalizePaycoreCityCode(Object? value) {
+  final digits = value is String
+      ? value.trim().replaceAll(RegExp(r'\D+'), '')
+      : '';
+
+  if (digits.isEmpty) {
+    return null;
+  }
+
+  return digits.padLeft(3, '0');
+}
+
+String? _normalizePaycoreTownCode(Object? value) {
+  final digits = value is String
+      ? value.trim().replaceAll(RegExp(r'\D+'), '')
+      : '';
+
+  if (digits.isEmpty) {
+    return null;
+  }
+
+  return digits;
 }
 
 final class PaycoreCustomerCommunication {
