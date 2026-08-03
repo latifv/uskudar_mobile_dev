@@ -60,6 +60,7 @@ final class PaycoreCardSummary {
     required this.expiryDate,
     required this.isDigitalCard,
     required this.isActive,
+    required this.statusCode,
     required this.statusName,
     required this.cardTypeName,
     required this.isPrimary,
@@ -82,6 +83,7 @@ final class PaycoreCardSummary {
       expiryDate: json['expiryDate'] as String?,
       isDigitalCard: json['isDigitalCard'] as bool? ?? false,
       isActive: json['isActive'] as bool? ?? false,
+      statusCode: json['statusCode'] as String? ?? '',
       statusName: json['statusName'] as String? ?? '-',
       cardTypeName: json['cardTypeName'] as String? ?? '-',
       isPrimary: json['isPrimary'] as bool? ?? false,
@@ -100,6 +102,7 @@ final class PaycoreCardSummary {
   final String? expiryDate;
   final bool isDigitalCard;
   final bool isActive;
+  final String statusCode;
   final String statusName;
   final String cardTypeName;
   final bool isPrimary;
@@ -289,17 +292,157 @@ final class PaycorePinStatus {
   });
 
   factory PaycorePinStatus.fromJson(Map<String, dynamic> json) {
-    final rawDate = json['lastPinSetDate'];
+    final rawDate =
+        json['lastPinSetDate'] ??
+        json['LastPinSetDate'] ??
+        json['pinSetDate'] ??
+        json['PinSetDate'] ??
+        json['lastPinDate'] ??
+        json['LastPinDate'];
     return PaycorePinStatus(
-      pinSetFlag: json['pinSetFlag'] as bool? ?? false,
-      lastPinSetDate: rawDate is String && rawDate.isNotEmpty
-          ? DateTime.tryParse(rawDate)
-          : null,
+      pinSetFlag: _parsePaycorePinFlag(
+        json['pinSetFlag'] ??
+            json['PinSetFlag'] ??
+            json['isPinSet'] ??
+            json['IsPinSet'] ??
+            json['pinDefined'] ??
+            json['PinDefined'],
+      ),
+      lastPinSetDate: _parsePaycorePinDate(rawDate),
     );
   }
 
   final bool pinSetFlag;
   final DateTime? lastPinSetDate;
+}
+
+bool _parsePaycorePinFlag(dynamic value) {
+  if (value is bool) {
+    return value;
+  }
+
+  if (value is num) {
+    return value != 0;
+  }
+
+  if (value is String) {
+    final normalized = value.trim().toLowerCase();
+    return normalized == 'true' ||
+        normalized == '1' ||
+        normalized == 'yes' ||
+        normalized == 'evet';
+  }
+
+  return false;
+}
+
+DateTime? _parsePaycorePinDate(dynamic value) {
+  if (value is DateTime) {
+    return value;
+  }
+
+  if (value is String) {
+    final normalized = value.trim();
+    if (normalized.isEmpty) {
+      return null;
+    }
+
+    return DateTime.tryParse(normalized);
+  }
+
+  return null;
+}
+
+final class PaycoreAtmQrInfo {
+  const PaycoreAtmQrInfo({
+    required this.messageReferenceNumber,
+    required this.date,
+    required this.countryCode,
+    required this.amountAvailable,
+    required this.transactionType,
+    required this.terminalType,
+    required this.amount,
+    required this.currencyCode,
+    required this.merchantName,
+    required this.merchantCity,
+    required this.merchantId,
+    required this.terminalId,
+    required this.merchantIban,
+    required this.latitude,
+    required this.longitude,
+    required this.resultCode,
+    required this.resultDescription,
+  });
+
+  factory PaycoreAtmQrInfo.fromJson(Map<String, dynamic> json) {
+    return PaycoreAtmQrInfo(
+      messageReferenceNumber: json['messageReferenceNumber'] as String?,
+      date: DateTime.tryParse(json['date'] as String? ?? ''),
+      countryCode: json['countryCode'] as String?,
+      amountAvailable: json['amountAvailable'] as int?,
+      transactionType: (json['transactionType'] as num?)?.toInt(),
+      terminalType: (json['terminalType'] as num?)?.toInt(),
+      amount: (json['amount'] as num?)?.toDouble(),
+      currencyCode: (json['currencyCode'] as num?)?.toInt(),
+      merchantName: json['merchantName'] as String?,
+      merchantCity: json['merchantCity'] as String?,
+      merchantId: json['merchantId'] as String?,
+      terminalId: json['terminalId'] as String?,
+      merchantIban: json['merchantIban'] as String?,
+      latitude: (json['latitude'] as num?)?.toDouble(),
+      longitude: (json['longitude'] as num?)?.toDouble(),
+      resultCode: json['resultCode'] as String?,
+      resultDescription: json['resultDescription'] as String?,
+    );
+  }
+
+  final String? messageReferenceNumber;
+  final DateTime? date;
+  final String? countryCode;
+  final int? amountAvailable;
+  final int? transactionType;
+  final int? terminalType;
+  final double? amount;
+  final int? currencyCode;
+  final String? merchantName;
+  final String? merchantCity;
+  final String? merchantId;
+  final String? terminalId;
+  final String? merchantIban;
+  final double? latitude;
+  final double? longitude;
+  final String? resultCode;
+  final String? resultDescription;
+
+  String? get resolvedTrxType => transactionType?.toString();
+
+  String? get suggestedProcessingCode => switch (transactionType) {
+    1 => '010000',
+    _ => null,
+  };
+
+  String get terminalTypeLabel => switch (terminalType) {
+    9 => 'POS / ATM',
+    1 => 'ATM',
+    _ => terminalType?.toString() ?? '-',
+  };
+}
+
+final class PaycoreAtmQrStartResult {
+  const PaycoreAtmQrStartResult({
+    required this.resultCode,
+    required this.resultDescription,
+  });
+
+  factory PaycoreAtmQrStartResult.fromJson(Map<String, dynamic> json) {
+    return PaycoreAtmQrStartResult(
+      resultCode: json['resultCode'] as String?,
+      resultDescription: json['resultDescription'] as String?,
+    );
+  }
+
+  final String? resultCode;
+  final String? resultDescription;
 }
 
 final class PaycoreCustomerInfo {

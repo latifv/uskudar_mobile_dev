@@ -206,6 +206,24 @@ final class _AppDrawerState extends State<AppDrawer> {
               );
             },
           ),
+        if (!_userInfoManager.isMerchant)
+          _buildNavigationItem(
+            context,
+            title: 'Kart Aktive Et',
+            icon: Icons.add_card_rounded,
+            onTap: () {
+              context.router.pop();
+              unawaited(
+                Navigator.of(context).push(
+                  MaterialPageRoute<void>(
+                    builder: (_) => const PaycoreCardsScreen(
+                      openActivateTab: true,
+                    ),
+                  ),
+                ),
+              );
+            },
+          ),
         _buildDivider(context),
 
         _buildSectionHeader(

@@ -29,27 +29,36 @@ final class HomeActionButtons extends StatelessWidget {
       children: [
         _buildActionButton(
           context,
-          icon: Icons.arrow_outward_outlined,
+          icon: const Icon(
+            Icons.arrow_outward_outlined,
+            size: IconSizeConstants.m,
+            color: Colors.red,
+          ),
           label: LocaleKeys.send.translate,
           onPressed: onSendPressed,
-          iconColor: Colors.red,
         ),
         context.spacingHighWidth,
         if (!isMerchant) ...[
           _buildActionButton(
             context,
-            icon: Icons.arrow_downward,
+            icon: const Icon(
+              Icons.arrow_downward,
+              size: IconSizeConstants.m,
+              color: Colors.green,
+            ),
             label: LocaleKeys.request.translate,
             onPressed: onRequestPressed,
-            iconColor: Colors.green,
           ),
           context.spacingHighWidth,
           _buildActionButton(
             context,
-            icon: FontAwesomeIcons.moneyBills,
+            icon: const FaIcon(
+              FontAwesomeIcons.moneyBills,
+              size: IconSizeConstants.m,
+              color: Colors.blue,
+            ),
             label: LocaleKeys.withdraw.translate,
             onPressed: onWithdrawPressed,
-            iconColor: Colors.blue.shade700,
           ),
         ],
       ],
@@ -58,10 +67,9 @@ final class HomeActionButtons extends StatelessWidget {
 
   Widget _buildActionButton(
     BuildContext context, {
-    required IconData icon,
+    required Widget icon,
     required String label,
     required VoidCallback onPressed,
-    required Color iconColor,
   }) {
     return InkWell(
       onTap: onPressed,
@@ -75,11 +83,7 @@ final class HomeActionButtons extends StatelessWidget {
               color: context.colorScheme.surface,
               borderRadius: context.borderRadiusNormalAll,
             ),
-            child: Icon(
-              icon,
-              size: IconSizeConstants.m,
-              color: iconColor,
-            ),
+            child: icon,
           ),
           context.spacingLowHeight,
           Text(

@@ -208,11 +208,39 @@ final class PaycoreMobileService extends BaseRemoteDataSource {
       endpoint: Endpoints.getPayCorePinStatus(cardId),
     );
 
+    if (responseJson is! Map<String, dynamic>) {
+      return NetworkResponse.fromJson<PaycorePinStatus>(
+        <String, dynamic>{
+          'isSuccess': false,
+          'message': 'PIN durumu alınamadı.',
+          'data': null,
+        },
+      );
+    }
+
+    final rootPayload = _extractPaycorePinStatusPayload(responseJson);
+    if (rootPayload != null &&
+        responseJson['data'] == null &&
+        responseJson['isSuccess'] == null &&
+        responseJson['IsSuccess'] == null) {
+      return NetworkResponse.fromJson<PaycorePinStatus>(
+        <String, dynamic>{
+          'isSuccess': true,
+          'message': responseJson['message'] ?? responseJson['Message'],
+          'data': rootPayload,
+        },
+        fromJsonT: (json) => PaycorePinStatus.fromJson(
+          json as Map<String, dynamic>,
+        ),
+      );
+    }
+
     final response = NetworkResponse.fromJson<Map<String, dynamic>>(
-      responseJson as Map<String, dynamic>,
+      responseJson,
       fromJsonT: (json) {
-        if (json is Map<String, dynamic>) {
-          return json;
+        final payload = _extractPaycorePinStatusPayload(json);
+        if (payload != null) {
+          return payload;
         }
         throw const MappingException();
       },
@@ -221,10 +249,38 @@ final class PaycoreMobileService extends BaseRemoteDataSource {
     return response.map(PaycorePinStatus.fromJson);
   }
 
+  Map<String, dynamic>? _extractPaycorePinStatusPayload(dynamic json) {
+    if (json is Map<String, dynamic>) {
+      if (json['data'] is Map<String, dynamic>) {
+        return json['data'] as Map<String, dynamic>;
+      }
+
+      if (json['result'] is Map<String, dynamic>) {
+        return json['result'] as Map<String, dynamic>;
+      }
+
+      if (json.containsKey('pinSetFlag') ||
+          json.containsKey('PinSetFlag') ||
+          json.containsKey('isPinSet') ||
+          json.containsKey('IsPinSet') ||
+          json.containsKey('lastPinSetDate') ||
+          json.containsKey('LastPinSetDate') ||
+          json.containsKey('pinSetDate') ||
+          json.containsKey('PinSetDate') ||
+          json.containsKey('lastPinDate') ||
+          json.containsKey('LastPinDate')) {
+        return json;
+      }
+    }
+
+    return null;
+  }
+
   Future<NetworkResponse<void>> setPin(
     int cardId,
     String newPin, {
     String? cardNo,
+    String? currentPin,
   }) async {
     final payload = <String, dynamic>{
       'cardId': cardId,
@@ -234,6 +290,11 @@ final class PaycoreMobileService extends BaseRemoteDataSource {
     final normalizedCardNo = cardNo?.trim();
     if (normalizedCardNo?.isNotEmpty ?? false) {
       payload['cardNo'] = normalizedCardNo;
+    }
+
+    final normalizedCurrentPin = currentPin?.trim();
+    if (normalizedCurrentPin?.isNotEmpty ?? false) {
+      payload['currentPin'] = normalizedCurrentPin;
     }
 
     final responseJson = await put(
@@ -294,6 +355,25 @@ final class PaycoreMobileService extends BaseRemoteDataSource {
     return NetworkResponse.fromJson<void>(responseJson as Map<String, dynamic>);
   }
 
+  Future<NetworkResponse<void>> cancelCard(
+    int cardId, {
+    String? note,
+  }) async {
+    final payload = <String, dynamic>{'cardId': cardId};
+
+    final normalizedNote = note?.trim();
+    if (normalizedNote?.isNotEmpty ?? false) {
+      payload['note'] = normalizedNote;
+    }
+
+    final responseJson = await put(
+      endpoint: Endpoints.cancelPayCoreCard,
+      data: payload,
+    );
+
+    return NetworkResponse.fromJson<void>(responseJson as Map<String, dynamic>);
+  }
+
   Future<NetworkResponse<void>> setPrimaryCard(int cardId) async {
     final responseJson = await put(
       endpoint: Endpoints.setPayCorePrimaryCard,
@@ -301,6 +381,215 @@ final class PaycoreMobileService extends BaseRemoteDataSource {
     );
 
     return NetworkResponse.fromJson<void>(responseJson as Map<String, dynamic>);
+  }
+
+  Future<NetworkResponse<void>> addPhysicalCard({
+    String? cardNo,
+    String? barcodeNo,
+    String? gender,
+    String? cityName,
+    String? townName,
+    String? district,
+    String? townCode,
+    String? cityCode,
+    String? postalCode,
+    String? address,
+  }) async {
+    final payload = <String, dynamic>{};
+
+    final normalizedCardNo = cardNo?.trim();
+    if (normalizedCardNo?.isNotEmpty ?? false) {
+      payload['cardNo'] = normalizedCardNo;
+    }
+
+    final normalizedBarcodeNo = barcodeNo?.trim();
+    if (normalizedBarcodeNo?.isNotEmpty ?? false) {
+      payload['barcodeNo'] = normalizedBarcodeNo;
+    }
+
+    final normalizedGender = gender?.trim();
+    final normalizedCityName = cityName?.trim();
+    final normalizedTownName = townName?.trim();
+    final normalizedDistrict = district?.trim();
+    final normalizedTownCode = townCode?.trim();
+    final normalizedCityCode = cityCode?.trim();
+    final normalizedPostalCode = postalCode?.trim();
+    final normalizedAddress = address?.trim();
+
+    final hasCustomerCreatePayload = [
+      normalizedGender,
+      normalizedCityName,
+      normalizedTownName,
+      normalizedDistrict,
+      normalizedTownCode,
+      normalizedCityCode,
+      normalizedPostalCode,
+      normalizedAddress,
+    ].any((value) => value?.isNotEmpty ?? false);
+
+    if (hasCustomerCreatePayload) {
+      payload['customerCreatePayload'] = <String, dynamic>{
+        'gender': normalizedGender,
+        'cityName': normalizedCityName,
+        'townName': normalizedTownName,
+        'district': normalizedDistrict,
+        'townCode': _normalizePaycoreTownCode(normalizedTownCode ?? ''),
+        'cityCode': _normalizePaycoreCityCode(normalizedCityCode ?? ''),
+        'postalCode': normalizedPostalCode,
+        'address': normalizedAddress,
+      };
+    }
+
+    final responseJson = await put(
+      endpoint: Endpoints.addPayCorePhysicalCard,
+      data: payload,
+    );
+
+    return NetworkResponse.fromJson<void>(responseJson as Map<String, dynamic>);
+  }
+
+  Future<NetworkResponse<String>> sendAddPhysicalCardOtp({
+    String? cardNo,
+    String? barcodeNo,
+    String? gender,
+    String? cityName,
+    String? townName,
+    String? district,
+    String? townCode,
+    String? cityCode,
+    String? postalCode,
+    String? address,
+  }) async {
+    final payload = <String, dynamic>{};
+
+    final normalizedCardNo = cardNo?.trim();
+    if (normalizedCardNo?.isNotEmpty ?? false) {
+      payload['cardNo'] = normalizedCardNo;
+    }
+
+    final normalizedBarcodeNo = barcodeNo?.trim();
+    if (normalizedBarcodeNo?.isNotEmpty ?? false) {
+      payload['barcodeNo'] = normalizedBarcodeNo;
+    }
+
+    final normalizedGender = gender?.trim();
+    final normalizedCityName = cityName?.trim();
+    final normalizedTownName = townName?.trim();
+    final normalizedDistrict = district?.trim();
+    final normalizedTownCode = townCode?.trim();
+    final normalizedCityCode = cityCode?.trim();
+    final normalizedPostalCode = postalCode?.trim();
+    final normalizedAddress = address?.trim();
+
+    final hasCustomerCreatePayload = [
+      normalizedGender,
+      normalizedCityName,
+      normalizedTownName,
+      normalizedDistrict,
+      normalizedTownCode,
+      normalizedCityCode,
+      normalizedPostalCode,
+      normalizedAddress,
+    ].any((value) => value?.isNotEmpty ?? false);
+
+    if (hasCustomerCreatePayload) {
+      payload['customerCreatePayload'] = <String, dynamic>{
+        'gender': normalizedGender,
+        'cityName': normalizedCityName,
+        'townName': normalizedTownName,
+        'district': normalizedDistrict,
+        'townCode': _normalizePaycoreTownCode(normalizedTownCode ?? ''),
+        'cityCode': _normalizePaycoreCityCode(normalizedCityCode ?? ''),
+        'postalCode': normalizedPostalCode,
+        'address': normalizedAddress,
+      };
+    }
+
+    final responseJson = await post(
+      endpoint: Endpoints.sendAddPayCorePhysicalCardOtp,
+      data: payload,
+    );
+
+    final response = NetworkResponse.fromJson<dynamic>(
+      responseJson as Map<String, dynamic>,
+      fromJsonT: (json) => json,
+    );
+
+    return response.map((data) => data?.toString() ?? '');
+  }
+
+  Future<NetworkResponse<void>> confirmAddPhysicalCardOtp({
+    required String processCode,
+    required String code,
+  }) async {
+    final responseJson = await post(
+      endpoint: Endpoints.confirmAddPayCorePhysicalCardOtp,
+      data: <String, dynamic>{
+        'activationProcessCode': processCode,
+        'code': code.trim(),
+      },
+    );
+
+    return NetworkResponse.fromJson<void>(responseJson as Map<String, dynamic>);
+  }
+
+  Future<NetworkResponse<PaycoreAtmQrInfo>> getAtmQrInfo(
+    String kkfData,
+  ) async {
+    final responseJson = await post(
+      endpoint: Endpoints.getPayCoreAtmQrInfo,
+      data: <String, dynamic>{
+        'kkfData': kkfData.trim(),
+      },
+    );
+
+    final response = NetworkResponse.fromJson<Map<String, dynamic>>(
+      responseJson as Map<String, dynamic>,
+      fromJsonT: (json) {
+        if (json is Map<String, dynamic>) {
+          return json;
+        }
+        throw const MappingException();
+      },
+    );
+
+    return response.map(PaycoreAtmQrInfo.fromJson);
+  }
+
+  Future<NetworkResponse<PaycoreAtmQrStartResult>> startAtmQrTransaction({
+    required int cardId,
+    required String kkfData,
+    required double amount,
+    required String processingCode,
+    required String trxType,
+    String channelCode = 'MOB',
+  }) async {
+    final payload = <String, dynamic>{
+      'cardId': cardId,
+      'kkfData': kkfData.trim(),
+      'qrData': kkfData.trim(),
+      'amount': amount,
+      'processingCode': processingCode.trim(),
+      'trxType': trxType.trim(),
+      'channelCode': channelCode,
+    };
+
+    final responseJson = await post(
+      endpoint: Endpoints.startPayCoreAtmQr,
+      data: payload,
+    );
+
+    final response = NetworkResponse.fromJson<Map<String, dynamic>>(
+      responseJson as Map<String, dynamic>,
+      fromJsonT: (json) {
+        if (json is Map<String, dynamic>) {
+          return json;
+        }
+        throw const MappingException();
+      },
+    );
+
+    return response.map(PaycoreAtmQrStartResult.fromJson);
   }
 
   String _resolveManagementBaseUrl(String apiBaseUrl) {

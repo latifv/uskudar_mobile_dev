@@ -93,7 +93,16 @@ final class Endpoints {
   static const String setPayCorePin = '$payCoreCards/set-pin';
   static const String setPayCoreRandomPin = '$payCoreCards/set-random-pin';
   static const String sendPayCorePinBySms = '$payCoreCards/send-pin-by-sms';
+  static const String cancelPayCoreCard = '$payCoreCards/cancel-card';
   static const String setPayCorePrimaryCard = '$payCoreCards/set-primary-card';
+  static const String addPayCorePhysicalCard =
+      '$payCoreCards/add-physical-card';
+  static const String sendAddPayCorePhysicalCardOtp =
+      '$payCoreCards/add-physical-card/send-otp';
+  static const String confirmAddPayCorePhysicalCardOtp =
+      '$payCoreCards/add-physical-card/confirm-otp';
+  static const String getPayCoreAtmQrInfo = '$payCoreCards/atm-qr/info';
+  static const String startPayCoreAtmQr = '$payCoreCards/atm-qr/start';
 
   static const String transfers = '/Transfers';
   static const String walletTransfer = '$transfers/walletTransfer';

@@ -1,13 +1,16 @@
 import 'dart:async';
-import 'dart:convert';
 import 'dart:collection';
+import 'dart:convert';
 
-import 'package:flutter/services.dart' show rootBundle;
-import 'package:payinall/core/managers/token_manager.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart'
+    show Clipboard, ClipboardData, rootBundle;
+import 'package:mobile_scanner/mobile_scanner.dart';
+import 'package:payinall/core/managers/token_manager.dart';
 import 'package:payinall/core/managers/user_info_manager.dart';
 import 'package:payinall/core/models/paycore_mobile_models.dart';
 import 'package:payinall/core/services/paycore_mobile_service.dart';
+import 'package:payinall/data/network/config/api_constants.dart';
 import 'package:payinall/data/network/models/network_response.dart';
 import 'package:payinall/data/network/network_client.dart';
 import 'package:payinall/di/di.dart';
@@ -16,6 +19,7 @@ import 'package:payinall/domain/usecases/get_metropol_cities_usecase.dart';
 import 'package:payinall/presentation/shared/components/toast_component.dart';
 import 'package:payinall/presentation/shared/constants/icon_asset_constants.dart';
 import 'package:payinall/presentation/shared/constants/paycore_card_asset_constants.dart';
+import 'package:payinall/presentation/pages/qr_operation/scan/qr_scan_screen.dart';
 import 'package:payinall/presentation/shared/extensions/theme_extension.dart';
 import 'package:payinall/presentation/shared/widgets/paycore_card_visual.dart';
 import 'package:payinall/presentation/widgets/custom_app_bar.dart';
@@ -49,7 +53,9 @@ final class _PaycoreCityCodeDefinition {
     final rawTowns = json['towns'];
     return _PaycoreCityCodeDefinition(
       city: json['city'] as String? ?? '',
-      cityCode: _normalizePaycoreCityCodeValue(json['cityCode'] as String? ?? ''),
+      cityCode: _normalizePaycoreCityCodeValue(
+        json['cityCode'] as String? ?? '',
+      ),
       towns: rawTowns is List
           ? rawTowns
                 .whereType<Map<String, dynamic>>()
@@ -62,6 +68,38 @@ final class _PaycoreCityCodeDefinition {
   final String city;
   final String cityCode;
   final List<_PaycoreTownCodeDefinition> towns;
+}
+
+final class _PhysicalCardInput {
+  const _PhysicalCardInput({
+    required this.cardNo,
+    required this.barcodeNo,
+  });
+
+  final String? cardNo;
+  final String? barcodeNo;
+}
+
+final class _PhysicalCardCustomerPayload {
+  const _PhysicalCardCustomerPayload({
+    required this.gender,
+    required this.cityName,
+    required this.townName,
+    required this.district,
+    required this.townCode,
+    required this.cityCode,
+    required this.postalCode,
+    required this.address,
+  });
+
+  final String gender;
+  final String cityName;
+  final String townName;
+  final String district;
+  final String townCode;
+  final String cityCode;
+  final String postalCode;
+  final String address;
 }
 
 String _normalizePaycoreCityCodeValue(String value) {
@@ -78,7 +116,12 @@ String _normalizePaycoreTownCodeValue(String value) {
 }
 
 final class PaycoreCardsScreen extends StatefulWidget {
-  const PaycoreCardsScreen({super.key});
+  const PaycoreCardsScreen({
+    this.openActivateTab = false,
+    super.key,
+  });
+
+  final bool openActivateTab;
 
   @override
   State<PaycoreCardsScreen> createState() => _PaycoreCardsScreenState();
@@ -86,12 +129,12 @@ final class PaycoreCardsScreen extends StatefulWidget {
 
 final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
   static const Duration _loadTimeout = Duration(seconds: 15);
-  static const List<PaycoreCardCreationProfile> _availableCardProfiles = <
-      PaycoreCardCreationProfile>[
-    PaycoreCardCreationProfile.troyPhysical,
-    PaycoreCardCreationProfile.troyVirtual,
-    PaycoreCardCreationProfile.masterPhysical,
-  ];
+  static const List<PaycoreCardCreationProfile> _availableCardProfiles =
+      <PaycoreCardCreationProfile>[
+        PaycoreCardCreationProfile.troyPhysical,
+        PaycoreCardCreationProfile.troyVirtual,
+        PaycoreCardCreationProfile.masterPhysical,
+      ];
   late final PaycoreMobileService _paycoreService;
   late final UserInfoManager _userInfoManager;
   late final TokenManager _tokenManager;
@@ -102,6 +145,8 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
   final Set<int> _busyCards = <int>{};
   final Set<int> _loadingPinCards = <int>{};
   final Set<int> _cvvPeekCards = <int>{};
+  final Set<int> _expandedCardMenus = <int>{};
+  final Set<int> _revealedVirtualCardNumbers = <int>{};
 
   PaycoreCustomerInfo? _customerInfo;
   bool _hasPaycoreCustomerRecord = false;
@@ -137,12 +182,6 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
       );
     }
 
-    final managementResponse = await _paycoreService
-        .getCustomerInfoFromManagement(customerNumber);
-    if (managementResponse.isSuccess && managementResponse.data != null) {
-      return managementResponse;
-    }
-
     final customerNumberResponse = await _paycoreService
         .getCustomerInfoByCustomerNumber(customerNumber);
     if (customerNumberResponse.isSuccess &&
@@ -150,9 +189,25 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
       return customerNumberResponse;
     }
 
+    if (!_shouldUseManagementCustomerFallback) {
+      return customerNumberResponse;
+    }
+
+    final managementResponse = await _paycoreService
+        .getCustomerInfoFromManagement(customerNumber);
+    if (managementResponse.isSuccess && managementResponse.data != null) {
+      return managementResponse;
+    }
+
     return managementResponse.message?.trim().isNotEmpty ?? false
         ? managementResponse
         : customerNumberResponse;
+  }
+
+  bool get _shouldUseManagementCustomerFallback {
+    final parsedUri = Uri.tryParse(ApiConstants.baseUrl);
+    final host = parsedUri?.host ?? '';
+    return host == 'localhost' || host == '127.0.0.1' || host == '10.0.2.2';
   }
 
   String _resolveCurrentCustomerNumber() {
@@ -355,8 +410,7 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
     final nextAddresses = <PaycoreCustomerAddress>[
       localAddress,
       ...customer.addresses.where(
-        (item) =>
-            item.addressType != localAddress.addressType,
+        (item) => item.addressType != localAddress.addressType,
       ),
     ];
 
@@ -487,15 +541,15 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
 
     final cards = cardsResponse.data ?? const <PaycoreCardSummary>[];
     final fallbackCustomerInfo = _buildLocalCustomerInfoFallback();
-    final customerInfo = customerResponse?.data ?? fallbackCustomerInfo;
+    final customerInfo = customerResponse.data ?? fallbackCustomerInfo;
     final hasPaycoreCustomerRecord =
-        customerResponse?.isSuccess == true && customerResponse?.data != null;
+        customerResponse.isSuccess && customerResponse.data != null;
     final hasAnyData = cards.isNotEmpty || customerInfo != null;
-    final message = cardsResponse.message ?? customerResponse?.message;
+    final message = cardsResponse.message ?? customerResponse.message;
 
     if (!hasAnyData &&
         !cardsResponse.isSuccess &&
-        !(customerResponse?.isSuccess ?? false)) {
+        !customerResponse.isSuccess) {
       setState(() {
         _isLoading = false;
         _loadError = message ?? 'Kart verisi alınamadı.';
@@ -736,7 +790,7 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
           Row(
             children: [
               Expanded(
-              child: _buildTextField(
+                child: _buildTextField(
                   controller: townCodeController,
                   label: 'İlçe kodu',
                   keyboardType: TextInputType.number,
@@ -744,7 +798,7 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
               ),
               const SizedBox(width: 12),
               Expanded(
-              child: _buildTextField(
+                child: _buildTextField(
                   controller: cityCodeController,
                   label: 'Şehir kodu',
                   keyboardType: TextInputType.number,
@@ -941,7 +995,7 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
     }
 
     final customer = _customerInfo;
-    if (customer == null) {
+    if (customer == null || !_hasPaycoreCustomerRecord) {
       _showError('Müşteri kaydı bulunamadı.');
       return;
     }
@@ -995,7 +1049,10 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
                             ('Ana Kart', customer.primaryCardNo),
                             ('TC Kimlik No', customer.nationalIdentityNo),
                             ('Cinsiyet', customer.gender),
-                            ('Doğum Tarihi', _formatDateValue(customer.birthDate)),
+                            (
+                              'Doğum Tarihi',
+                              _formatDateValue(customer.birthDate),
+                            ),
                             ('Statü', customer.statCode),
                             ('Risk Kodu', customer.riskCode),
                             ('Müşteri Grubu', customer.customerGroupCode),
@@ -1057,12 +1114,13 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
                                     _getCommunicationTypeLabel(
                                       item.communicationType,
                                     ),
-                                    style: context.textTheme.bodySmall?.copyWith(
-                                      color: context
-                                          .colorScheme
-                                          .onSurfaceVariant,
-                                      fontSize: 11.5,
-                                    ),
+                                    style: context.textTheme.bodySmall
+                                        ?.copyWith(
+                                          color: context
+                                              .colorScheme
+                                              .onSurfaceVariant,
+                                          fontSize: 11.5,
+                                        ),
                                   ),
                                   const SizedBox(height: 4),
                                   Text(
@@ -1452,8 +1510,7 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
     const fallbackTownName = 'Ankara';
     const fallbackDistrict = 'Çankaya';
     const fallbackPostalCode = '06';
-    const fallbackAddress =
-        'Erpa Plaza, Mustafa Kemal, 2125. Sk. No: 5, 06510';
+    const fallbackAddress = 'Erpa Plaza, Mustafa Kemal, 2125. Sk. No: 5, 06510';
 
     final cityNameController = TextEditingController(
       text: address?.city ?? fallbackCityName,
@@ -1577,11 +1634,12 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
                   children: [
                     _buildSheetHeader(
                       icon: Icons.edit_location_alt_rounded,
-                      title: address == null ? 'Teslimat Adresi' : 'Adres Güncelle',
-                      description:
-                          address == null
-                              ? 'Müşteri kaydı bulundu. Kart üretimi için teslimat adresini tamamla ve PayCore ile senkronize et.'
-                              : 'Kart üretimi için kullanılan adres bilgilerini güncelle ve PayCore ile senkronize et.',
+                      title: address == null
+                          ? 'Teslimat Adresi'
+                          : 'Adres Güncelle',
+                      description: address == null
+                          ? 'Müşteri kaydı bulundu. Kart üretimi için teslimat adresini tamamla ve PayCore ile senkronize et.'
+                          : 'Kart üretimi için kullanılan adres bilgilerini güncelle ve PayCore ile senkronize et.',
                     ),
                     const SizedBox(height: 18),
                     _buildSheetSection(
@@ -1669,7 +1727,8 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
   }
 
   Future<void> _showCreateCardSheet() async {
-    final effectiveCustomerInfo = _customerInfo ?? _buildLocalCustomerInfoFallback();
+    final effectiveCustomerInfo =
+        _customerInfo ?? _buildLocalCustomerInfoFallback();
     if (effectiveCustomerInfo == null) {
       _showError('Önce müşteri kaydını oluştur ya da bilgileri yenile.');
       return;
@@ -1692,7 +1751,9 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
     final cityCodeController = TextEditingController(text: address.cityCode);
     final townCodeController = TextEditingController(text: address.townCode);
     final districtController = TextEditingController(text: address.district);
-    final zipCodeController = TextEditingController(text: address.zipCode ?? '');
+    final zipCodeController = TextEditingController(
+      text: address.zipCode ?? '',
+    );
     final address1Controller = TextEditingController(text: address.address1);
     final address2Controller = TextEditingController(
       text: _normalizeSecondaryAddressLine(address.address2) ?? '',
@@ -1724,15 +1785,22 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
                   address2Controller.text,
                 );
 
-                if (selectedProfile == PaycoreCardCreationProfile.masterVirtual) {
+                if (selectedProfile ==
+                    PaycoreCardCreationProfile.masterVirtual) {
                   _showError(
                     'Master sanal kart ürünü bu ortamda tanımlı değil. Şimdilik Troy sanal veya Master fiziki kullanın.',
                   );
                   return;
                 }
 
-                if ([cityName, townName, cityCode, townCode, district, address1]
-                    .any((value) => value.isEmpty)) {
+                if ([
+                  cityName,
+                  townName,
+                  cityCode,
+                  townCode,
+                  district,
+                  address1,
+                ].any((value) => value.isEmpty)) {
                   _showError(
                     'Kart oluşturmak için zorunlu PayCore alanlarını tamamlayın.',
                   );
@@ -1815,14 +1883,12 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
                                     .map((profile) => profile.title)
                                     .toList(),
                                 onChanged: (value) {
-                                  final nextProfile =
-                                      _availableCardProfiles
-                                          .firstWhere(
-                                            (profile) => profile.title == value,
-                                            orElse:
-                                                () => PaycoreCardCreationProfile
-                                                    .troyPhysical,
-                                          );
+                                  final nextProfile = _availableCardProfiles
+                                      .firstWhere(
+                                        (profile) => profile.title == value,
+                                        orElse: () => PaycoreCardCreationProfile
+                                            .troyPhysical,
+                                      );
                                   setSheetState(() {
                                     selectedProfile = nextProfile;
                                   });
@@ -1949,7 +2015,8 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
       return;
     }
 
-    final customerAddresses = customer?.addresses ?? const <PaycoreCustomerAddress>[];
+    final customerAddresses =
+        customer?.addresses ?? const <PaycoreCustomerAddress>[];
     final editableAddress = customerAddresses.isNotEmpty
         ? customerAddresses.first
         : null;
@@ -1964,6 +2031,611 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
 
     _showError('Kart oluşturmak için teslimat adresini tamamla.');
     await _showAddressEditSheet(null);
+  }
+
+  Future<void> _handleAddPhysicalCardPressed() async {
+    if (_customerInfo == null || !_hasPaycoreCustomerRecord) {
+      final response = await _fetchCustomerInfo();
+      if (!mounted) {
+        return;
+      }
+
+      final fallbackCustomerInfo = _buildLocalCustomerInfoFallback();
+      final resolvedCustomer = response.data ?? fallbackCustomerInfo;
+
+      if (resolvedCustomer != null) {
+        setState(() {
+          _customerInfo = resolvedCustomer;
+          _hasPaycoreCustomerRecord =
+              response.isSuccess && response.data != null;
+        });
+      }
+    }
+
+    final cardInput = await _showPhysicalCardInfoSheet();
+    if (!mounted || cardInput == null) {
+      return;
+    }
+
+    _PhysicalCardCustomerPayload? customerPayload;
+    if (!_hasPaycoreCustomerRecord) {
+      customerPayload = await _showPhysicalCardCustomerSetupSheet();
+      if (!mounted || customerPayload == null) {
+        return;
+      }
+    }
+
+    var otpProcessCode = await _sendPhysicalCardOtp(
+      cardInput: cardInput,
+      customerPayload: customerPayload,
+    );
+    if (!mounted || otpProcessCode == null) {
+      return;
+    }
+
+    final isVerified = await _showPhysicalCardOtpSheet(
+      cardInput: cardInput,
+      customerPayload: customerPayload,
+      initialProcessCode: otpProcessCode,
+      onResend: () async {
+        final nextProcessCode = await _sendPhysicalCardOtp(
+          cardInput: cardInput,
+          customerPayload: customerPayload,
+          successMessage: 'Yeni doğrulama kodu gönderildi.',
+          errorMessage: 'Doğrulama kodu tekrar gönderilemedi.',
+        );
+        if (nextProcessCode != null) {
+          otpProcessCode = nextProcessCode;
+        }
+        return nextProcessCode;
+      },
+    );
+
+    if (!mounted || !isVerified) {
+      return;
+    }
+
+    if (customerPayload != null) {
+      _cacheLocalCustomerAddress(
+        addressType: 'P',
+        cityName: customerPayload.cityName,
+        townName: customerPayload.townName,
+        district: customerPayload.district,
+        townCode: customerPayload.townCode,
+        cityCode: customerPayload.cityCode,
+        postalCode: customerPayload.postalCode,
+        address: customerPayload.address,
+      );
+      setState(() {
+        _hasPaycoreCustomerRecord = true;
+        _mergeLocalAddressIntoCustomerInfo();
+      });
+    }
+
+    await _loadData();
+    if (!mounted) {
+      return;
+    }
+
+    if (widget.openActivateTab) {
+      await Navigator.of(context).pushReplacement(
+        MaterialPageRoute<void>(
+          builder: (_) => const PaycoreCardsScreen(),
+        ),
+      );
+      return;
+    }
+
+    setState(() {
+      _selectedModule = _PaycoreModule.cards;
+    });
+  }
+
+  Future<_PhysicalCardInput?> _showPhysicalCardInfoSheet() async {
+    final cardNoController = TextEditingController();
+    final barcodeNoController = TextEditingController();
+    _PhysicalCardInput? result;
+
+    try {
+      await showModalBottomSheet<void>(
+        context: context,
+        isScrollControlled: true,
+        showDragHandle: true,
+        builder: (sheetContext) => Padding(
+          padding: EdgeInsets.only(
+            left: 20,
+            right: 20,
+            top: 8,
+            bottom: MediaQuery.of(sheetContext).viewInsets.bottom + 24,
+          ),
+          child: StatefulBuilder(
+            builder: (modalContext, setSheetState) {
+              Future<void> submit() async {
+                final cardNo = _normalizeCardDigits(cardNoController.text);
+                final barcodeNo = barcodeNoController.text.trim();
+
+                if (cardNo == null && barcodeNo.isEmpty) {
+                  _showError('Kart numarası veya barkod numarası girin.');
+                  return;
+                }
+
+                if (cardNo != null &&
+                    (cardNo.length < 12 || cardNo.length > 19)) {
+                  _showError('Kart numarası 12-19 haneli olmalıdır.');
+                  return;
+                }
+
+                result = _PhysicalCardInput(
+                  cardNo: cardNo,
+                  barcodeNo: barcodeNo.isEmpty ? null : barcodeNo,
+                );
+                Navigator.of(sheetContext).pop();
+              }
+
+              return SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    _buildSheetHeader(
+                      icon: Icons.add_card_rounded,
+                      title: 'Kart Bilgileri',
+                      description:
+                          'Önce fiziksel kart numarasını veya barkod numarasını gir. Devamında gerekirse müşteri kaydı ve SMS doğrulama adımı açılacak.',
+                    ),
+                    const SizedBox(height: 18),
+                    _buildSheetSection(
+                      title: 'Kart Bilgileri',
+                      child: Column(
+                        children: [
+                          _buildTextField(
+                            controller: cardNoController,
+                            label: 'Kart Numarası',
+                            hint: '12-19 haneli maskesiz kart numarası',
+                            required: false,
+                            keyboardType: TextInputType.number,
+                          ),
+                          _buildTextField(
+                            controller: barcodeNoController,
+                            label: 'Barkod Numarası',
+                            hint: 'Kart üzerindeki barkod numarası',
+                            required: false,
+                            keyboardType: TextInputType.text,
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 20),
+                    SizedBox(
+                      width: double.infinity,
+                      child: FilledButton.icon(
+                        onPressed: submit,
+                        style: FilledButton.styleFrom(
+                          minimumSize: const Size.fromHeight(56),
+                        ),
+                        icon: const Icon(Icons.arrow_forward_rounded),
+                        label: const Text('Devam Et'),
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            },
+          ),
+        ),
+      );
+    } finally {
+      cardNoController.dispose();
+      barcodeNoController.dispose();
+    }
+
+    return result;
+  }
+
+  Future<_PhysicalCardCustomerPayload?>
+  _showPhysicalCardCustomerSetupSheet() async {
+    final effectiveCustomerInfo =
+        _customerInfo ?? _buildLocalCustomerInfoFallback();
+    final customerAddress = effectiveCustomerInfo?.addresses.isNotEmpty ?? false
+        ? effectiveCustomerInfo!.addresses.first
+        : null;
+    const fallbackGender = 'M';
+    const fallbackCityName = 'Ankara';
+    const fallbackTownName = 'Ankara';
+    const fallbackDistrict = 'Çankaya';
+    const fallbackTownCode = '06';
+    const fallbackCityCode = '06';
+    const fallbackPostalCode = '06';
+    const fallbackAddress = 'Erpa Plaza, Mustafa Kemal, 2125. Sk. No: 5, 06510';
+
+    final genderController = TextEditingController(
+      text: effectiveCustomerInfo?.gender?.trim().isNotEmpty ?? false
+          ? effectiveCustomerInfo!.gender!
+          : fallbackGender,
+    );
+    final cityNameController = TextEditingController(
+      text: customerAddress?.city?.trim().isNotEmpty ?? false
+          ? customerAddress!.city!
+          : fallbackCityName,
+    );
+    final townNameController = TextEditingController(
+      text: customerAddress?.town?.trim().isNotEmpty ?? false
+          ? customerAddress!.town!
+          : fallbackTownName,
+    );
+    final districtController = TextEditingController(
+      text: customerAddress?.district?.trim().isNotEmpty ?? false
+          ? customerAddress!.district!
+          : fallbackDistrict,
+    );
+    final townCodeController = TextEditingController(
+      text: customerAddress?.townCode?.trim().isNotEmpty ?? false
+          ? customerAddress!.townCode!
+          : fallbackTownCode,
+    );
+    final cityCodeController = TextEditingController(
+      text: customerAddress?.cityCode?.trim().isNotEmpty ?? false
+          ? customerAddress!.cityCode!
+          : fallbackCityCode,
+    );
+    final postalCodeController = TextEditingController(
+      text: customerAddress?.zipCode?.trim().isNotEmpty ?? false
+          ? customerAddress!.zipCode!
+          : fallbackPostalCode,
+    );
+    final addressController = TextEditingController(
+      text:
+          [
+                customerAddress?.address1,
+                _normalizeSecondaryAddressLine(customerAddress?.address2),
+              ]
+              .whereType<String>()
+              .where((value) => value.isNotEmpty)
+              .join(' ')
+              .isNotEmpty
+          ? [
+              customerAddress?.address1,
+              _normalizeSecondaryAddressLine(customerAddress?.address2),
+            ].whereType<String>().where((value) => value.isNotEmpty).join(' ')
+          : fallbackAddress,
+    );
+    _syncPaycoreLocationControllers(
+      cityNameController: cityNameController,
+      townNameController: townNameController,
+      cityCodeController: cityCodeController,
+      townCodeController: townCodeController,
+    );
+    _PhysicalCardCustomerPayload? result;
+
+    try {
+      await showModalBottomSheet<void>(
+        context: context,
+        isScrollControlled: true,
+        showDragHandle: true,
+        builder: (sheetContext) => Padding(
+          padding: EdgeInsets.only(
+            left: 20,
+            right: 20,
+            top: 8,
+            bottom: MediaQuery.of(sheetContext).viewInsets.bottom + 24,
+          ),
+          child: StatefulBuilder(
+            builder: (modalContext, setSheetState) {
+              Future<void> submit() async {
+                final gender = genderController.text.trim();
+                final cityName = cityNameController.text.trim();
+                final townName = townNameController.text.trim();
+                final district = districtController.text.trim();
+                final townCode = townCodeController.text.trim();
+                final cityCode = cityCodeController.text.trim();
+                final postalCode = postalCodeController.text.trim();
+                final address = addressController.text.trim();
+
+                if ([
+                  gender,
+                  cityName,
+                  townName,
+                  district,
+                  townCode,
+                  cityCode,
+                  postalCode,
+                  address,
+                ].any((value) => value.isEmpty)) {
+                  _showError(
+                    'PayCore müşteri kaydı için zorunlu alanları tamamlayın.',
+                  );
+                  return;
+                }
+
+                result = _PhysicalCardCustomerPayload(
+                  gender: gender,
+                  cityName: cityName,
+                  townName: townName,
+                  district: district,
+                  townCode: townCode,
+                  cityCode: cityCode,
+                  postalCode: postalCode,
+                  address: address,
+                );
+                Navigator.of(sheetContext).pop();
+              }
+
+              return SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    _buildSheetHeader(
+                      icon: Icons.add_card_rounded,
+                      title: 'Müşteri Kaydı',
+                      description:
+                          'Bu kullanıcı için PayCore müşteri kaydı bulunamadı. Devam edebilmek için müşteri bilgilerini bir kez onayla.',
+                    ),
+                    const SizedBox(height: 18),
+                    _buildSheetSection(
+                      title: 'Müşteri Bilgileri',
+                      description:
+                          'Kart aktivasyonundan önce müşteri kaydı oluşturulacak.',
+                      child: Column(
+                        children: [
+                          _buildDropdownField(
+                            label: 'Cinsiyet Kodu',
+                            items: const ['M', 'F'],
+                            value: genderController.text.trim().isEmpty
+                                ? null
+                                : genderController.text.trim(),
+                            onChanged: (value) {
+                              setSheetState(() {
+                                genderController.text = value ?? '';
+                              });
+                            },
+                          ),
+                          _buildPaycoreLocationSelectors(
+                            setSheetState: setSheetState,
+                            cityNameController: cityNameController,
+                            townNameController: townNameController,
+                            cityCodeController: cityCodeController,
+                            townCodeController: townCodeController,
+                          ),
+                          _buildTextField(
+                            controller: districtController,
+                            label: 'Semt / Mahalle',
+                          ),
+                          _buildTextField(
+                            controller: postalCodeController,
+                            label: 'Posta Kodu',
+                          ),
+                          _buildTextField(
+                            controller: addressController,
+                            label: 'Adres',
+                            maxLines: 3,
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 20),
+                    SizedBox(
+                      width: double.infinity,
+                      child: FilledButton.icon(
+                        onPressed: submit,
+                        style: FilledButton.styleFrom(
+                          minimumSize: const Size.fromHeight(56),
+                        ),
+                        icon: const Icon(Icons.arrow_forward_rounded),
+                        label: const Text('Devam Et'),
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            },
+          ),
+        ),
+      );
+    } finally {
+      genderController.dispose();
+      cityNameController.dispose();
+      townNameController.dispose();
+      districtController.dispose();
+      townCodeController.dispose();
+      cityCodeController.dispose();
+      postalCodeController.dispose();
+      addressController.dispose();
+    }
+
+    return result;
+  }
+
+  Future<String?> _sendPhysicalCardOtp({
+    required _PhysicalCardInput cardInput,
+    _PhysicalCardCustomerPayload? customerPayload,
+    String? successMessage,
+    String? errorMessage,
+  }) async {
+    final otpResponse = await _paycoreService.sendAddPhysicalCardOtp(
+      cardNo: cardInput.cardNo,
+      barcodeNo: cardInput.barcodeNo,
+      gender: customerPayload?.gender,
+      cityName: customerPayload?.cityName,
+      townName: customerPayload?.townName,
+      district: customerPayload?.district,
+      townCode: customerPayload?.townCode,
+      cityCode: customerPayload?.cityCode,
+      postalCode: customerPayload?.postalCode,
+      address: customerPayload?.address,
+    );
+
+    if (!mounted) {
+      return null;
+    }
+
+    if (!otpResponse.isSuccess || otpResponse.data == null) {
+      _showError(
+        errorMessage ?? otpResponse.message ?? 'Doğrulama kodu gönderilemedi.',
+      );
+      return null;
+    }
+
+    _showSuccess(
+      successMessage ??
+          otpResponse.message ??
+          'Doğrulama kodu SMS olarak gönderildi.',
+    );
+    return otpResponse.data;
+  }
+
+  Future<bool> _showPhysicalCardOtpSheet({
+    required _PhysicalCardInput cardInput,
+    required String initialProcessCode,
+    required Future<String?> Function() onResend,
+    _PhysicalCardCustomerPayload? customerPayload,
+  }) async {
+    final verificationCodeController = TextEditingController();
+    var isSubmitting = false;
+    var processCode = initialProcessCode;
+    var isVerified = false;
+
+    try {
+      await showModalBottomSheet<void>(
+        context: context,
+        isScrollControlled: true,
+        showDragHandle: true,
+        builder: (sheetContext) => Padding(
+          padding: EdgeInsets.only(
+            left: 20,
+            right: 20,
+            top: 8,
+            bottom: MediaQuery.of(sheetContext).viewInsets.bottom + 24,
+          ),
+          child: StatefulBuilder(
+            builder: (modalContext, setSheetState) {
+              Future<void> submit() async {
+                final verificationCode = verificationCodeController.text.trim();
+                if (verificationCode.isEmpty) {
+                  _showError('SMS ile gelen doğrulama kodunu girin.');
+                  return;
+                }
+
+                setSheetState(() {
+                  isSubmitting = true;
+                });
+
+                final response = await _paycoreService
+                    .confirmAddPhysicalCardOtp(
+                      processCode: processCode,
+                      code: verificationCode,
+                    );
+
+                if (!mounted || !sheetContext.mounted) {
+                  return;
+                }
+
+                setSheetState(() {
+                  isSubmitting = false;
+                });
+
+                if (!response.isSuccess) {
+                  _showError(response.message ?? 'Fiziksel kart eklenemedi.');
+                  return;
+                }
+
+                isVerified = true;
+                Navigator.of(sheetContext).pop();
+                _showSuccess(
+                  response.message ?? 'Fiziksel kart hesabına eklendi.',
+                );
+              }
+
+              return SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    _buildSheetHeader(
+                      icon: Icons.sms_outlined,
+                      title: 'SMS Doğrulama',
+                      description:
+                          'Kart eşleştirmeyi tamamlamak için telefonuna gelen tek kullanımlık kodu gir.',
+                    ),
+                    const SizedBox(height: 18),
+                    _buildSheetSection(
+                      title: 'Kart Özeti',
+                      description: customerPayload == null
+                          ? 'Müşteri kaydı mevcut. Kod doğrulandıktan sonra kart hesabına eklenecek.'
+                          : 'Kod doğrulandıktan sonra önce müşteri kaydı, ardından kart eşleştirme tamamlanacak.',
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          _buildInfoRow(
+                            'Kart Numarası',
+                            cardInput.cardNo ?? '-',
+                          ),
+                          if (cardInput.barcodeNo != null)
+                            _buildInfoRow(
+                              'Barkod Numarası',
+                              cardInput.barcodeNo ?? '-',
+                            ),
+                          _buildTextField(
+                            controller: verificationCodeController,
+                            label: 'Doğrulama Kodu',
+                            hint: 'SMS ile gelen kod',
+                            keyboardType: TextInputType.number,
+                          ),
+                        ],
+                      ),
+                    ),
+                    Align(
+                      alignment: Alignment.centerRight,
+                      child: TextButton(
+                        onPressed: isSubmitting
+                            ? null
+                            : () async {
+                                final nextProcessCode = await onResend();
+                                if (nextProcessCode != null && mounted) {
+                                  setSheetState(() {
+                                    processCode = nextProcessCode;
+                                  });
+                                }
+                              },
+                        child: const Text('Kodu Tekrar Gönder'),
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    SizedBox(
+                      width: double.infinity,
+                      child: FilledButton.icon(
+                        onPressed: isSubmitting ? null : submit,
+                        style: FilledButton.styleFrom(
+                          minimumSize: const Size.fromHeight(56),
+                        ),
+                        icon: isSubmitting
+                            ? const SizedBox(
+                                width: 18,
+                                height: 18,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                ),
+                              )
+                            : const Icon(Icons.verified_user_outlined),
+                        label: Text(
+                          isSubmitting
+                              ? 'Doğrulanıyor...'
+                              : 'Kodu Doğrula ve Kartı Ekle',
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            },
+          ),
+        ),
+      );
+    } finally {
+      verificationCodeController.dispose();
+    }
+
+    return isVerified;
   }
 
   Future<void> _showCardDetailSheet(PaycoreCardSummary card) async {
@@ -2083,7 +2755,11 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
                       child: OutlinedButton.icon(
                         onPressed: () => unawaited(_showSetPinSheet(card)),
                         icon: const Icon(Icons.pin_outlined),
-                        label: const Text('PIN Belirle'),
+                        label: Text(
+                          (pinStatus?.pinSetFlag ?? false)
+                              ? 'PIN Güncelle'
+                              : 'PIN Oluştur',
+                        ),
                         style: OutlinedButton.styleFrom(
                           minimumSize: const Size.fromHeight(54),
                         ),
@@ -2091,6 +2767,36 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
                     ),
                   ],
                 ),
+                const SizedBox(height: 12),
+                SizedBox(
+                  width: double.infinity,
+                  child: FilledButton.icon(
+                    onPressed: () => unawaited(_showQrPaymentOptions(card)),
+                    icon: const Icon(Icons.qr_code_scanner_rounded),
+                    label: const Text('QR ile Öde / Para Çek'),
+                    style: FilledButton.styleFrom(
+                      minimumSize: const Size.fromHeight(54),
+                    ),
+                  ),
+                ),
+                if (card.isActive && card.statusCode != 'I') ...[
+                  const SizedBox(height: 12),
+                  SizedBox(
+                    width: double.infinity,
+                    child: OutlinedButton.icon(
+                      onPressed: () => unawaited(
+                        _runCardAction(card, () => _cancelCard(card)),
+                      ),
+                      icon: const Icon(Icons.block_outlined),
+                      label: const Text('Kartı İptal Et'),
+                      style: OutlinedButton.styleFrom(
+                        foregroundColor: const Color(0xFFB3261E),
+                        side: const BorderSide(color: Color(0xFFB3261E)),
+                        minimumSize: const Size.fromHeight(54),
+                      ),
+                    ),
+                  ),
+                ],
               ],
             ),
           ),
@@ -2100,8 +2806,18 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
   }
 
   Future<void> _showPinStatusSheet(PaycoreCardSummary card) async {
-    final pinStatus = await _loadPinStatus(card);
-    if (!mounted || pinStatus == null) {
+    final cachedPinStatus = _pinStatuses[card.id];
+    final pinStatus = await _loadPinStatus(
+      card,
+      silent: cachedPinStatus != null,
+    );
+    if (!mounted) {
+      return;
+    }
+
+    final effectivePinStatus = pinStatus ?? cachedPinStatus;
+    if (effectivePinStatus == null) {
+      _showError('PIN durumu şu anda alınamadı. Lütfen tekrar deneyin.');
       return;
     }
 
@@ -2125,12 +2841,21 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
               _buildInfoRow('Kart', card.maskedCardNo),
               _buildInfoRow(
                 'Durum',
-                pinStatus.pinSetFlag ? 'PIN Tanımlı' : 'PIN Tanımsız',
+                effectivePinStatus.pinSetFlag ? 'PIN Tanımlı' : 'PIN Tanımsız',
               ),
               _buildInfoRow(
                 'Son PIN Tarihi',
-                _formatDateTime(pinStatus.lastPinSetDate),
+                _formatDateTime(effectivePinStatus.lastPinSetDate),
               ),
+              if (pinStatus == null && cachedPinStatus != null) ...[
+                const SizedBox(height: 12),
+                Text(
+                  'Güncel PayCore yanıtı alınamadığı için son sorgulanan durum gösteriliyor.',
+                  style: context.textTheme.bodySmall?.copyWith(
+                    color: context.colorScheme.outline,
+                  ),
+                ),
+              ],
             ],
           ),
         ),
@@ -2206,9 +2931,14 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
   }
 
   Future<void> _showSetPinSheet(PaycoreCardSummary card) async {
+    final resolvedFullCardNo = _resolvedFullCardNo(card);
+    final pinStatus = _pinStatuses[card.id];
+    final requiresCurrentPin = pinStatus?.pinSetFlag ?? false;
+    final actionLabel = requiresCurrentPin ? 'PIN Güncelle' : 'PIN Oluştur';
     final fullCardNoController = TextEditingController(
-      text: card.fullCardNo ?? '',
+      text: resolvedFullCardNo ?? '',
     );
+    final currentPinController = TextEditingController();
     final pinController = TextEditingController();
     final pinRepeatController = TextEditingController();
     var isSubmitting = false;
@@ -2232,9 +2962,18 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
                   .trim();
               final pin = pinController.text.trim();
               final repeatedPin = pinRepeatController.text.trim();
+              final currentPin = currentPinController.text.trim();
 
               if (fullCardNo.length < 12 || int.tryParse(fullCardNo) == null) {
                 _showError('Kart numarasını maskesiz girin.');
+                return;
+              }
+
+              if (requiresCurrentPin &&
+                  (currentPin.length < 4 ||
+                      currentPin.length > 6 ||
+                      int.tryParse(currentPin) == null)) {
+                _showError('Mevcut PIN 4-6 haneli sayısal olmalı.');
                 return;
               }
 
@@ -2258,6 +2997,7 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
                 card.id,
                 pin,
                 cardNo: fullCardNo,
+                currentPin: requiresCurrentPin ? currentPin : null,
               );
 
               if (!mounted || !sheetContext.mounted) {
@@ -2295,14 +3035,14 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(
-                    'PIN Belirle',
+                    actionLabel,
                     style: modalContext.textTheme.titleLarge?.copyWith(
                       fontWeight: FontWeight.w700,
                     ),
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    card.maskedCardNo,
+                    resolvedFullCardNo ?? card.maskedCardNo,
                     style: modalContext.textTheme.bodyMedium?.copyWith(
                       color: modalContext.colorScheme.onSurfaceVariant,
                     ),
@@ -2314,6 +3054,14 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
                     hint: 'Maskesiz kart numarasını girin',
                     keyboardType: TextInputType.number,
                   ),
+                  if (requiresCurrentPin)
+                    _buildTextField(
+                      controller: currentPinController,
+                      label: 'Mevcut PIN',
+                      hint: '4-6 hane',
+                      keyboardType: TextInputType.number,
+                      obscureText: true,
+                    ),
                   _buildTextField(
                     controller: pinController,
                     label: 'Yeni PIN',
@@ -2341,7 +3089,7 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
                             )
                           : const Icon(Icons.lock_rounded),
                       label: Text(
-                        isSubmitting ? 'Gönderiliyor...' : 'PIN Set Et',
+                        isSubmitting ? 'Gönderiliyor...' : actionLabel,
                       ),
                     ),
                   ),
@@ -2354,13 +3102,15 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
     );
 
     fullCardNoController.dispose();
+    currentPinController.dispose();
     pinController.dispose();
     pinRepeatController.dispose();
   }
 
   Future<void> _showRandomPinSheet(PaycoreCardSummary card) async {
+    final resolvedFullCardNo = _resolvedFullCardNo(card);
     final fullCardNoController = TextEditingController(
-      text: card.fullCardNo ?? '',
+      text: resolvedFullCardNo ?? '',
     );
     var sendBySms = false;
     var isSubmitting = false;
@@ -2421,7 +3171,7 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    card.maskedCardNo,
+                    resolvedFullCardNo ?? card.maskedCardNo,
                     style: modalContext.textTheme.bodyMedium?.copyWith(
                       color: modalContext.colorScheme.onSurfaceVariant,
                     ),
@@ -2514,6 +3264,47 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
     return null;
   }
 
+  Future<String?> _cancelCard(PaycoreCardSummary card) async {
+    final shouldCancel = await showDialog<bool>(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        title: const Text('Kartı iptal et'),
+        content: Text(
+          '${card.maskedCardNo} kartını iptal etmek istediğine emin misin? Bu işlem geri alınamaz.',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(dialogContext).pop(false),
+            child: const Text('Vazgeç'),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.of(dialogContext).pop(true),
+            style: FilledButton.styleFrom(
+              backgroundColor: const Color(0xFFB3261E),
+              foregroundColor: Colors.white,
+            ),
+            child: const Text('İptal Et'),
+          ),
+        ],
+      ),
+    );
+
+    if (shouldCancel != true) {
+      return 'İşlem iptal edildi.';
+    }
+
+    final response = await _paycoreService.cancelCard(
+      card.id,
+      note: 'Mobil uygulama üzerinden kullanıcı onayıyla iptal edildi.',
+    );
+    if (!response.isSuccess) {
+      return response.message ?? 'Kart iptal edilemedi.';
+    }
+
+    _showSuccess(response.message ?? 'Kart iptal edildi.');
+    return null;
+  }
+
   Future<String?> _setRandomPin(
     PaycoreCardSummary card, {
     String? cardNo,
@@ -2535,14 +3326,14 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
 
   Future<String?> _sendPinSms(PaycoreCardSummary card) async {
     final cardNo = await _promptFullCardNo(
-      title: 'PIN SMS Gonder',
+      title: 'PIN SMS Gönder',
       card: card,
       description:
-          'PIN SMS gonderimi icin kart numarasini maskesiz olarak girin.',
+          'PIN SMS gönderimi için kart numarasını maskesiz olarak girin.',
     );
 
     if (cardNo == null) {
-      return 'Islem iptal edildi.';
+      return 'İşlem iptal edildi.';
     }
 
     final response = await _paycoreService.sendPinBySms(
@@ -2557,12 +3348,445 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
     return null;
   }
 
+  Future<void> _showQrPaymentOptions(PaycoreCardSummary card) async {
+    await showModalBottomSheet<void>(
+      context: context,
+      showDragHandle: true,
+      builder: (sheetContext) => SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(20, 8, 20, 24),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'QR ile Öde / Para Çek',
+                style: context.textTheme.titleLarge?.copyWith(
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                'Kartınla QR okutma veya PayCore ATM QR para çekme işlemini seç.',
+                style: context.textTheme.bodyMedium?.copyWith(
+                  color: context.colorScheme.onSurfaceVariant,
+                ),
+              ),
+              const SizedBox(height: 16),
+              InkWell(
+                borderRadius: BorderRadius.circular(16),
+                onTap: () async {
+                  Navigator.of(sheetContext).pop();
+                  if (!mounted) {
+                    return;
+                  }
+                  await Navigator.of(context).push<void>(
+                    MaterialPageRoute<void>(
+                      builder: (_) => const QrScanScreen(),
+                    ),
+                  );
+                },
+                child: _buildSurfaceCard(
+                  child: Row(
+                    children: [
+                      Container(
+                        width: 48,
+                        height: 48,
+                        decoration: BoxDecoration(
+                          color: context.colorScheme.primary.withValues(
+                            alpha: 0.10,
+                          ),
+                          borderRadius: BorderRadius.circular(14),
+                        ),
+                        child: Icon(
+                          Icons.qr_code_scanner_rounded,
+                          color: context.colorScheme.primary,
+                        ),
+                      ),
+                      const SizedBox(width: 14),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'QR ile Öde',
+                              style: context.textTheme.titleMedium?.copyWith(
+                                fontWeight: FontWeight.w700,
+                              ),
+                            ),
+                            const SizedBox(height: 4),
+                            Text(
+                              'QR kodu okutarak ödeme akışını başlat.',
+                              style: context.textTheme.bodySmall?.copyWith(
+                                color: context.colorScheme.onSurfaceVariant,
+                                height: 1.35,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Icon(
+                        Icons.chevron_right_rounded,
+                        color: context.colorScheme.onSurfaceVariant,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              const SizedBox(height: 12),
+              InkWell(
+                borderRadius: BorderRadius.circular(16),
+                onTap: () async {
+                  Navigator.of(sheetContext).pop();
+                  await _showAtmQrSheet(card);
+                },
+                child: _buildSurfaceCard(
+                  child: Row(
+                    children: [
+                      Container(
+                        width: 48,
+                        height: 48,
+                        decoration: BoxDecoration(
+                          color: context.colorScheme.tertiary.withValues(
+                            alpha: 0.12,
+                          ),
+                          borderRadius: BorderRadius.circular(14),
+                        ),
+                        child: Icon(
+                          Icons.atm_rounded,
+                          color: context.colorScheme.tertiary,
+                        ),
+                      ),
+                      const SizedBox(width: 14),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'ATMden Para Cek',
+                              style: context.textTheme.titleMedium?.copyWith(
+                                fontWeight: FontWeight.w700,
+                              ),
+                            ),
+                            const SizedBox(height: 4),
+                            Text(
+                              'ATM ekranında oluşan QR veya KKF verisini kullanarak para çekme işlemini başlat.',
+                              style: context.textTheme.bodySmall?.copyWith(
+                                color: context.colorScheme.onSurfaceVariant,
+                                height: 1.35,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Icon(
+                        Icons.chevron_right_rounded,
+                        color: context.colorScheme.onSurfaceVariant,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Future<void> _showAtmQrSheet(PaycoreCardSummary card) async {
+    final amountController = TextEditingController();
+
+    var isResolving = false;
+    var isSubmitting = false;
+    PaycoreAtmQrInfo? qrInfo;
+    String? kkfData;
+
+    try {
+      await showModalBottomSheet<void>(
+        context: context,
+        isScrollControlled: true,
+        showDragHandle: true,
+        builder: (sheetContext) => Padding(
+          padding: EdgeInsets.only(
+            left: 20,
+            right: 20,
+            top: 8,
+            bottom: MediaQuery.of(sheetContext).viewInsets.bottom + 24,
+          ),
+          child: StatefulBuilder(
+            builder: (modalContext, setSheetState) {
+              Future<void> resolveQrInfo() async {
+                final normalizedKkfData = kkfData?.trim() ?? '';
+                if (normalizedKkfData.isEmpty) {
+                  _showError('Önce QR kodunu okutun.');
+                  return;
+                }
+
+                setSheetState(() {
+                  isResolving = true;
+                });
+
+                final response = await _paycoreService.getAtmQrInfo(
+                  normalizedKkfData,
+                );
+
+                if (!mounted) {
+                  return;
+                }
+
+                setSheetState(() {
+                  isResolving = false;
+                });
+
+                if (!response.isSuccess || response.data == null) {
+                  _showError(
+                    response.message ?? 'ATM QR bilgisi çözümlenemedi.',
+                  );
+                  return;
+                }
+
+                qrInfo = response.data;
+                amountController.text = response.data!.amount?.toString() ?? '';
+
+                setSheetState(() {});
+                _showSuccess(
+                  response.data!.resultDescription ?? 'ATM QR bilgisi çözüldü.',
+                );
+              }
+
+              Future<void> startQrTransaction() async {
+                final normalizedKkfData = kkfData?.trim() ?? '';
+
+                if (normalizedKkfData.isEmpty) {
+                  _showError('ATM QR verisi bulunamadı. Lütfen QR okutun.');
+                  return;
+                }
+
+                if (qrInfo == null) {
+                  await resolveQrInfo();
+                }
+
+                final resolvedAmount = _parseOptionalDouble(
+                  amountController.text,
+                );
+                final resolvedProcessingCode =
+                    qrInfo?.suggestedProcessingCode?.trim().isNotEmpty ?? false
+                    ? qrInfo!.suggestedProcessingCode!.trim()
+                    : '010000';
+                final resolvedTrxType =
+                    qrInfo?.resolvedTrxType?.trim().isNotEmpty ?? false
+                    ? qrInfo!.resolvedTrxType!.trim()
+                    : '1';
+
+                if (resolvedAmount == null || resolvedAmount <= 0) {
+                  _showError('Tutar sıfırdan büyük olmalıdır.');
+                  return;
+                }
+
+                setSheetState(() {
+                  isSubmitting = true;
+                });
+
+                final response = await _paycoreService.startAtmQrTransaction(
+                  cardId: card.id,
+                  kkfData: normalizedKkfData,
+                  amount: resolvedAmount,
+                  processingCode: resolvedProcessingCode,
+                  trxType: resolvedTrxType,
+                );
+
+                if (!mounted) {
+                  return;
+                }
+
+                setSheetState(() {
+                  isSubmitting = false;
+                });
+
+                if (!response.isSuccess || response.data == null) {
+                  _showError(
+                    response.message ?? 'ATM QR işlemi başlatılamadı.',
+                  );
+                  return;
+                }
+
+                _showSuccess(
+                  response.data!.resultDescription ??
+                      response.message ??
+                      'ATM QR işlemi başlatıldı.',
+                );
+                if (!sheetContext.mounted) {
+                  return;
+                }
+                Navigator.of(sheetContext).pop();
+              }
+
+              return SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Expanded(
+                          child: Text(
+                            'QR ile Öde / Para Çek',
+                            style: modalContext.textTheme.titleLarge?.copyWith(
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
+                        ),
+                        IconButton(
+                          onPressed: () =>
+                              Navigator.of(sheetContext).maybePop(),
+                          icon: const Icon(Icons.close_rounded),
+                          tooltip: 'Kapat',
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      '${card.maskedCardNo} • ${card.profileLabel}',
+                      style: modalContext.textTheme.bodyMedium?.copyWith(
+                        color: modalContext.colorScheme.onSurfaceVariant,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      'ATM ekranındaki QR kodunu okut, tutarı kontrol et ve işlemi kartla başlat.',
+                      style: modalContext.textTheme.bodySmall?.copyWith(
+                        color: modalContext.colorScheme.onSurfaceVariant,
+                        height: 1.4,
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    SizedBox(
+                      width: double.infinity,
+                      child: OutlinedButton.icon(
+                        onPressed: isResolving || isSubmitting
+                            ? null
+                            : () async {
+                                await showModalBottomSheet<void>(
+                                  context: sheetContext,
+                                  isScrollControlled: true,
+                                  builder: (context) => _PaycoreQrScanModal(
+                                    title: 'ATM QR Oku',
+                                    description:
+                                        'Kamerayı ATM QR koduna doğru tutun.',
+                                    onClose: () => Navigator.of(context).pop(),
+                                    onQrScanned: (value) async {
+                                      kkfData = value.trim();
+                                      Navigator.of(context).pop();
+                                      setSheetState(() {});
+                                      await resolveQrInfo();
+                                    },
+                                  ),
+                                );
+                              },
+                        icon: const Icon(Icons.qr_code_scanner_rounded),
+                        label: Text(
+                          (kkfData?.trim().isNotEmpty ?? false)
+                              ? 'QR Yeniden Oku'
+                              : 'QR Oku',
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    if (isResolving)
+                      const Padding(
+                        padding: EdgeInsets.only(bottom: 12),
+                        child: LinearProgressIndicator(),
+                      ),
+                    if (qrInfo != null) ...[
+                      const SizedBox(height: 16),
+                      _buildSurfaceCard(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'ATM Bilgisi',
+                              style: modalContext.textTheme.titleSmall
+                                  ?.copyWith(
+                                    fontWeight: FontWeight.w700,
+                                  ),
+                            ),
+                            const SizedBox(height: 10),
+                            _buildTwoColumnInfo(
+                              leftLabel: 'Terminal',
+                              leftValue: qrInfo!.terminalTypeLabel,
+                              rightLabel: 'İşlem Tipi',
+                              rightValue: qrInfo!.resolvedTrxType ?? '-',
+                            ),
+                            const SizedBox(height: 10),
+                            _buildTwoColumnInfo(
+                              leftLabel: 'Tutar',
+                              leftValue: qrInfo!.amount == null
+                                  ? '-'
+                                  : '${qrInfo!.amount!.toStringAsFixed(2)} ₺',
+                              rightLabel: 'Şehir',
+                              rightValue: qrInfo!.merchantCity ?? '-',
+                            ),
+                            if (qrInfo!.merchantName?.trim().isNotEmpty ??
+                                false) ...[
+                              const SizedBox(height: 10),
+                              _buildInfoRow(
+                                'ATM / İşyeri',
+                                qrInfo!.merchantName!,
+                              ),
+                            ],
+                          ],
+                        ),
+                      ),
+                    ],
+                    const SizedBox(height: 16),
+                    _buildTextField(
+                      controller: amountController,
+                      label: 'Tutar',
+                      hint: 'Örnek: 500.00',
+                      keyboardType: const TextInputType.numberWithOptions(
+                        decimal: true,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    SizedBox(
+                      width: double.infinity,
+                      child: FilledButton.icon(
+                        onPressed: isResolving || isSubmitting
+                            ? null
+                            : startQrTransaction,
+                        icon: Icon(
+                          isSubmitting
+                              ? Icons.sync_rounded
+                              : Icons.play_circle_outline_rounded,
+                        ),
+                        label: Text(
+                          isSubmitting
+                              ? 'İşlem Başlatılıyor...'
+                              : 'ATM QR İşlemini Başlat',
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            },
+          ),
+        ),
+      );
+    } finally {
+      amountController.dispose();
+    }
+  }
+
   Future<String?> _promptFullCardNo({
     required String title,
     required PaycoreCardSummary card,
     required String description,
   }) async {
-    final controller = TextEditingController(text: card.fullCardNo ?? '');
+    final resolvedFullCardNo = _resolvedFullCardNo(card);
+    final controller = TextEditingController(text: resolvedFullCardNo ?? '');
     String? value;
 
     await showModalBottomSheet<void>(
@@ -2605,7 +3829,7 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    card.maskedCardNo,
+                    resolvedFullCardNo ?? card.maskedCardNo,
                     style: modalContext.textTheme.bodyMedium?.copyWith(
                       color: modalContext.colorScheme.onSurfaceVariant,
                     ),
@@ -2874,9 +4098,17 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final canPop = Navigator.of(context).canPop();
+
     return Scaffold(
       appBar: CustomAppBar(
-        title: const Text('Kartlarım'),
+        title: Text(widget.openActivateTab ? 'Kart Aktive Et' : 'Kartlarım'),
+        leading: canPop
+            ? IconButton(
+                icon: const Icon(Icons.arrow_back_rounded),
+                onPressed: () => Navigator.of(context).maybePop(),
+              )
+            : null,
         actions: [
           IconButton(
             onPressed: _isLoading ? null : () => unawaited(_loadData()),
@@ -2915,11 +4147,17 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
             _buildInlineErrorBanner(loadError),
             const SizedBox(height: 12),
           ],
-          _buildHeroCard(),
-          const SizedBox(height: 12),
-          _buildModuleSelector(),
-          const SizedBox(height: 14),
-          _buildSelectedModule(),
+          if (widget.openActivateTab) ...[
+            _buildHeroCard(),
+            const SizedBox(height: 12),
+            _buildStandaloneActivationPage(),
+          ] else ...[
+            _buildHeroCard(),
+            const SizedBox(height: 12),
+            _buildModuleSelector(),
+            const SizedBox(height: 14),
+            _buildSelectedModule(),
+          ],
         ],
       ),
     );
@@ -3150,259 +4388,304 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
             final currentCustomer = customer!;
 
             return [
-          _buildSurfaceCard(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    Icon(
-                      Icons.verified_user_outlined,
-                      color: context.colorScheme.primary,
-                    ),
-                    const SizedBox(width: 10),
-                    Expanded(
-                      child: Text(
-                        currentCustomer.fullName,
-                        style: context.textTheme.titleMedium?.copyWith(
-                          fontWeight: FontWeight.w700,
-                          fontSize: 16,
-                          height: 1.15,
-                        ),
-                      ),
-                    ),
-                    _buildPrimaryPill('Kart Sistemi Aktif'),
-                  ],
-                ),
-                const SizedBox(height: 14),
-                _buildInfoGroup('Özet', [
-                  ..._buildCustomerInfoRows([
-                    ('Ad Soyad', currentCustomer.fullName),
-                    ('Banking Customer No', currentCustomer.bankingCustomerNo),
-                    ('Customer No', currentCustomer.customerNo),
-                    ('Ana Kart', currentCustomer.primaryCardNo),
-                    ('Statü', currentCustomer.statCode),
-                    ('Risk Kodu', currentCustomer.riskCode),
-                    ('Müşteri Grubu', currentCustomer.customerGroupCode),
-                    ('İletişim Dili', currentCustomer.commLanguage),
-                    ('Meslek', currentCustomer.profession),
-                    ('Emboss', currentCustomer.customerEmbossNameExt),
-                    ('Şirket Adı', currentCustomer.companyName),
-                    ('Şirket No', currentCustomer.companyNo),
-                    ('Ünvan', currentCustomer.title),
-                    ('İşyeri', currentCustomer.workPlace),
-                    ('Mezuniyet', currentCustomer.graduation),
-                    ('Engel Tipi', currentCustomer.disabledType),
-                    ('Şube Kodu', currentCustomer.branchCode?.toString()),
-                    ('Dijital Slip Tipi', currentCustomer.digitalSlipType?.toString()),
-                  ]),
-                ]),
-                if (_hasCustomerIdentityInfo(currentCustomer)) ...[
-                  const SizedBox(height: 12),
-                  _buildInfoGroup('Kimlik', [
-                    ..._buildCustomerInfoRows([
-                      ('TC Kimlik No', currentCustomer.nationalIdentityNo),
-                      ('Cinsiyet', currentCustomer.gender),
-                      ('Doğum Tarihi', _formatDateValue(currentCustomer.birthDate)),
-                      ('Doğum Yeri', currentCustomer.birthPlace),
-                      ('Uyruk', currentCustomer.nationality),
-                      ('Kimlik Tipi', currentCustomer.identityType),
-                      ('Vergi No', currentCustomer.taxNo),
-                      ('Vergi Dairesi', currentCustomer.taxDepartmentName),
-                      ('Baba Adı', currentCustomer.fatherName),
-                      ('Anne Adı', currentCustomer.motherName),
-                      ('Kızlık Soyadı', currentCustomer.maidenName),
-                      ('Eş / Partner', currentCustomer.partnerName),
-                      ('Kimlik Seri No', currentCustomer.identitySerialNo),
-                      ('Kimlik Veren', currentCustomer.identityIssuedBy),
-                      (
-                        'Kimlik Veriliş',
-                        _formatDateValue(currentCustomer.identityIssueDate),
-                      ),
-                      (
-                        'Kimlik Geçerlilik',
-                        _formatDateValue(currentCustomer.identityValidUntil),
-                      ),
-                      ('Kimlik İl Kodu', currentCustomer.identityCityCode),
-                      ('Kimlik İlçe Kodu', currentCustomer.identityTownCode),
-                    ]),
-                  ]),
-                ],
-                if (_hasCustomerStatusInfo(currentCustomer)) ...[
-                  const SizedBox(height: 12),
-                  _buildInfoGroup('Durum ve Aktivite', [
-                    ..._buildCustomerInfoRows([
-                      ('Takip Durumu', currentCustomer.followUpStat),
-                      ('Ekstre Statü', currentCustomer.stmtStatCode),
-                      (
-                        'Gecikme Periyodu',
-                        currentCustomer.stmtDelinqPeriod?.toString(),
-                      ),
-                      ('NPL Adedi', currentCustomer.nplCount?.toString()),
-                      ('Min Ödeme Adedi', currentCustomer.minPayCount?.toString()),
-                      (
-                        'Önceki Min Ödeme',
-                        currentCustomer.prevMinPayCount?.toString(),
-                      ),
-                      (
-                        'Min Ödeme Değişim',
-                        _formatDateValue(currentCustomer.minPayChangeDate),
-                      ),
-                      ('Min Ödeme Gecikme', currentCustomer.minPayDelinq?.toString()),
-                      (
-                        'İlk Gecikme Tarihi',
-                        _formatDateValue(currentCustomer.firstDelayDate),
-                      ),
-                      (
-                        'Son İşlem Tarihi',
-                        _formatDateTimeValue(currentCustomer.lastTxnDate),
-                      ),
-                      ('Aktivite Statü', currentCustomer.activityStat),
-                      (
-                        'Aktivite Sayaç',
-                        currentCustomer.activityStatCount?.toString(),
-                      ),
-                      (
-                        'Son Kart Basım',
-                        _formatDateValue(currentCustomer.lastCardIssuingDate),
-                      ),
-                      (
-                        'İlk Kredi Kartı',
-                        _formatDateValue(currentCustomer.firstCreditCardDate),
-                      ),
-                      (
-                        'Statü Değişim',
-                        _formatDateValue(currentCustomer.statChangeDate),
-                      ),
-                      ('Garantili', _formatBoolValue(currentCustomer.isGuaranteed)),
-                      ('Tüzel Müşteri', _formatBoolValue(currentCustomer.isBusiness)),
-                      (
-                        'Kimlik İbraz',
-                        _formatBoolValue(currentCustomer.isIdentityPresented),
-                      ),
-                      ('Araç Sahibi', _formatBoolValue(currentCustomer.hasCar)),
-                      ('Gayrimenkul', _formatBoolValue(currentCustomer.hasRealEstate)),
-                      (
-                        'Bilgi Paylaşım İzni',
-                        _formatBoolValue(currentCustomer.isAllowedShareCstInfo),
-                      ),
-                      (
-                        'Bilgi Paylaşım Güncelleme',
-                        _formatDateValue(currentCustomer.shareCstInfoChgDate),
-                      ),
-                      ('Kefil', currentCustomer.guarantor),
-                      ('Kefil Meslek', currentCustomer.guarantorProfession),
-                    ]),
-                  ]),
-                ],
-              ],
-            ),
-          ),
-          if (currentCustomer.communications.isNotEmpty) ...[
-            const SizedBox(height: 16),
-            _buildSectionTitle('İletişim Bilgileri'),
-            const SizedBox(height: 10),
-            ...currentCustomer.communications.map(
-              (item) => _buildSurfaceCard(
-                margin: const EdgeInsets.only(bottom: 10),
-                child: Row(
-                  children: [
-                    Icon(
-                      item.communicationType == 'EM'
-                          ? Icons.alternate_email_rounded
-                          : Icons.phone_iphone_rounded,
-                      color: context.colorScheme.primary,
-                    ),
-                    const SizedBox(width: 12),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            _getCommunicationTypeLabel(item.communicationType),
-                            style: context.textTheme.bodySmall?.copyWith(
-                              color: context.colorScheme.onSurfaceVariant,
-                              fontSize: 11.5,
-                            ),
-                          ),
-                          const SizedBox(height: 4),
-                          Text(
-                            item.info,
-                            style: context.textTheme.bodyMedium?.copyWith(
-                              fontWeight: FontWeight.w700,
-                              fontSize: 14,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    if (item.isDefault) _buildPrimaryPill('Varsayılan'),
-                  ],
-                ),
-              ),
-            ),
-          ],
-          if (currentCustomer.addresses.isNotEmpty) ...[
-            const SizedBox(height: 16),
-            _buildSectionTitle('Adresler'),
-            const SizedBox(height: 10),
-            ...currentCustomer.addresses.map(
-              (address) => _buildSurfaceCard(
-                margin: const EdgeInsets.only(bottom: 12),
+              _buildSurfaceCard(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Row(
                       children: [
+                        Icon(
+                          Icons.verified_user_outlined,
+                          color: context.colorScheme.primary,
+                        ),
+                        const SizedBox(width: 10),
                         Expanded(
                           child: Text(
-                            _getAddressTypeLabel(address.addressType),
-                            style: context.textTheme.titleSmall?.copyWith(
+                            currentCustomer.fullName,
+                            style: context.textTheme.titleMedium?.copyWith(
                               fontWeight: FontWeight.w700,
-                              fontSize: 14,
+                              fontSize: 16,
+                              height: 1.15,
                             ),
                           ),
                         ),
-                        if (address.isDefault) _buildPrimaryPill('Varsayılan'),
+                        _buildPrimaryPill('Kart Sistemi Aktif'),
                       ],
                     ),
-                    const SizedBox(height: 10),
-                    Text(
-                      _buildAddressSummary(address),
-                      style: context.textTheme.bodyMedium,
-                    ),
                     const SizedBox(height: 14),
-                    Align(
-                      alignment: Alignment.centerRight,
-                      child: OutlinedButton.icon(
-                        onPressed: () =>
-                            unawaited(_showAddressEditSheet(address)),
-                        style: _compactActionStyle(),
-                        icon: const Icon(Icons.edit_location_alt_rounded),
-                        label: const Text('Düzenle'),
-                      ),
-                    ),
+                    _buildInfoGroup('Özet', [
+                      ..._buildCustomerInfoRows([
+                        ('Ad Soyad', currentCustomer.fullName),
+                        (
+                          'Banking Customer No',
+                          currentCustomer.bankingCustomerNo,
+                        ),
+                        ('Customer No', currentCustomer.customerNo),
+                        ('Ana Kart', currentCustomer.primaryCardNo),
+                        ('Statü', currentCustomer.statCode),
+                        ('Risk Kodu', currentCustomer.riskCode),
+                        ('Müşteri Grubu', currentCustomer.customerGroupCode),
+                        ('İletişim Dili', currentCustomer.commLanguage),
+                        ('Meslek', currentCustomer.profession),
+                        ('Emboss', currentCustomer.customerEmbossNameExt),
+                        ('Şirket Adı', currentCustomer.companyName),
+                        ('Şirket No', currentCustomer.companyNo),
+                        ('Ünvan', currentCustomer.title),
+                        ('İşyeri', currentCustomer.workPlace),
+                        ('Mezuniyet', currentCustomer.graduation),
+                        ('Engel Tipi', currentCustomer.disabledType),
+                        ('Şube Kodu', currentCustomer.branchCode?.toString()),
+                        (
+                          'Dijital Slip Tipi',
+                          currentCustomer.digitalSlipType?.toString(),
+                        ),
+                      ]),
+                    ]),
+                    if (_hasCustomerIdentityInfo(currentCustomer)) ...[
+                      const SizedBox(height: 12),
+                      _buildInfoGroup('Kimlik', [
+                        ..._buildCustomerInfoRows([
+                          ('TC Kimlik No', currentCustomer.nationalIdentityNo),
+                          ('Cinsiyet', currentCustomer.gender),
+                          (
+                            'Doğum Tarihi',
+                            _formatDateValue(currentCustomer.birthDate),
+                          ),
+                          ('Doğum Yeri', currentCustomer.birthPlace),
+                          ('Uyruk', currentCustomer.nationality),
+                          ('Kimlik Tipi', currentCustomer.identityType),
+                          ('Vergi No', currentCustomer.taxNo),
+                          ('Vergi Dairesi', currentCustomer.taxDepartmentName),
+                          ('Baba Adı', currentCustomer.fatherName),
+                          ('Anne Adı', currentCustomer.motherName),
+                          ('Kızlık Soyadı', currentCustomer.maidenName),
+                          ('Eş / Partner', currentCustomer.partnerName),
+                          ('Kimlik Seri No', currentCustomer.identitySerialNo),
+                          ('Kimlik Veren', currentCustomer.identityIssuedBy),
+                          (
+                            'Kimlik Veriliş',
+                            _formatDateValue(currentCustomer.identityIssueDate),
+                          ),
+                          (
+                            'Kimlik Geçerlilik',
+                            _formatDateValue(
+                              currentCustomer.identityValidUntil,
+                            ),
+                          ),
+                          ('Kimlik İl Kodu', currentCustomer.identityCityCode),
+                          (
+                            'Kimlik İlçe Kodu',
+                            currentCustomer.identityTownCode,
+                          ),
+                        ]),
+                      ]),
+                    ],
+                    if (_hasCustomerStatusInfo(currentCustomer)) ...[
+                      const SizedBox(height: 12),
+                      _buildInfoGroup('Durum ve Aktivite', [
+                        ..._buildCustomerInfoRows([
+                          ('Takip Durumu', currentCustomer.followUpStat),
+                          ('Ekstre Statü', currentCustomer.stmtStatCode),
+                          (
+                            'Gecikme Periyodu',
+                            currentCustomer.stmtDelinqPeriod?.toString(),
+                          ),
+                          ('NPL Adedi', currentCustomer.nplCount?.toString()),
+                          (
+                            'Min Ödeme Adedi',
+                            currentCustomer.minPayCount?.toString(),
+                          ),
+                          (
+                            'Önceki Min Ödeme',
+                            currentCustomer.prevMinPayCount?.toString(),
+                          ),
+                          (
+                            'Min Ödeme Değişim',
+                            _formatDateValue(currentCustomer.minPayChangeDate),
+                          ),
+                          (
+                            'Min Ödeme Gecikme',
+                            currentCustomer.minPayDelinq?.toString(),
+                          ),
+                          (
+                            'İlk Gecikme Tarihi',
+                            _formatDateValue(currentCustomer.firstDelayDate),
+                          ),
+                          (
+                            'Son İşlem Tarihi',
+                            _formatDateTimeValue(currentCustomer.lastTxnDate),
+                          ),
+                          ('Aktivite Statü', currentCustomer.activityStat),
+                          (
+                            'Aktivite Sayaç',
+                            currentCustomer.activityStatCount?.toString(),
+                          ),
+                          (
+                            'Son Kart Basım',
+                            _formatDateValue(
+                              currentCustomer.lastCardIssuingDate,
+                            ),
+                          ),
+                          (
+                            'İlk Kredi Kartı',
+                            _formatDateValue(
+                              currentCustomer.firstCreditCardDate,
+                            ),
+                          ),
+                          (
+                            'Statü Değişim',
+                            _formatDateValue(currentCustomer.statChangeDate),
+                          ),
+                          (
+                            'Garantili',
+                            _formatBoolValue(currentCustomer.isGuaranteed),
+                          ),
+                          (
+                            'Tüzel Müşteri',
+                            _formatBoolValue(currentCustomer.isBusiness),
+                          ),
+                          (
+                            'Kimlik İbraz',
+                            _formatBoolValue(
+                              currentCustomer.isIdentityPresented,
+                            ),
+                          ),
+                          (
+                            'Araç Sahibi',
+                            _formatBoolValue(currentCustomer.hasCar),
+                          ),
+                          (
+                            'Gayrimenkul',
+                            _formatBoolValue(currentCustomer.hasRealEstate),
+                          ),
+                          (
+                            'Bilgi Paylaşım İzni',
+                            _formatBoolValue(
+                              currentCustomer.isAllowedShareCstInfo,
+                            ),
+                          ),
+                          (
+                            'Bilgi Paylaşım Güncelleme',
+                            _formatDateValue(
+                              currentCustomer.shareCstInfoChgDate,
+                            ),
+                          ),
+                          ('Kefil', currentCustomer.guarantor),
+                          ('Kefil Meslek', currentCustomer.guarantorProfession),
+                        ]),
+                      ]),
+                    ],
                   ],
                 ),
               ),
-            ),
-          ],
-          if (currentCustomer.limits.isNotEmpty) ...[
-            const SizedBox(height: 16),
-            _buildSectionTitle('Limitler'),
-            const SizedBox(height: 10),
-            ...currentCustomer.limits.map(
-              (limit) => _buildSurfaceCard(
-                margin: const EdgeInsets.only(bottom: 10),
-                child: _buildTwoColumnInfo(
-                  leftLabel: 'Limit',
-                  leftValue: '${limit.currentLimit.toStringAsFixed(2)} ₺',
-                  rightLabel: 'Durum',
-                  rightValue: limit.isLimitBlocked ? 'Blokeli' : 'Açık',
+              if (currentCustomer.communications.isNotEmpty) ...[
+                const SizedBox(height: 16),
+                _buildSectionTitle('İletişim Bilgileri'),
+                const SizedBox(height: 10),
+                ...currentCustomer.communications.map(
+                  (item) => _buildSurfaceCard(
+                    margin: const EdgeInsets.only(bottom: 10),
+                    child: Row(
+                      children: [
+                        Icon(
+                          item.communicationType == 'EM'
+                              ? Icons.alternate_email_rounded
+                              : Icons.phone_iphone_rounded,
+                          color: context.colorScheme.primary,
+                        ),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                _getCommunicationTypeLabel(
+                                  item.communicationType,
+                                ),
+                                style: context.textTheme.bodySmall?.copyWith(
+                                  color: context.colorScheme.onSurfaceVariant,
+                                  fontSize: 11.5,
+                                ),
+                              ),
+                              const SizedBox(height: 4),
+                              Text(
+                                item.info,
+                                style: context.textTheme.bodyMedium?.copyWith(
+                                  fontWeight: FontWeight.w700,
+                                  fontSize: 14,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        if (item.isDefault) _buildPrimaryPill('Varsayılan'),
+                      ],
+                    ),
+                  ),
                 ),
-              ),
-            ),
-          ],
+              ],
+              if (currentCustomer.addresses.isNotEmpty) ...[
+                const SizedBox(height: 16),
+                _buildSectionTitle('Adresler'),
+                const SizedBox(height: 10),
+                ...currentCustomer.addresses.map(
+                  (address) => _buildSurfaceCard(
+                    margin: const EdgeInsets.only(bottom: 12),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            Expanded(
+                              child: Text(
+                                _getAddressTypeLabel(address.addressType),
+                                style: context.textTheme.titleSmall?.copyWith(
+                                  fontWeight: FontWeight.w700,
+                                  fontSize: 14,
+                                ),
+                              ),
+                            ),
+                            if (address.isDefault)
+                              _buildPrimaryPill('Varsayılan'),
+                          ],
+                        ),
+                        const SizedBox(height: 10),
+                        Text(
+                          _buildAddressSummary(address),
+                          style: context.textTheme.bodyMedium,
+                        ),
+                        const SizedBox(height: 14),
+                        Align(
+                          alignment: Alignment.centerRight,
+                          child: OutlinedButton.icon(
+                            onPressed: () =>
+                                unawaited(_showAddressEditSheet(address)),
+                            style: _compactActionStyle(),
+                            icon: const Icon(Icons.edit_location_alt_rounded),
+                            label: const Text('Düzenle'),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+              if (currentCustomer.limits.isNotEmpty) ...[
+                const SizedBox(height: 16),
+                _buildSectionTitle('Limitler'),
+                const SizedBox(height: 10),
+                ...currentCustomer.limits.map(
+                  (limit) => _buildSurfaceCard(
+                    margin: const EdgeInsets.only(bottom: 10),
+                    child: _buildTwoColumnInfo(
+                      leftLabel: 'Limit',
+                      leftValue: '${limit.currentLimit.toStringAsFixed(2)} ₺',
+                      rightLabel: 'Durum',
+                      rightValue: limit.isLimitBlocked ? 'Blokeli' : 'Açık',
+                    ),
+                  ),
+                ),
+              ],
             ];
           })(),
         ],
@@ -3411,6 +4694,9 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
   }
 
   Widget _buildCardsModule() {
+    final canCreateCard =
+        _hasPaycoreCustomerRecord && _resolvedCreateCardAddress != null;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -3420,61 +4706,29 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
               'Yeni prepaid kart üret, mevcut kartları incele ve ana kart atamasını yönet.',
         ),
         const SizedBox(height: 12),
-        _buildSurfaceCard(
-          child: Row(
-            children: [
-              Container(
-                width: 40,
-                height: 40,
-                decoration: BoxDecoration(
-                  color: context.colorScheme.primary.withValues(alpha: 0.1),
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: Icon(
-                  Icons.add_card_rounded,
-                  color: context.colorScheme.primary,
-                  size: 22,
-                ),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Yeni Kart Açılışı',
-                      style: context.textTheme.titleSmall?.copyWith(
-                        fontWeight: FontWeight.w700,
-                        fontSize: 14,
-                      ),
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      !_hasPaycoreCustomerRecord
-                          ? 'Kart açmadan önce müşteri kaydı oluşturulacak.'
-                          : (_resolvedCreateCardAddress == null
-                                ? 'Kart açmadan önce adres bilgisi tamamlanacak.'
-                                : 'Teslimat adresini kontrol edip yeni prepaid kart aç.'),
-                      style: context.textTheme.bodySmall?.copyWith(
-                        color: context.colorScheme.onSurfaceVariant,
-                        fontSize: 12,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(width: 12),
-              FilledButton(
-                onPressed: _handleCreateCardPressed,
-                style: _filledCompactActionStyle(),
-                child: const Text('Kart Oluştur'),
-              ),
-            ],
-          ),
+        _buildCardActionFeature(
+          title: 'Yeni Kart Açılışı',
+          icon: Icons.credit_card_rounded,
+          badgeLabel: canCreateCard ? 'Hazır' : 'Hazırlık Gerekli',
+          badgeColor: canCreateCard
+              ? const Color(0xFF08A857)
+              : const Color(0xFFEF8F00),
+          actionLabel: 'Kart Oluştur',
+          actionIcon: Icons.arrow_forward_rounded,
+          onPressed: _handleCreateCardPressed,
         ),
-        const SizedBox(height: 18),
-        _buildSectionTitle('Kartların'),
+        const SizedBox(height: 12),
+        _buildSectionTitle('Kartlarım'),
         const SizedBox(height: 10),
+        _buildCardsListSection(),
+      ],
+    );
+  }
+
+  Widget _buildCardsListSection() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
         if (_cards.isEmpty)
           _buildEmptyBlock(
             title: 'Kayıtlı kart bulunamadı',
@@ -3487,6 +4741,300 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
         else
           ..._cards.map(_buildCardModuleItem),
       ],
+    );
+  }
+
+  Widget _buildCardActivationPage({
+    required bool canAddCard,
+  }) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        _buildSurfaceCard(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    width: 52,
+                    height: 52,
+                    decoration: BoxDecoration(
+                      color: const Color(0xFF143D9C).withValues(alpha: 0.10),
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                    child: const Icon(
+                      Icons.add_card_rounded,
+                      color: Color(0xFF143D9C),
+                      size: 28,
+                    ),
+                  ),
+                  const SizedBox(width: 14),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Kart Aktivasyon',
+                          style: context.textTheme.titleMedium?.copyWith(
+                            fontWeight: FontWeight.w800,
+                          ),
+                        ),
+                        const SizedBox(height: 6),
+                        Text(
+                          'Yeni fiziki kartı bu sayfadan okutabilir veya bilgilerini girerek hesabına ekleyebilirsin.',
+                          style: context.textTheme.bodySmall?.copyWith(
+                            color: context.colorScheme.onSurfaceVariant,
+                            height: 1.4,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 16),
+              Wrap(
+                spacing: 8,
+                runSpacing: 8,
+                children: [
+                  _buildStatusPill(
+                    label: canAddCard
+                        ? 'Aktivasyona Uygun'
+                        : 'Müşteri Kaydı Gerekli',
+                    color: canAddCard
+                        ? const Color(0xFF08A857)
+                        : const Color(0xFFB54708),
+                  ),
+                  _buildStatusPill(
+                    label: 'QR / Manuel Giriş',
+                    color: const Color(0xFF143D9C),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 16),
+              _buildInlineInfoBox(
+                icon: Icons.info_outline_rounded,
+                message:
+                    'Kamera ile kart üzerindeki bilgileri hızlıca okutabilir veya numarayı elle girerek devam edebilirsin.',
+              ),
+              const SizedBox(height: 16),
+              SizedBox(
+                width: double.infinity,
+                child: FilledButton.icon(
+                  onPressed: _handleAddPhysicalCardPressed,
+                  style: FilledButton.styleFrom(
+                    minimumSize: const Size.fromHeight(50),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                    textStyle: const TextStyle(
+                      fontWeight: FontWeight.w800,
+                      fontSize: 15,
+                    ),
+                  ),
+                  icon: const Icon(Icons.qr_code_rounded, size: 18),
+                  label: const Text('Kartı Aktive Et'),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildStandaloneActivationPage() {
+    final canAddCard = _hasPaycoreCustomerRecord;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        _buildModuleHeader(
+          title: 'Kart Aktivasyon',
+          description:
+              'Fiziki kartı hesabına eklemek için QR okut veya kart bilgisini manuel girerek aktivasyonu tamamla.',
+        ),
+        const SizedBox(height: 12),
+        _buildCardActivationPage(canAddCard: canAddCard),
+      ],
+    );
+  }
+
+  Widget _buildCardActionFeature({
+    required String title,
+    required IconData icon,
+    required String badgeLabel,
+    required Color badgeColor,
+    required String actionLabel,
+    required IconData actionIcon,
+    required VoidCallback onPressed,
+  }) {
+    return _buildSurfaceCard(
+      child: Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(22),
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [
+              const Color(0xFFF7F9FF),
+              context.colorScheme.surface,
+            ],
+          ),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(14),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    width: 50,
+                    height: 50,
+                    decoration: BoxDecoration(
+                      color: const Color(0xFF143D9C).withValues(alpha: 0.10),
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                    child: Icon(
+                      icon,
+                      color: const Color(0xFF143D9C),
+                      size: 26,
+                    ),
+                  ),
+                  const SizedBox(width: 14),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Align(
+                          alignment: Alignment.centerLeft,
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 8,
+                              vertical: 3,
+                            ),
+                            decoration: BoxDecoration(
+                              color: badgeColor.withValues(alpha: 0.10),
+                              borderRadius: BorderRadius.circular(999),
+                              border: Border.all(
+                                color: badgeColor.withValues(alpha: 0.18),
+                              ),
+                            ),
+                            child: Text(
+                              badgeLabel,
+                              style: context.textTheme.bodySmall?.copyWith(
+                                color: badgeColor,
+                                fontWeight: FontWeight.w700,
+                                fontSize: 10.5,
+                                height: 1.0,
+                              ),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          title,
+                          style: context.textTheme.titleMedium?.copyWith(
+                            fontWeight: FontWeight.w800,
+                            fontSize: 15.5,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 12),
+              SizedBox(
+                width: double.infinity,
+                child: FilledButton.icon(
+                  onPressed: onPressed,
+                  style: FilledButton.styleFrom(
+                    minimumSize: const Size.fromHeight(50),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                    textStyle: const TextStyle(
+                      fontWeight: FontWeight.w800,
+                      fontSize: 15,
+                    ),
+                  ),
+                  icon: Icon(actionIcon, size: 18),
+                  label: Text(actionLabel),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildStatusPill({
+    required String label,
+    required Color color,
+  }) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: 0.10),
+        borderRadius: BorderRadius.circular(999),
+        border: Border.all(
+          color: color.withValues(alpha: 0.18),
+        ),
+      ),
+      child: Text(
+        label,
+        style: context.textTheme.bodySmall?.copyWith(
+          color: color,
+          fontWeight: FontWeight.w700,
+          fontSize: 11,
+          height: 1.0,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildInlineInfoBox({
+    required IconData icon,
+    required String message,
+  }) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: context.colorScheme.surfaceContainerHighest.withValues(
+          alpha: 0.35,
+        ),
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(
+          color: context.colorScheme.outlineVariant.withValues(alpha: 0.55),
+        ),
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Icon(
+            icon,
+            size: 18,
+            color: context.colorScheme.primary,
+          ),
+          const SizedBox(width: 10),
+          Expanded(
+            child: Text(
+              message,
+              style: context.textTheme.bodySmall?.copyWith(
+                color: context.colorScheme.onSurfaceVariant,
+                height: 1.4,
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 
@@ -3522,6 +5070,8 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
   Widget _buildCardModuleItem(PaycoreCardSummary card) {
     final isBusy = _busyCards.contains(card.id);
     final pinStatus = _pinStatuses[card.id];
+    final isExpanded =
+        _expandedCardMenus.isEmpty || _expandedCardMenus.contains(card.id);
 
     return Container(
       key: ValueKey('paycore-card-module-${card.id}'),
@@ -3532,7 +5082,7 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
           PaycoreCardVisual(
             card: card,
             enableFlip: true,
-            aspectRatio: 1.58,
+            aspectRatio: 1.48,
             margin: const EdgeInsets.only(bottom: 8),
             shouldIgnoreFlipTap:
                 (
@@ -3555,121 +5105,179 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  '${card.profileLabel} • ${card.cardTypeName}',
-                  style: context.textTheme.bodyMedium?.copyWith(
-                    fontWeight: FontWeight.w800,
-                    fontSize: 14,
+                InkWell(
+                  borderRadius: BorderRadius.circular(14),
+                  onTap: () {
+                    setState(() {
+                      if (_expandedCardMenus.isEmpty) {
+                        _expandedCardMenus.addAll(
+                          _cards.map((item) => item.id),
+                        );
+                      }
+
+                      if (_expandedCardMenus.contains(card.id)) {
+                        _expandedCardMenus.remove(card.id);
+                      } else {
+                        _expandedCardMenus.add(card.id);
+                      }
+                    });
+                  },
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              '${card.profileLabel} • ${card.cardTypeName}',
+                              style: context.textTheme.bodyMedium?.copyWith(
+                                fontWeight: FontWeight.w800,
+                                fontSize: 14,
+                              ),
+                            ),
+                            const SizedBox(height: 4),
+                            Text(
+                              'PIN: ${_pinStatusLabel(pinStatus)}',
+                              style: context.textTheme.bodySmall?.copyWith(
+                                color: context.colorScheme.onSurfaceVariant,
+                                fontSize: 12.5,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      AnimatedRotation(
+                        turns: isExpanded ? 0.5 : 0,
+                        duration: const Duration(milliseconds: 180),
+                        child: Icon(
+                          Icons.keyboard_arrow_down_rounded,
+                          color: context.colorScheme.onSurfaceVariant,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
-                const SizedBox(height: 4),
-                Text(
-                  'PIN: ${_pinStatusLabel(pinStatus)}',
-                  style: context.textTheme.bodySmall?.copyWith(
-                    color: context.colorScheme.onSurfaceVariant,
-                    fontSize: 12.5,
+                if (isExpanded) ...[
+                  const SizedBox(height: 12),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: OutlinedButton.icon(
+                          onPressed: () =>
+                              unawaited(_showCardDetailSheet(card)),
+                          style: _compactActionStyle(),
+                          icon: const Icon(Icons.article_outlined, size: 16),
+                          label: const Text('Detay'),
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: OutlinedButton.icon(
+                          onPressed: () => unawaited(_showPinStatusSheet(card)),
+                          style: _compactActionStyle(),
+                          icon: const Icon(Icons.search_rounded, size: 16),
+                          label: const Text('PIN Durum'),
+                        ),
+                      ),
+                    ],
                   ),
-                ),
-                const SizedBox(height: 12),
-                Row(
-                  children: [
-                    Expanded(
-                      child: OutlinedButton.icon(
-                        onPressed: () => unawaited(_showCardDetailSheet(card)),
-                        style: _compactActionStyle(),
-                        icon: const Icon(Icons.article_outlined, size: 16),
-                        label: const Text('Detay'),
-                      ),
-                    ),
-                    const SizedBox(width: 8),
-                    Expanded(
-                      child: OutlinedButton.icon(
-                        onPressed: () => unawaited(_showPinStatusSheet(card)),
-                        style: _compactActionStyle(),
-                        icon: const Icon(Icons.search_rounded, size: 16),
-                        label: const Text('PIN Durum'),
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 8),
-                Row(
-                  children: [
-                    Expanded(
-                      child: OutlinedButton.icon(
-                        onPressed: isBusy || card.isPrimary
-                            ? null
-                            : () => unawaited(
-                                _runCardAction(
-                                  card,
-                                  () => _setPrimaryCard(card),
+                  const SizedBox(height: 8),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: OutlinedButton.icon(
+                          onPressed: isBusy || card.isPrimary
+                              ? null
+                              : () => unawaited(
+                                  _runCardAction(
+                                    card,
+                                    () => _setPrimaryCard(card),
+                                  ),
                                 ),
-                              ),
-                        style: OutlinedButton.styleFrom(
-                          foregroundColor: const Color(0xFF143D9C),
-                          visualDensity: VisualDensity.compact,
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 10,
-                            vertical: 10,
+                          style: OutlinedButton.styleFrom(
+                            foregroundColor: const Color(0xFF143D9C),
+                            visualDensity: VisualDensity.compact,
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 10,
+                              vertical: 10,
+                            ),
+                            textStyle: const TextStyle(
+                              fontSize: 12,
+                              fontWeight: FontWeight.w700,
+                            ),
+                            side: BorderSide(
+                              color: card.isPrimary
+                                  ? context.colorScheme.outlineVariant
+                                  : const Color(0xFF1E1E1E),
+                            ),
                           ),
-                          textStyle: const TextStyle(
-                            fontSize: 12,
-                            fontWeight: FontWeight.w700,
+                          icon: const Icon(
+                            Icons.workspace_premium_outlined,
+                            size: 16,
                           ),
-                          side: BorderSide(
-                            color: card.isPrimary
-                                ? context.colorScheme.outlineVariant
-                                : const Color(0xFF1E1E1E),
+                          label: Text(
+                            card.isPrimary ? 'Ana Kart' : 'Ana Kart Ata',
                           ),
                         ),
-                        icon: const Icon(
-                          Icons.workspace_premium_outlined,
-                          size: 16,
+                      ),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: FilledButton.icon(
+                          onPressed: () => unawaited(_showSetPinSheet(card)),
+                          style: _filledCompactActionStyle(),
+                          icon: const Icon(Icons.pin_outlined, size: 16),
+                          label: Text(
+                            (pinStatus?.pinSetFlag ?? false)
+                                ? 'PIN Güncelle'
+                                : 'PIN Oluştur',
+                          ),
                         ),
-                        label: Text(
-                          card.isPrimary ? 'Ana Kart' : 'Ana Kart Ata',
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 8),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: OutlinedButton.icon(
+                          onPressed: isBusy
+                              ? null
+                              : () => unawaited(_showRandomPinSheet(card)),
+                          style: _compactActionStyle(),
+                          icon: const Icon(Icons.password_rounded, size: 16),
+                          label: const Text('Random PIN'),
                         ),
                       ),
-                    ),
-                    const SizedBox(width: 8),
-                    Expanded(
-                      child: FilledButton.icon(
-                        onPressed: () => unawaited(_showSetPinSheet(card)),
-                        style: _filledCompactActionStyle(),
-                        icon: const Icon(Icons.pin_outlined, size: 16),
-                        label: const Text('PIN Set'),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: OutlinedButton.icon(
+                          onPressed: isBusy
+                              ? null
+                              : () => unawaited(
+                                  _runCardAction(card, () => _sendPinSms(card)),
+                                ),
+                          style: _compactActionStyle(),
+                          icon: const Icon(Icons.sms_outlined, size: 16),
+                          label: const Text('PIN SMS'),
+                        ),
                       ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 8),
-                Row(
-                  children: [
-                    Expanded(
-                      child: OutlinedButton.icon(
-                        onPressed: isBusy
-                            ? null
-                            : () => unawaited(_showRandomPinSheet(card)),
-                        style: _compactActionStyle(),
-                        icon: const Icon(Icons.password_rounded, size: 16),
-                        label: const Text('Random PIN'),
+                    ],
+                  ),
+                  const SizedBox(height: 8),
+                  SizedBox(
+                    width: double.infinity,
+                    child: FilledButton.tonalIcon(
+                      onPressed: isBusy
+                          ? null
+                          : () => unawaited(_showQrPaymentOptions(card)),
+                      style: FilledButton.styleFrom(
+                        minimumSize: const Size.fromHeight(46),
                       ),
+                      icon: const Icon(Icons.qr_code_scanner_rounded, size: 18),
+                      label: const Text('QR ile Öde / Para Çek'),
                     ),
-                    const SizedBox(width: 8),
-                    Expanded(
-                      child: OutlinedButton.icon(
-                        onPressed: isBusy
-                            ? null
-                            : () => unawaited(
-                                _runCardAction(card, () => _sendPinSms(card)),
-                              ),
-                        style: _compactActionStyle(),
-                        icon: const Icon(Icons.sms_outlined, size: 16),
-                        label: const Text('PIN SMS'),
-                      ),
-                    ),
-                  ],
-                ),
+                  ),
+                ],
               ],
             ),
           ),
@@ -3682,9 +5290,13 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
     PaycoreCardSummary card,
     PaycorePinStatus? pinStatus,
   ) {
+    final resolvedFullCardNo = _resolvedFullCardNo(card);
     final embossName = card.embossName?.trim().isNotEmpty ?? false
         ? card.embossName!.trim().toUpperCase()
         : 'KART SAHIBI';
+    final canRevealCardNumber =
+        card.resolvedIsDigitalCard && resolvedFullCardNo != null;
+    final isCardNumberVisible = _revealedVirtualCardNumbers.contains(card.id);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -3708,15 +5320,93 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
         ),
         const Spacer(),
         Row(
+          crossAxisAlignment: CrossAxisAlignment.end,
           children: [
             Expanded(
-              child: Text(
-                card.maskedCardNo,
-                style: context.textTheme.titleMedium?.copyWith(
-                  color: Colors.white,
-                  fontWeight: FontWeight.w800,
-                  letterSpacing: 0.8,
-                  fontSize: 16,
+              child: GestureDetector(
+                behavior: HitTestBehavior.opaque,
+                onTap: () async {
+                  if (!canRevealCardNumber || !isCardNumberVisible) {
+                    return;
+                  }
+
+                  await Clipboard.setData(
+                    ClipboardData(text: resolvedFullCardNo!),
+                  );
+                  if (!mounted) {
+                    return;
+                  }
+                  ToastComponent.showSuccessToast(
+                    context: context,
+                    message: 'Kart numarası kopyalandı.',
+                  );
+                },
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Flexible(
+                          child: Text(
+                            isCardNumberVisible && canRevealCardNumber
+                                ? resolvedFullCardNo!
+                                : card.maskedCardNo,
+                            style: context.textTheme.titleMedium?.copyWith(
+                              color: Colors.white,
+                              fontWeight: FontWeight.w800,
+                              letterSpacing: 0.8,
+                              fontSize: 16,
+                            ),
+                          ),
+                        ),
+                        if (canRevealCardNumber) ...[
+                          const SizedBox(width: 8),
+                          GestureDetector(
+                            behavior: HitTestBehavior.opaque,
+                            onTap: () {
+                              setState(() {
+                                if (isCardNumberVisible) {
+                                  _revealedVirtualCardNumbers.remove(card.id);
+                                } else {
+                                  _revealedVirtualCardNumbers.add(card.id);
+                                }
+                              });
+                            },
+                            child: Container(
+                              width: 28,
+                              height: 28,
+                              decoration: BoxDecoration(
+                                color: Colors.white.withValues(alpha: 0.12),
+                                shape: BoxShape.circle,
+                                border: Border.all(
+                                  color: Colors.white.withValues(alpha: 0.15),
+                                ),
+                              ),
+                              child: Icon(
+                                isCardNumberVisible
+                                    ? Icons.visibility_off_outlined
+                                    : Icons.visibility_outlined,
+                                color: Colors.white,
+                                size: 16,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ],
+                    ),
+                    if (canRevealCardNumber && isCardNumberVisible) ...[
+                      const SizedBox(height: 2),
+                      Text(
+                        'Dokun ve kopyala',
+                        style: context.textTheme.bodySmall?.copyWith(
+                          color: Colors.white.withValues(alpha: 0.72),
+                          fontSize: 9.5,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ],
+                  ],
                 ),
               ),
             ),
@@ -4446,6 +6136,33 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
     };
   }
 
+  String? _normalizeCardDigits(String? value) {
+    if (value == null) {
+      return null;
+    }
+
+    final digits = value.replaceAll(RegExp(r'[^0-9]'), '').trim();
+    return digits.isEmpty ? null : digits;
+  }
+
+  double? _parseOptionalDouble(String? value) {
+    if (value == null) {
+      return null;
+    }
+
+    final normalized = value.trim().replaceAll(',', '.');
+    if (normalized.isEmpty) {
+      return null;
+    }
+
+    return double.tryParse(normalized);
+  }
+
+  String? _nullIfBlank(String? value) {
+    final normalized = value?.trim() ?? '';
+    return normalized.isEmpty ? null : normalized;
+  }
+
   Widget _buildTextField({
     required TextEditingController controller,
     required String label,
@@ -4496,6 +6213,24 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
         ),
       ),
     );
+  }
+
+  String? _resolvedFullCardNo(PaycoreCardSummary card) {
+    final normalizedFullCardNo = card.fullCardNo
+        ?.replaceAll(RegExp('[^0-9]'), '')
+        .trim();
+    if (normalizedFullCardNo != null && normalizedFullCardNo.length >= 12) {
+      return normalizedFullCardNo;
+    }
+
+    final normalizedCardReference = card.cardReference
+        .replaceAll(RegExp('[^0-9]'), '')
+        .trim();
+    if (normalizedCardReference.length >= 12) {
+      return normalizedCardReference;
+    }
+
+    return null;
   }
 
   Widget _buildDropdownField({
@@ -4594,174 +6329,182 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
     final searchController = TextEditingController();
     var filteredItems = List<String>.from(items);
     final maxSheetHeight = MediaQuery.of(context).size.height * 0.72;
+    try {
+      final selected = await showModalBottomSheet<String>(
+        context: context,
+        isScrollControlled: true,
+        useSafeArea: true,
+        backgroundColor: Colors.transparent,
+        builder: (sheetContext) {
+          return StatefulBuilder(
+            builder: (modalContext, setModalState) {
+              void handleSearch(String query) {
+                setModalState(() {
+                  filteredItems = items
+                      .where(
+                        (item) =>
+                            item.toLowerCase().contains(query.toLowerCase()),
+                      )
+                      .toList();
+                });
+              }
 
-    final selected = await showModalBottomSheet<String>(
-      context: context,
-      isScrollControlled: true,
-      useSafeArea: true,
-      backgroundColor: Colors.transparent,
-      builder: (sheetContext) {
-        return StatefulBuilder(
-          builder: (modalContext, setModalState) {
-            void handleSearch(String query) {
-              setModalState(() {
-                filteredItems = items
-                    .where(
-                      (item) =>
-                          item.toLowerCase().contains(query.toLowerCase()),
-                    )
-                    .toList();
-              });
-            }
-
-            return Container(
-              decoration: BoxDecoration(
-                color: context.colorScheme.surface,
-                borderRadius: const BorderRadius.vertical(
-                  top: Radius.circular(24),
-                ),
-              ),
-              child: SizedBox(
-                height: maxSheetHeight,
-                child: Padding(
-                  padding: EdgeInsets.only(
-                    left: 16,
-                    right: 16,
-                    top: 12,
-                    bottom: MediaQuery.of(modalContext).viewInsets.bottom + 16,
+              return Container(
+                decoration: BoxDecoration(
+                  color: context.colorScheme.surface,
+                  borderRadius: const BorderRadius.vertical(
+                    top: Radius.circular(24),
                   ),
-                  child: Column(
-                    children: [
-                      Container(
-                        width: 44,
-                        height: 5,
-                        decoration: BoxDecoration(
-                          color: context.colorScheme.outlineVariant,
-                          borderRadius: BorderRadius.circular(999),
-                        ),
-                      ),
-                      const SizedBox(height: 14),
-                      Text(
-                        title,
-                        style: context.textTheme.titleMedium?.copyWith(
-                          fontWeight: FontWeight.w800,
-                        ),
-                      ),
-                      if (enableSearch) ...[
-                        const SizedBox(height: 14),
-                        TextField(
-                          controller: searchController,
-                          onChanged: handleSearch,
-                          decoration: InputDecoration(
-                            hintText: 'Ara',
-                            prefixIcon: const Icon(Icons.search_rounded),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(14),
-                            ),
-                            contentPadding: const EdgeInsets.symmetric(
-                              horizontal: 12,
-                              vertical: 12,
-                            ),
+                ),
+                child: SizedBox(
+                  height: maxSheetHeight,
+                  child: Padding(
+                    padding: EdgeInsets.only(
+                      left: 16,
+                      right: 16,
+                      top: 12,
+                      bottom:
+                          MediaQuery.of(modalContext).viewInsets.bottom + 16,
+                    ),
+                    child: Column(
+                      children: [
+                        Container(
+                          width: 44,
+                          height: 5,
+                          decoration: BoxDecoration(
+                            color: context.colorScheme.outlineVariant,
+                            borderRadius: BorderRadius.circular(999),
                           ),
                         ),
-                      ],
-                      const SizedBox(height: 12),
-                      Expanded(
-                        child: filteredItems.isEmpty
-                            ? Center(
-                                child: Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                    vertical: 24,
+                        const SizedBox(height: 14),
+                        Text(
+                          title,
+                          style: context.textTheme.titleMedium?.copyWith(
+                            fontWeight: FontWeight.w800,
+                          ),
+                        ),
+                        if (enableSearch) ...[
+                          const SizedBox(height: 14),
+                          TextField(
+                            controller: searchController,
+                            onChanged: handleSearch,
+                            decoration: InputDecoration(
+                              hintText: 'Ara',
+                              prefixIcon: const Icon(Icons.search_rounded),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(14),
+                              ),
+                              contentPadding: const EdgeInsets.symmetric(
+                                horizontal: 12,
+                                vertical: 12,
+                              ),
+                            ),
+                          ),
+                        ],
+                        const SizedBox(height: 12),
+                        Expanded(
+                          child: filteredItems.isEmpty
+                              ? Center(
+                                  child: Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                      vertical: 24,
+                                    ),
+                                    child: Text(
+                                      'Sonuc bulunamadi',
+                                      style: context.textTheme.bodyMedium
+                                          ?.copyWith(
+                                            color: context
+                                                .colorScheme
+                                                .onSurfaceVariant,
+                                          ),
+                                    ),
                                   ),
-                                  child: Text(
-                                    'Sonuc bulunamadi',
-                                    style: context.textTheme.bodyMedium
-                                        ?.copyWith(
-                                          color: context
-                                              .colorScheme
-                                              .onSurfaceVariant,
-                                        ),
-                                  ),
-                                ),
-                              )
-                            : ListView.separated(
-                                itemCount: filteredItems.length,
-                                separatorBuilder: (_, index) =>
-                                    const SizedBox(height: 6),
-                                itemBuilder: (itemContext, index) {
-                                  final item = filteredItems[index];
-                                  final isSelected = item == selectedValue;
+                                )
+                              : ListView.separated(
+                                  itemCount: filteredItems.length,
+                                  separatorBuilder: (_, index) =>
+                                      const SizedBox(height: 6),
+                                  itemBuilder: (itemContext, index) {
+                                    final item = filteredItems[index];
+                                    final isSelected = item == selectedValue;
 
-                                  return Material(
-                                    color: isSelected
-                                        ? context.colorScheme.primary
-                                              .withValues(
-                                                alpha: 0.08,
-                                              )
-                                        : context.colorScheme.surface,
-                                    borderRadius: BorderRadius.circular(14),
-                                    child: InkWell(
+                                    return Material(
+                                      color: isSelected
+                                          ? context.colorScheme.primary
+                                                .withValues(
+                                                  alpha: 0.08,
+                                                )
+                                          : context.colorScheme.surface,
                                       borderRadius: BorderRadius.circular(14),
-                                      onTap: () =>
-                                          Navigator.of(sheetContext).pop(item),
-                                      child: Container(
-                                        padding: const EdgeInsets.symmetric(
-                                          horizontal: 14,
-                                          vertical: 14,
-                                        ),
-                                        decoration: BoxDecoration(
-                                          borderRadius: BorderRadius.circular(
-                                            14,
+                                      child: InkWell(
+                                        borderRadius: BorderRadius.circular(14),
+                                        onTap: () => Navigator.of(
+                                          sheetContext,
+                                        ).pop(item),
+                                        child: Container(
+                                          padding: const EdgeInsets.symmetric(
+                                            horizontal: 14,
+                                            vertical: 14,
                                           ),
-                                          border: Border.all(
-                                            color: isSelected
-                                                ? context.colorScheme.primary
-                                                : context
-                                                      .colorScheme
-                                                      .outlineVariant
-                                                      .withValues(alpha: 0.35),
-                                          ),
-                                        ),
-                                        child: Row(
-                                          children: [
-                                            Expanded(
-                                              child: Text(
-                                                item,
-                                                style: context
-                                                    .textTheme
-                                                    .bodyMedium
-                                                    ?.copyWith(
-                                                      fontWeight: isSelected
-                                                          ? FontWeight.w700
-                                                          : FontWeight.w500,
-                                                    ),
-                                              ),
+                                          decoration: BoxDecoration(
+                                            borderRadius: BorderRadius.circular(
+                                              14,
                                             ),
-                                            if (isSelected)
-                                              Icon(
-                                                Icons.check_circle_rounded,
-                                                color:
-                                                    context.colorScheme.primary,
-                                                size: 20,
+                                            border: Border.all(
+                                              color: isSelected
+                                                  ? context.colorScheme.primary
+                                                  : context
+                                                        .colorScheme
+                                                        .outlineVariant
+                                                        .withValues(
+                                                          alpha: 0.35,
+                                                        ),
+                                            ),
+                                          ),
+                                          child: Row(
+                                            children: [
+                                              Expanded(
+                                                child: Text(
+                                                  item,
+                                                  style: context
+                                                      .textTheme
+                                                      .bodyMedium
+                                                      ?.copyWith(
+                                                        fontWeight: isSelected
+                                                            ? FontWeight.w700
+                                                            : FontWeight.w500,
+                                                      ),
+                                                ),
                                               ),
-                                          ],
+                                              if (isSelected)
+                                                Icon(
+                                                  Icons.check_circle_rounded,
+                                                  color: context
+                                                      .colorScheme
+                                                      .primary,
+                                                  size: 20,
+                                                ),
+                                            ],
+                                          ),
                                         ),
                                       ),
-                                    ),
-                                  );
-                                },
-                              ),
-                      ),
-                    ],
+                                    );
+                                  },
+                                ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
-              ),
-            );
-          },
-        );
-      },
-    );
-    return selected;
+              );
+            },
+          );
+        },
+      );
+      return selected;
+    } finally {
+      searchController.dispose();
+    }
   }
 
   String _buildAddressSummary(PaycoreCustomerAddress address) {
@@ -4943,5 +6686,107 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
       'W' => 'İş Adresi',
       _ => code,
     };
+  }
+}
+
+final class _PaycoreQrScanModal extends StatefulWidget {
+  const _PaycoreQrScanModal({
+    required this.title,
+    required this.description,
+    required this.onQrScanned,
+    required this.onClose,
+  });
+
+  final String title;
+  final String description;
+  final ValueChanged<String> onQrScanned;
+  final VoidCallback onClose;
+
+  @override
+  State<_PaycoreQrScanModal> createState() => _PaycoreQrScanModalState();
+}
+
+final class _PaycoreQrScanModalState extends State<_PaycoreQrScanModal> {
+  late final MobileScannerController _scannerController;
+  bool _hasScanned = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _scannerController = MobileScannerController(
+      detectionTimeoutMs: 1000,
+      formats: const [BarcodeFormat.qrCode],
+    );
+  }
+
+  @override
+  void dispose() {
+    unawaited(_scannerController.dispose());
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return SafeArea(
+      child: Container(
+        height: MediaQuery.of(context).size.height * 0.75,
+        padding: const EdgeInsets.fromLTRB(20, 16, 20, 20),
+        decoration: BoxDecoration(
+          color: Theme.of(context).colorScheme.surface,
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    widget.title,
+                    style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                ),
+                IconButton(
+                  onPressed: widget.onClose,
+                  icon: const Icon(Icons.close_rounded),
+                ),
+              ],
+            ),
+            const SizedBox(height: 8),
+            Text(
+              widget.description,
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
+                height: 1.4,
+              ),
+            ),
+            const SizedBox(height: 16),
+            Expanded(
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(20),
+                child: MobileScanner(
+                  controller: _scannerController,
+                  onDetect: (capture) {
+                    if (_hasScanned || capture.barcodes.isEmpty) {
+                      return;
+                    }
+
+                    final value = capture.barcodes.first.rawValue?.trim() ?? '';
+                    if (value.isEmpty) {
+                      return;
+                    }
+
+                    _hasScanned = true;
+                    widget.onQrScanned(value);
+                  },
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }

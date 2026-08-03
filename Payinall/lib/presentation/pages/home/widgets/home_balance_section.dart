@@ -40,17 +40,17 @@ final class _HomeBalanceSectionState extends State<HomeBalanceSection> {
       children: [
         Container(
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(26),
+            borderRadius: BorderRadius.circular(30),
             boxShadow: [
               BoxShadow(
-                color: const Color(0xFF25308B).withValues(alpha: 0.20),
-                blurRadius: 18,
-                offset: const Offset(0, 10),
+                color: const Color(0xFF233080).withValues(alpha: 0.22),
+                blurRadius: 24,
+                offset: const Offset(0, 14),
               ),
             ],
           ),
           child: ClipRRect(
-            borderRadius: BorderRadius.circular(26),
+            borderRadius: BorderRadius.circular(30),
             child: Stack(
               children: [
                 const Positioned.fill(
@@ -60,52 +60,131 @@ final class _HomeBalanceSectionState extends State<HomeBalanceSection> {
                         begin: Alignment.topLeft,
                         end: Alignment.bottomRight,
                         colors: [
-                          Color(0xFF232E87),
-                          Color(0xFF3147D0),
-                          Color(0xFF1EB3F7),
+                          Color(0xFF0F163B),
+                          Color(0xFF203C9B),
+                          Color(0xFF18A0FB),
                         ],
-                        stops: [0.0, 0.58, 1.0],
+                        stops: [0.0, 0.52, 1.0],
+                      ),
+                    ),
+                  ),
+                ),
+                Positioned.fill(
+                  child: DecoratedBox(
+                    decoration: BoxDecoration(
+                      gradient: RadialGradient(
+                        center: Alignment.bottomLeft,
+                        radius: 1.1,
+                        colors: [
+                          Color(0xFF6C7BFF).withValues(alpha: 0.22),
+                          Colors.transparent,
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+                Positioned.fill(
+                  child: DecoratedBox(
+                    decoration: BoxDecoration(
+                      border: Border.all(
+                        color: Colors.white.withValues(alpha: 0.10),
+                      ),
+                      gradient: LinearGradient(
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                        colors: [
+                          Colors.white.withValues(alpha: 0.03),
+                          Colors.transparent,
+                          Colors.black.withValues(alpha: 0.08),
+                        ],
                       ),
                     ),
                   ),
                 ),
                 Positioned(
-                  top: -48,
-                  right: -40,
+                  top: -62,
+                  right: -48,
                   child: Container(
-                    width: 96,
-                    height: 96,
+                    width: 136,
+                    height: 136,
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      color: Colors.white.withValues(alpha: 0.12),
+                      gradient: RadialGradient(
+                        colors: [
+                          Colors.white.withValues(alpha: 0.18),
+                          Colors.white.withValues(alpha: 0.04),
+                          Colors.transparent,
+                        ],
+                      ),
                     ),
                   ),
                 ),
                 Positioned(
-                  bottom: -64,
-                  left: -34,
+                  bottom: -78,
+                  left: -44,
                   child: Container(
-                    width: 112,
-                    height: 112,
+                    width: 152,
+                    height: 152,
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      color: Colors.white.withValues(alpha: 0.08),
+                      gradient: RadialGradient(
+                        colors: [
+                          Colors.white.withValues(alpha: 0.12),
+                          Colors.white.withValues(alpha: 0.03),
+                          Colors.transparent,
+                        ],
+                      ),
                     ),
                   ),
                 ),
                 Positioned(
-                  top: 14,
-                  right: 16,
+                  top: 36,
+                  left: -18,
+                  child: Transform.rotate(
+                    angle: -0.18,
+                    child: Container(
+                      width: 170,
+                      height: 170,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(42),
+                        border: Border.all(
+                          color: Colors.white.withValues(alpha: 0.08),
+                          width: 1.2,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+                Positioned(
+                  right: 86,
+                  bottom: -18,
+                  child: Transform.rotate(
+                    angle: 0.42,
+                    child: Container(
+                      width: 120,
+                      height: 120,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(30),
+                        border: Border.all(
+                          color: Colors.white.withValues(alpha: 0.07),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+                Positioned(
+                  top: 16,
+                  right: 18,
                   child: Container(
                     padding: const EdgeInsets.symmetric(
-                      horizontal: 8,
-                      vertical: 4,
+                      horizontal: 12,
+                      vertical: 7,
                     ),
                     decoration: BoxDecoration(
-                      color: Colors.white.withValues(alpha: 0.14),
+                      color: Colors.white.withValues(alpha: 0.12),
                       borderRadius: BorderRadius.circular(999),
                       border: Border.all(
-                        color: Colors.white.withValues(alpha: 0.16),
+                        color: Colors.white.withValues(alpha: 0.18),
                       ),
                     ),
                     child: Text(
@@ -114,13 +193,13 @@ final class _HomeBalanceSectionState extends State<HomeBalanceSection> {
                         color: Colors.white,
                         fontWeight: FontWeight.w700,
                         letterSpacing: 0.2,
-                        fontSize: 10.5,
+                        fontSize: 11.5,
                       ),
                     ),
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.fromLTRB(15, 15, 15, 15),
+                  padding: const EdgeInsets.fromLTRB(18, 18, 18, 18),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -128,23 +207,92 @@ final class _HomeBalanceSectionState extends State<HomeBalanceSection> {
                         children: [
                           Container(
                             padding: const EdgeInsets.symmetric(
-                              horizontal: 8,
-                              vertical: 4,
+                              horizontal: 12,
+                              vertical: 7,
                             ),
                             decoration: BoxDecoration(
-                              color: Colors.white.withValues(alpha: 0.14),
+                              gradient: LinearGradient(
+                                colors: [
+                                  Colors.white.withValues(alpha: 0.22),
+                                  Colors.white.withValues(alpha: 0.08),
+                                ],
+                                begin: Alignment.topLeft,
+                                end: Alignment.bottomRight,
+                              ),
                               borderRadius: BorderRadius.circular(999),
+                              border: Border.all(
+                                color: Colors.white.withValues(alpha: 0.16),
+                              ),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withValues(alpha: 0.08),
+                                  blurRadius: 12,
+                                  offset: const Offset(0, 6),
+                                ),
+                              ],
                             ),
-                            child: Text(
-                              LocaleKeys.balance.translate,
-                              style: context.textTheme.bodySmall?.copyWith(
-                                color: Colors.white.withValues(alpha: 0.92),
-                                fontWeight: FontWeight.w700,
-                                fontSize: 10.5,
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Container(
+                                  width: 8,
+                                  height: 8,
+                                  decoration: BoxDecoration(
+                                    color: const Color(0xFF7CF3C7),
+                                    shape: BoxShape.circle,
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: const Color(
+                                          0xFF7CF3C7,
+                                        ).withValues(alpha: 0.35),
+                                        blurRadius: 8,
+                                        offset: const Offset(0, 0),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                const SizedBox(width: 7),
+                                Text(
+                                  LocaleKeys.balance.translate,
+                                  style: context.textTheme.bodySmall?.copyWith(
+                                    color: Colors.white.withValues(alpha: 0.96),
+                                    fontWeight: FontWeight.w700,
+                                    fontSize: 11,
+                                    letterSpacing: 0.2,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 12),
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Expanded(
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 2,
+                                vertical: 4,
+                              ),
+                              child: Text(
+                                _isBalanceVisible
+                                    ? _formatCurrency(widget.balance)
+                                    : '*****,**${AppConstants.currencySymbol}',
+                                style: context.textTheme.displayMedium?.copyWith(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w800,
+                                  letterSpacing: -1.1,
+                                  fontSize: 32,
+                                  height: 1,
+                                ),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
                               ),
                             ),
                           ),
-                          const Spacer(),
+                          const SizedBox(width: 12),
                           InkWell(
                             onTap: () {
                               setState(() {
@@ -152,49 +300,40 @@ final class _HomeBalanceSectionState extends State<HomeBalanceSection> {
                               });
                             },
                             borderRadius: BorderRadius.circular(999),
-                            child: Padding(
-                              padding: const EdgeInsets.only(top: 4),
-                              child: Container(
-                                width: 32,
-                                height: 32,
-                                decoration: BoxDecoration(
+                            child: Container(
+                              width: 42,
+                              height: 42,
+                              decoration: BoxDecoration(
+                                color: Colors.white.withValues(alpha: 0.12),
+                                shape: BoxShape.circle,
+                                border: Border.all(
                                   color: Colors.white.withValues(alpha: 0.12),
-                                  shape: BoxShape.circle,
                                 ),
-                                child: Icon(
-                                  _isBalanceVisible
-                                      ? Icons.visibility_outlined
-                                      : Icons.visibility_off_outlined,
-                                  color: Colors.white,
-                                  size: IconSizeConstants.m,
-                                ),
+                              ),
+                              child: Icon(
+                                _isBalanceVisible
+                                    ? Icons.visibility_outlined
+                                    : Icons.visibility_off_outlined,
+                                color: Colors.white,
+                                size: 22,
                               ),
                             ),
                           ),
                         ],
                       ),
-                      const SizedBox(height: 12),
-                      Text(
-                        _isBalanceVisible
-                            ? _formatCurrency(widget.balance)
-                            : '*****,**${AppConstants.currencySymbol}',
-                        style: context.textTheme.displayMedium?.copyWith(
-                          color: Colors.white,
-                          fontWeight: FontWeight.w800,
-                          letterSpacing: -0.8,
-                          fontSize: 28,
-                        ),
-                      ),
                       const SizedBox(height: 10),
                       if (widget.blockBalance > 0)
                         Container(
                           padding: const EdgeInsets.symmetric(
-                            horizontal: 10,
-                            vertical: 8,
+                            horizontal: 12,
+                            vertical: 10,
                           ),
                           decoration: BoxDecoration(
-                            color: Colors.white.withValues(alpha: 0.12),
+                            color: Colors.white.withValues(alpha: 0.10),
                             borderRadius: BorderRadius.circular(18),
+                            border: Border.all(
+                              color: Colors.white.withValues(alpha: 0.12),
+                            ),
                           ),
                           child: Row(
                             children: [
@@ -226,12 +365,15 @@ final class _HomeBalanceSectionState extends State<HomeBalanceSection> {
                           Expanded(
                             child: Container(
                               padding: const EdgeInsets.symmetric(
-                                horizontal: 10,
-                                vertical: 8,
+                                horizontal: 14,
+                                vertical: 12,
                               ),
                               decoration: BoxDecoration(
-                                color: Colors.white.withValues(alpha: 0.12),
+                                color: Colors.white.withValues(alpha: 0.11),
                                 borderRadius: BorderRadius.circular(20),
+                                border: Border.all(
+                                  color: Colors.white.withValues(alpha: 0.12),
+                                ),
                               ),
                               child: Row(
                                 children: [
@@ -243,7 +385,7 @@ final class _HomeBalanceSectionState extends State<HomeBalanceSection> {
                                             color: Colors.white,
                                             fontWeight: FontWeight.w800,
                                             letterSpacing: 0.2,
-                                            fontSize: 12.5,
+                                            fontSize: 13.5,
                                           ),
                                     ),
                                   ),
@@ -267,19 +409,26 @@ final class _HomeBalanceSectionState extends State<HomeBalanceSection> {
                               borderRadius: BorderRadius.circular(18),
                               child: Container(
                                 padding: const EdgeInsets.symmetric(
-                                  horizontal: 14,
-                                  vertical: 10,
+                                  horizontal: 18,
+                                  vertical: 12,
                                 ),
                                 decoration: BoxDecoration(
-                                  color: const Color(0xFF08A857),
-                                  borderRadius: BorderRadius.circular(18),
+                                  gradient: const LinearGradient(
+                                    colors: [
+                                      Color(0xFF07A956),
+                                      Color(0xFF0FCB6C),
+                                    ],
+                                    begin: Alignment.centerLeft,
+                                    end: Alignment.centerRight,
+                                  ),
+                                  borderRadius: BorderRadius.circular(20),
                                   boxShadow: [
                                     BoxShadow(
                                       color: const Color(
                                         0xFF08A857,
                                       ).withValues(alpha: 0.28),
-                                      blurRadius: 12,
-                                      offset: const Offset(0, 6),
+                                      blurRadius: 16,
+                                      offset: const Offset(0, 8),
                                     ),
                                   ],
                                 ),
@@ -292,10 +441,10 @@ final class _HomeBalanceSectionState extends State<HomeBalanceSection> {
                                           ?.copyWith(
                                             color: Colors.white,
                                             fontWeight: FontWeight.w800,
-                                            fontSize: 12.5,
+                                            fontSize: 13.5,
                                           ),
                                     ),
-                                    const SizedBox(width: 6),
+                                    const SizedBox(width: 8),
                                     const Icon(
                                       Icons.arrow_upward_rounded,
                                       color: Colors.white,
