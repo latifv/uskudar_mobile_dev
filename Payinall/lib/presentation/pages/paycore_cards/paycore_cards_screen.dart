@@ -10,7 +10,6 @@ import 'package:payinall/core/managers/token_manager.dart';
 import 'package:payinall/core/managers/user_info_manager.dart';
 import 'package:payinall/core/models/paycore_mobile_models.dart';
 import 'package:payinall/core/services/paycore_mobile_service.dart';
-import 'package:payinall/data/network/config/api_constants.dart';
 import 'package:payinall/data/network/models/network_response.dart';
 import 'package:payinall/data/network/network_client.dart';
 import 'package:payinall/di/di.dart';
@@ -182,14 +181,16 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
       );
     }
 
+    final currentCustomerResponse = await _paycoreService.getCustomerInfo();
+    if (currentCustomerResponse.isSuccess &&
+        currentCustomerResponse.data != null) {
+      return currentCustomerResponse;
+    }
+
     final customerNumberResponse = await _paycoreService
         .getCustomerInfoByCustomerNumber(customerNumber);
     if (customerNumberResponse.isSuccess &&
         customerNumberResponse.data != null) {
-      return customerNumberResponse;
-    }
-
-    if (!_shouldUseManagementCustomerFallback) {
       return customerNumberResponse;
     }
 
@@ -201,13 +202,9 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
 
     return managementResponse.message?.trim().isNotEmpty ?? false
         ? managementResponse
-        : customerNumberResponse;
-  }
-
-  bool get _shouldUseManagementCustomerFallback {
-    final parsedUri = Uri.tryParse(ApiConstants.baseUrl);
-    final host = parsedUri?.host ?? '';
-    return host == 'localhost' || host == '127.0.0.1' || host == '10.0.2.2';
+        : (customerNumberResponse.message?.trim().isNotEmpty ?? false)
+        ? customerNumberResponse
+        : currentCustomerResponse;
   }
 
   String _resolveCurrentCustomerNumber() {
@@ -955,8 +952,18 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
     }
 
     final nextStatuses = Map<int, PaycorePinStatus>.from(_pinStatuses);
+    final fallbackPinStatus = card.pin?.trim().isNotEmpty ?? false
+        ? PaycorePinStatus(
+            pinSetFlag: true,
+            lastPinSetDate: null,
+            pinValue: card.pin?.trim(),
+          )
+        : null;
+
     if (response.isSuccess && response.data != null) {
       nextStatuses[card.id] = response.data!;
+    } else if (fallbackPinStatus != null) {
+      nextStatuses[card.id] = fallbackPinStatus;
     }
 
     setState(() {
@@ -965,6 +972,9 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
     });
 
     if (!response.isSuccess || response.data == null) {
+      if (fallbackPinStatus != null) {
+        return fallbackPinStatus;
+      }
       if (!silent) {
         _showError(response.message ?? 'PIN durumu alınamadı.');
       }
@@ -994,9 +1004,9 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
       });
     }
 
-    final customer = _customerInfo;
-    if (customer == null || !_hasPaycoreCustomerRecord) {
-      _showError('Müşteri kaydı bulunamadı.');
+    final customer = _customerInfo ?? _buildLocalCustomerInfoFallback();
+    if (customer == null) {
+      _showError('Müşteri bilgisi şu anda görüntülenemiyor.');
       return;
     }
 
@@ -1037,9 +1047,22 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
                                 ),
                               ),
                             ),
-                            _buildPrimaryPill('Kart Sistemi Aktif'),
+                            _buildPrimaryPill(
+                              _hasPaycoreCustomerRecord
+                                  ? 'Kart Sistemi Aktif'
+                                  : 'Yerel Bilgi',
+                            ),
                           ],
                         ),
+                        if (!_hasPaycoreCustomerRecord) ...[
+                          const SizedBox(height: 12),
+                          Text(
+                            'PayCore servisine anlık erişilemediği için kayıtlı cüzdan bilgileri gösteriliyor.',
+                            style: context.textTheme.bodySmall?.copyWith(
+                              color: context.colorScheme.outline,
+                            ),
+                          ),
+                        ],
                         const SizedBox(height: 14),
                         _buildInfoGroup('Özet', [
                           ..._buildCustomerInfoRows([
@@ -2843,6 +2866,8 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
                 'Durum',
                 effectivePinStatus.pinSetFlag ? 'PIN Tanımlı' : 'PIN Tanımsız',
               ),
+              if (effectivePinStatus.pinValue?.trim().isNotEmpty ?? false)
+                _buildInfoRow('PIN', effectivePinStatus.pinValue!.trim()),
               _buildInfoRow(
                 'Son PIN Tarihi',
                 _formatDateTime(effectivePinStatus.lastPinSetDate),
@@ -4337,7 +4362,7 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
   }
 
   Widget _buildCustomerModule() {
-    final customer = _customerInfo;
+    final customer = _customerInfo ?? _buildLocalCustomerInfoFallback();
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -4374,7 +4399,7 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
           ],
         ),
         const SizedBox(height: 16),
-        if (!_hasPaycoreCustomerRecord || customer == null)
+        if (customer == null)
           _buildEmptyBlock(
             title: 'Müşteri kaydı bulunamadı',
             description:
@@ -4409,9 +4434,22 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
                             ),
                           ),
                         ),
-                        _buildPrimaryPill('Kart Sistemi Aktif'),
+                        _buildPrimaryPill(
+                          _hasPaycoreCustomerRecord
+                              ? 'Kart Sistemi Aktif'
+                              : 'Yerel Bilgi',
+                        ),
                       ],
                     ),
+                    if (!_hasPaycoreCustomerRecord) ...[
+                      const SizedBox(height: 12),
+                      Text(
+                        'PayCore müşteri kaydı doğrulanamadı. Kartlar yerel cüzdan kaydına göre gösteriliyor.',
+                        style: context.textTheme.bodySmall?.copyWith(
+                          color: context.colorScheme.outline,
+                        ),
+                      ),
+                    ],
                     const SizedBox(height: 14),
                     _buildInfoGroup('Özet', [
                       ..._buildCustomerInfoRows([
@@ -5472,6 +5510,11 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
     final isCvvPeeked = _cvvPeekCards.contains(card.id);
     final canRevealCvv =
         card.resolvedIsDigitalCard && (card.cvv?.trim().isNotEmpty ?? false);
+    final resolvedPin = pinStatus?.pinValue?.trim().isNotEmpty ?? false
+        ? pinStatus!.pinValue!.trim()
+        : (card.pin?.trim().isNotEmpty ?? false)
+        ? card.pin!.trim()
+        : null;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -5502,36 +5545,49 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
           ),
         ),
         const SizedBox(height: 12),
-        Align(
-          alignment: Alignment.centerRight,
-          child: SizedBox(
-            width: 136,
-            child: GestureDetector(
-              behavior: HitTestBehavior.opaque,
-              onTap: () {
-                if (!canRevealCvv) {
-                  return;
-                }
-                setState(() {
-                  if (isCvvPeeked) {
-                    _cvvPeekCards.remove(card.id);
-                  } else {
-                    _cvvPeekCards.add(card.id);
+        Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            if (resolvedPin != null) ...[
+              SizedBox(
+                width: 112,
+                child: _buildBackInfoBlock(
+                  title: 'PIN',
+                  value: resolvedPin,
+                  alignEnd: true,
+                ),
+              ),
+              const SizedBox(width: 10),
+            ],
+            SizedBox(
+              width: 136,
+              child: GestureDetector(
+                behavior: HitTestBehavior.opaque,
+                onTap: () {
+                  if (!canRevealCvv) {
+                    return;
                   }
-                });
-              },
-              child: _buildBackInfoBlock(
-                title: 'CVV',
-                value: _displayCardCvv(card, reveal: isCvvPeeked),
-                alignEnd: true,
-                trailingIcon: !canRevealCvv
-                    ? null
-                    : isCvvPeeked
-                    ? Icons.visibility_off_outlined
-                    : Icons.visibility_outlined,
+                  setState(() {
+                    if (isCvvPeeked) {
+                      _cvvPeekCards.remove(card.id);
+                    } else {
+                      _cvvPeekCards.add(card.id);
+                    }
+                  });
+                },
+                child: _buildBackInfoBlock(
+                  title: 'CVV',
+                  value: _displayCardCvv(card, reveal: isCvvPeeked),
+                  alignEnd: true,
+                  trailingIcon: !canRevealCvv
+                      ? null
+                      : isCvvPeeked
+                      ? Icons.visibility_off_outlined
+                      : Icons.visibility_outlined,
+                ),
               ),
             ),
-          ),
+          ],
         ),
         const Spacer(),
       ],

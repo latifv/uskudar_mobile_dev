@@ -67,6 +67,7 @@ final class PaycoreCardSummary {
     required this.brand,
     this.brandHint,
     this.cvv,
+    this.pin,
     this.fullCardNo,
   });
 
@@ -89,6 +90,7 @@ final class PaycoreCardSummary {
       isPrimary: json['isPrimary'] as bool? ?? false,
       brand: brand,
       brandHint: _resolvePaycoreCardBrandHint(json),
+      pin: _resolvePaycorePin(json),
     );
   }
 
@@ -97,6 +99,7 @@ final class PaycoreCardSummary {
   final String maskedCardNo;
   final String? fullCardNo;
   final String? cvv;
+  final String? pin;
   final String? productCode;
   final String? embossName;
   final String? expiryDate;
@@ -164,6 +167,25 @@ final class PaycoreCardSummary {
 
 String? _resolvePaycoreCvv(Map<String, dynamic> json) {
   const keys = <String>['cvv', 'cvv2'];
+
+  for (final key in keys) {
+    final value = json[key];
+    if (value is String && value.trim().isNotEmpty) {
+      return value.trim();
+    }
+  }
+
+  return null;
+}
+
+String? _resolvePaycorePin(Map<String, dynamic> json) {
+  const keys = <String>[
+    'pin',
+    'cardPin',
+    'pinCode',
+    'virtualCardPin',
+    'generatedPin',
+  ];
 
   for (final key in keys) {
     final value = json[key];
@@ -289,6 +311,7 @@ final class PaycorePinStatus {
   const PaycorePinStatus({
     required this.pinSetFlag,
     required this.lastPinSetDate,
+    this.pinValue,
   });
 
   factory PaycorePinStatus.fromJson(Map<String, dynamic> json) {
@@ -300,20 +323,24 @@ final class PaycorePinStatus {
         json['lastPinDate'] ??
         json['LastPinDate'];
     return PaycorePinStatus(
-      pinSetFlag: _parsePaycorePinFlag(
-        json['pinSetFlag'] ??
-            json['PinSetFlag'] ??
-            json['isPinSet'] ??
-            json['IsPinSet'] ??
-            json['pinDefined'] ??
-            json['PinDefined'],
-      ),
+      pinSetFlag:
+          _parsePaycorePinFlag(
+            json['pinSetFlag'] ??
+                json['PinSetFlag'] ??
+                json['isPinSet'] ??
+                json['IsPinSet'] ??
+                json['pinDefined'] ??
+                json['PinDefined'],
+          ) ||
+          (_resolvePaycorePin(json)?.trim().isNotEmpty ?? false),
       lastPinSetDate: _parsePaycorePinDate(rawDate),
+      pinValue: _resolvePaycorePin(json),
     );
   }
 
   final bool pinSetFlag;
   final DateTime? lastPinSetDate;
+  final String? pinValue;
 }
 
 bool _parsePaycorePinFlag(dynamic value) {
