@@ -34,7 +34,7 @@ final class PriceTextFormField extends StatelessWidget {
       controller: priceController,
       hintText: LocaleKeys.amount.translate,
       validator: AppValidators.price,
-      suffixIcon: const Icon(FontAwesomeIcons.moneyBills),
+      suffixIcon: const FaIcon(FontAwesomeIcons.moneyBills),
       keyboardType: const TextInputType.numberWithOptions(decimal: true),
       onFieldSubmitted: onFieldSubmitted,
       textInputAction: textInputAction,

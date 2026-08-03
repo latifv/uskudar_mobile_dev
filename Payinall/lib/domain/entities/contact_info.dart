@@ -1,5 +1,5 @@
 import 'package:equatable/equatable.dart';
-import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 final class ContactInfoModel extends Equatable {
   const ContactInfoModel({
@@ -11,7 +11,7 @@ final class ContactInfoModel extends Equatable {
 
   final String title;
   final String content;
-  final IconData iconData;
+  final FaIconData iconData;
   final bool isLink;
 
   @override
@@ -21,7 +21,7 @@ final class ContactInfoModel extends Equatable {
 final class SocialMediaModel extends Equatable {
   const SocialMediaModel({required this.iconData, required this.url});
 
-  final IconData iconData;
+  final FaIconData iconData;
   final String url;
 
   @override

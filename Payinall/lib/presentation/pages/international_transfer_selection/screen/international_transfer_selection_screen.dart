@@ -60,7 +60,7 @@ final class InternationalTransferSelectionScreen extends StatelessWidget {
 
   Widget _buildOptionCard(
     BuildContext context, {
-    required IconData icon,
+    required FaIconData icon,
     required String title,
     required String description,
     required VoidCallback onTap,

@@ -70,9 +70,9 @@ final class CustomBottomNavigationBar extends StatelessWidget {
   Widget _buildNavItem(
     BuildContext context, {
     required int index,
-    required IconData icon,
+    required FaIconData icon,
     required String label,
-    IconData? activeIcon,
+    FaIconData? activeIcon,
   }) {
     final isSelected = router.activeIndex == index;
     return InkWell(
@@ -82,7 +82,7 @@ final class CustomBottomNavigationBar extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(
+          FaIcon(
             isSelected && activeIcon != null ? activeIcon : icon,
             size: navIconSize,
             color: isSelected

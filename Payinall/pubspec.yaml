@@ -5,7 +5,7 @@ publish_to: "none"
 #! Uygulama adı , api gibi bilgiler assets/env içerisinde bulunmaktadır.
 
 #! ENV dosyasında APP_VERSION'da değiştirin hepsinden.
-version: 2.3.7+67
+version: 2.4.1+71
 
 environment:
   sdk: ^3.8.1
@@ -35,7 +35,7 @@ dependencies:
   flutter_styled_toast: ^2.3.0
   flutter_svg: ^2.2.3
   flutter_switch: ^0.3.2
-  font_awesome_flutter: ^10.12.0
+  font_awesome_flutter: ^11.0.0
   fpdart: ^1.2.0
   get_it: ^9.2.0
   google_fonts: ^6.3.3
@@ -76,6 +76,12 @@ dev_dependencies:
   hive_ce_generator: ^1.10.1
   json_serializable: ^6.11.3
   very_good_analysis: ^10.0.0
+
+dependency_overrides:
+  connectivity_plus:
+    path: vendor_plugins/connectivity_plus
+  device_info_plus:
+    path: vendor_plugins/device_info_plus
 
 # Kullanıktan sonra flutter_native_splash'i yorum satırına alın veya kullanacaksanız açın.
 # Üstteki yeride yorum satırına alın veya kullanacaksanız açın.
