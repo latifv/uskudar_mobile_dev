@@ -3152,7 +3152,7 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
                   .trim();
 
               if (fullCardNo.length < 12 || int.tryParse(fullCardNo) == null) {
-                _showError('Gercek kart numarasini maskesiz girin.');
+                _showError('Gerçek kart numarasını maskesiz girin.');
                 return;
               }
 
@@ -3204,8 +3204,8 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
                   const SizedBox(height: 16),
                   _buildTextField(
                     controller: fullCardNoController,
-                    label: 'Gercek Kart Numarasi',
-                    hint: 'Maskesiz kart numarasini girin',
+                    label: 'Gerçek Kart Numarası',
+                    hint: 'Maskesiz kart numarasını girin',
                     keyboardType: TextInputType.number,
                   ),
                   SwitchListTile(
@@ -3833,7 +3833,7 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
                   .trim();
 
               if (rawValue.length < 12 || int.tryParse(rawValue) == null) {
-                _showError('Gercek kart numarasini maskesiz girin.');
+                _showError('Gerçek kart numarasını maskesiz girin.');
                 return;
               }
 
@@ -3870,8 +3870,8 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
                   const SizedBox(height: 16),
                   _buildTextField(
                     controller: controller,
-                    label: 'Gercek Kart Numarasi',
-                    hint: 'Maskesiz kart numarasini girin',
+                    label: 'Gerçek Kart Numarası',
+                    hint: 'Maskesiz kart numarasını girin',
                     keyboardType: TextInputType.number,
                   ),
                   const SizedBox(height: 16),
