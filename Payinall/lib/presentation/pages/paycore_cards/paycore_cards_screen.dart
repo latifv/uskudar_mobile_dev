@@ -3405,11 +3405,10 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
                     card,
                     sheetTitle: 'QR ile Öde',
                     sheetDescription:
-                        'POS veya ATM ekranındaki QR kodunu okut, tutarı kontrol et ve işlemi kartla başlat.',
-                    scanModalTitle: 'POS / ATM QR Oku',
+                        'Tutarı QR belirler. POS ekranındaki QR kodunu okutunca ödeme akışı başlar.',
+                    scanModalTitle: 'Ödeme QR Kodunu Oku',
                     scanModalDescription:
-                        'Kamerayı POS veya ATM ekranındaki QR koduna doğru tutun.',
-                    submitButtonLabel: 'QR İşlemini Başlat',
+                        'Kamerayı POS ekranındaki QR koduna doğru tutun.',
                     infoCardTitle: 'QR Bilgisi',
                     emptyQrMessage:
                         'QR verisi bulunamadı. Lütfen QR kodunu yeniden okutun.',
@@ -3417,6 +3416,9 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
                     resolveSuccessMessage: 'QR bilgisi çözüldü.',
                     startErrorMessage: 'QR işlemi başlatılamadı.',
                     startSuccessMessage: 'QR işlemi başlatıldı.',
+                    scanButtonLabel: 'QR Oku ve Öde',
+                    requiresManualAmount: false,
+                    autoStartAfterScan: true,
                   );
                 },
                 child: _buildSurfaceCard(
@@ -3449,7 +3451,7 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
                             ),
                             const SizedBox(height: 4),
                             Text(
-                              'PayCore kartınla POS veya ATM QR işlemini başlat.',
+                              'POS QR okut, tutar QR’dan gelsin ve ödeme akışı başlasın.',
                               style: context.textTheme.bodySmall?.copyWith(
                                 color: context.colorScheme.onSurfaceVariant,
                                 height: 1.35,
@@ -3471,7 +3473,28 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
                 borderRadius: BorderRadius.circular(16),
                 onTap: () async {
                   Navigator.of(sheetContext).pop();
-                  await _showAtmQrSheet(card);
+                  await _showAtmQrSheet(
+                    card,
+                    sheetTitle: 'ATMden Para Çek',
+                    sheetDescription:
+                        'Önce çekmek istediğiniz tutarı girin, ardından ATM ekranındaki QR kodunu okutun.',
+                    scanModalTitle: 'ATM QR Kodunu Oku',
+                    scanModalDescription:
+                        'Tutarı girdikten sonra kamerayı ATM QR koduna doğru tutun.',
+                    submitButtonLabel: 'Para Çekme İşlemini Başlat',
+                    infoCardTitle: 'ATM Bilgisi',
+                    emptyQrMessage:
+                        'ATM QR verisi bulunamadı. Lütfen QR kodunu yeniden okutun.',
+                    resolveErrorMessage: 'ATM QR bilgisi çözümlenemedi.',
+                    resolveSuccessMessage: 'ATM QR bilgisi çözüldü.',
+                    startErrorMessage: 'ATM para çekme işlemi başlatılamadı.',
+                    startSuccessMessage: 'ATM para çekme işlemi başlatıldı.',
+                    scanButtonLabel: 'Tutarı Onayla ve QR Oku',
+                    requiresManualAmount: true,
+                    autoStartAfterScan: true,
+                    amountLabel: 'Çekilecek Tutar',
+                    amountHint: 'Örnek: 500.00',
+                  );
                 },
                 child: _buildSurfaceCard(
                   child: Row(
@@ -3503,7 +3526,7 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
                             ),
                             const SizedBox(height: 4),
                             Text(
-                              'ATM ekranındaki QR veya KKF verisiyle para çekme işlemini başlat.',
+                              'Önce tutarı gir, sonra ATM QR okut ve para çekme akışını başlat.',
                               style: context.textTheme.bodySmall?.copyWith(
                                 color: context.colorScheme.onSurfaceVariant,
                                 height: 1.35,
@@ -3542,6 +3565,11 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
     String resolveSuccessMessage = 'ATM QR bilgisi çözüldü.',
     String startErrorMessage = 'ATM QR işlemi başlatılamadı.',
     String startSuccessMessage = 'ATM QR işlemi başlatıldı.',
+    String scanButtonLabel = 'QR Oku',
+    bool requiresManualAmount = false,
+    bool autoStartAfterScan = false,
+    String amountLabel = 'Tutar',
+    String amountHint = 'Örnek: 500.00',
   }) async {
     final amountController = TextEditingController();
 
@@ -3593,12 +3621,33 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
                 }
 
                 qrInfo = response.data;
-                amountController.text = response.data!.amount?.toString() ?? '';
+                if (!requiresManualAmount) {
+                  amountController.text =
+                      response.data!.amount?.toString() ?? '';
+                }
 
                 setSheetState(() {});
                 _showSuccess(
                   response.data!.resultDescription ?? resolveSuccessMessage,
                 );
+              }
+
+              Future<void> handleScanCompleted() async {
+                if (requiresManualAmount) {
+                  final enteredAmount = _parseOptionalDouble(
+                    amountController.text,
+                  );
+                  if (enteredAmount == null || enteredAmount <= 0) {
+                    _showError('Önce çekmek istediğiniz tutarı girin.');
+                    return;
+                  }
+                }
+
+                await resolveQrInfo();
+
+                if (autoStartAfterScan && qrInfo != null) {
+                  await startQrTransaction();
+                }
               }
 
               Future<void> startQrTransaction() async {
@@ -3613,9 +3662,11 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
                   await resolveQrInfo();
                 }
 
-                final resolvedAmount = _parseOptionalDouble(
-                  amountController.text,
-                );
+                final resolvedAmount = requiresManualAmount
+                    ? _parseOptionalDouble(amountController.text)
+                    : (qrInfo?.amount != null
+                          ? qrInfo!.amount
+                          : _parseOptionalDouble(amountController.text));
                 final resolvedProcessingCode =
                     qrInfo?.suggestedProcessingCode?.trim().isNotEmpty ?? false
                     ? qrInfo!.suggestedProcessingCode!.trim()
@@ -3706,6 +3757,17 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
                       ),
                     ),
                     const SizedBox(height: 16),
+                    if (requiresManualAmount) ...[
+                      _buildTextField(
+                        controller: amountController,
+                        label: amountLabel,
+                        hint: amountHint,
+                        keyboardType: const TextInputType.numberWithOptions(
+                          decimal: true,
+                        ),
+                      ),
+                      const SizedBox(height: 12),
+                    ],
                     SizedBox(
                       width: double.infinity,
                       child: OutlinedButton.icon(
@@ -3723,7 +3785,7 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
                                       kkfData = value.trim();
                                       Navigator.of(context).pop();
                                       setSheetState(() {});
-                                      await resolveQrInfo();
+                                      await handleScanCompleted();
                                     },
                                   ),
                                 );
@@ -3732,7 +3794,7 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
                         label: Text(
                           (kkfData?.trim().isNotEmpty ?? false)
                               ? 'QR Yeniden Oku'
-                              : 'QR Oku',
+                              : scanButtonLabel,
                         ),
                       ),
                     ),
@@ -3783,34 +3845,37 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
                         ),
                       ),
                     ],
-                    const SizedBox(height: 16),
-                    _buildTextField(
-                      controller: amountController,
-                      label: 'Tutar',
-                      hint: 'Örnek: 500.00',
-                      keyboardType: const TextInputType.numberWithOptions(
-                        decimal: true,
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    SizedBox(
-                      width: double.infinity,
-                      child: FilledButton.icon(
-                        onPressed: isResolving || isSubmitting
-                            ? null
-                            : startQrTransaction,
-                        icon: Icon(
-                          isSubmitting
-                              ? Icons.sync_rounded
-                              : Icons.play_circle_outline_rounded,
+                    if (!autoStartAfterScan) ...[
+                      const SizedBox(height: 16),
+                      if (!requiresManualAmount)
+                        _buildTextField(
+                          controller: amountController,
+                          label: amountLabel,
+                          hint: amountHint,
+                          keyboardType: const TextInputType.numberWithOptions(
+                            decimal: true,
+                          ),
                         ),
-                        label: Text(
-                          isSubmitting
-                              ? 'İşlem Başlatılıyor...'
-                              : submitButtonLabel,
+                      if (!requiresManualAmount) const SizedBox(height: 8),
+                      SizedBox(
+                        width: double.infinity,
+                        child: FilledButton.icon(
+                          onPressed: isResolving || isSubmitting
+                              ? null
+                              : startQrTransaction,
+                          icon: Icon(
+                            isSubmitting
+                                ? Icons.sync_rounded
+                                : Icons.play_circle_outline_rounded,
+                          ),
+                          label: Text(
+                            isSubmitting
+                                ? 'İşlem Başlatılıyor...'
+                                : submitButtonLabel,
+                          ),
                         ),
                       ),
-                    ),
+                    ],
                   ],
                 ),
               );
