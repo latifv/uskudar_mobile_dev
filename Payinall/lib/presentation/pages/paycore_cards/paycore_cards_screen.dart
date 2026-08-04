@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:collection';
 import 'dart:convert';
 
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart'
     show Clipboard, ClipboardData, rootBundle;
@@ -1013,7 +1014,7 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
       MaterialPageRoute(
         builder: (pageContext) => Scaffold(
           appBar: AppBar(
-            title: const Text('Müşteri Bilgisi'),
+            title: Text(_pt('Müşteri Bilgisi')),
             leading: IconButton(
               icon: const Icon(Icons.arrow_back_rounded),
               onPressed: () => Navigator.of(pageContext).maybePop(),
@@ -1369,7 +1370,7 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
 
               return Scaffold(
                 appBar: AppBar(
-                  title: const Text('Müşteri Oluştur'),
+                  title: Text(_pt('Müşteri Oluştur')),
                   leading: IconButton(
                     icon: const Icon(Icons.arrow_back_rounded),
                     onPressed: () => Navigator.of(pageContext).maybePop(),
@@ -1868,7 +1869,7 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
 
               return Scaffold(
                 appBar: AppBar(
-                  title: const Text('Yeni Kart Açılışı'),
+                  title: Text(_pt('Yeni Kart Açılışı')),
                   leading: IconButton(
                     icon: const Icon(Icons.arrow_back_rounded),
                     onPressed: () => Navigator.of(pageContext).maybePop(),
@@ -2236,7 +2237,7 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
                           minimumSize: const Size.fromHeight(56),
                         ),
                         icon: const Icon(Icons.arrow_forward_rounded),
-                        label: const Text('Devam Et'),
+                        label: Text(_pt('Devam Et')),
                       ),
                     ),
                   ],
@@ -2444,7 +2445,7 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
                           minimumSize: const Size.fromHeight(56),
                         ),
                         icon: const Icon(Icons.arrow_forward_rounded),
-                        label: const Text('Devam Et'),
+                        label: Text(_pt('Devam Et')),
                       ),
                     ),
                   ],
@@ -2795,7 +2796,7 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
                   child: FilledButton.icon(
                     onPressed: () => unawaited(_showQrPaymentOptions(card)),
                     icon: const Icon(Icons.qr_code_scanner_rounded),
-                    label: const Text('QR ile Öde / Para Çek'),
+                    label: Text(_pt('QR ile Öde / Para Çek')),
                     style: FilledButton.styleFrom(
                       minimumSize: const Size.fromHeight(54),
                     ),
@@ -2810,7 +2811,7 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
                         _runCardAction(card, () => _cancelCard(card)),
                       ),
                       icon: const Icon(Icons.block_outlined),
-                      label: const Text('Kartı İptal Et'),
+                      label: Text(_pt('Kartı İptal Et')),
                       style: OutlinedButton.styleFrom(
                         foregroundColor: const Color(0xFFB3261E),
                         side: const BorderSide(color: Color(0xFFB3261E)),
@@ -3209,7 +3210,7 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
                   ),
                   SwitchListTile(
                     contentPadding: EdgeInsets.zero,
-                    title: const Text('PIN SMS ile gönderilsin'),
+                    title: Text(_pt('PIN SMS ile gönderilsin')),
                     subtitle: const Text(
                       'Random PIN üretilirse müşteriye SMS ile gönderilir.',
                     ),
@@ -3292,7 +3293,7 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
     final shouldCancel = await showDialog<bool>(
       context: context,
       builder: (dialogContext) => AlertDialog(
-        title: const Text('Kartı iptal et'),
+        title: Text(_pt('Kartı iptal et')),
         content: Text(
           '${card.maskedCardNo} kartını iptal etmek istediğine emin misin? Bu işlem geri alınamaz.',
         ),
@@ -4197,11 +4198,116 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
   }
 
   void _showSuccess(String message) {
-    ToastComponent.showSuccessToast(context: context, message: message);
+    ToastComponent.showSuccessToast(context: context, message: _pt(message));
   }
 
   void _showError(String message) {
-    ToastComponent.showErrorToast(context: context, message: message);
+    ToastComponent.showErrorToast(context: context, message: _pt(message));
+  }
+
+  String _pt(String text) {
+    const keyMap = <String, String>{
+      'Kart Aktive Et': 'paycore_activate_card_title',
+      'Kartlarım': 'paycore_my_cards_title',
+      'Müşteri Bilgisi': 'paycore_customer_info_title',
+      'Müşteri Oluştur': 'paycore_create_customer_title',
+      'Yeni Kart Açılışı': 'paycore_new_card_opening_title',
+      'Devam Et': 'continue_text',
+      'Kodu Tekrar Gönder': 'paycore_resend_code',
+      'QR ile Öde / Para Çek': 'paycore_qr_pay_or_withdraw',
+      'Kartı İptal Et': 'paycore_cancel_card',
+      'PIN SMS ile gönderilsin': 'paycore_send_pin_sms_toggle',
+      'Kartı iptal et': 'paycore_cancel_card_confirm_title',
+      'Vazgeç': 'give_up',
+      'İptal Et': 'cancel',
+      'Müşteri': 'paycore_customer_tab',
+      'Kart Açılış': 'paycore_card_opening_tab',
+      'Güvenlik': 'paycore_security_tab',
+      'Bilgiyi Gör': 'paycore_view_info',
+      'Düzenle': 'paycore_edit',
+      'Kartı Aktive Et': 'paycore_activate_card_action',
+      'Detay': 'paycore_detail',
+      'PIN Durum': 'paycore_pin_status_short',
+      'Random PIN': 'paycore_random_pin',
+      'PIN SMS': 'paycore_pin_sms',
+      'Durum': 'paycore_status',
+      'PIN Set': 'paycore_pin_set',
+      'SMS': 'sms',
+      'Seçin': 'paycore_select',
+      'Ara': 'paycore_search',
+      'Sonuc bulunamadi': 'paycore_no_results',
+      'Aktif': 'paycore_active',
+      'Pasif': 'paycore_passive',
+      'Ana Kart': 'paycore_primary_card',
+      'Ana Kart Ata': 'paycore_assign_primary_card',
+      'PIN Oluştur': 'paycore_create_pin',
+      'PIN Güncelle': 'paycore_update_pin',
+      'Henüz sorgulanmadı': 'paycore_pin_not_queried',
+      'PIN Tanımlı': 'paycore_pin_defined',
+      'PIN Tanımsız': 'paycore_pin_undefined',
+      'Troy Sanal': 'paycore_profile_troy_virtual',
+      'Troy Fiziki': 'paycore_profile_troy_physical',
+      'Master Sanal': 'paycore_profile_master_virtual',
+      'Master Fiziki': 'paycore_profile_master_physical',
+      'PayCore': 'paycore_title',
+      'Telefon': 'phone',
+      'E-posta': 'email',
+      'Teslimat Adresi': 'paycore_delivery_address',
+      'İkamet Adresi': 'paycore_residential_address',
+      'İş Adresi': 'paycore_work_address',
+      'Kart numarası kopyalandı.': 'paycore_card_number_copied',
+      'Müşteri numarası bulunamadı.': 'paycore_customer_number_not_found',
+      'Kart listesi zamanında alınamadı.': 'paycore_card_list_timeout',
+      'Kart listesi alınırken beklenmeyen bir hata oluştu.':
+          'paycore_card_list_unexpected_error',
+      'Müşteri bilgisi zamanında alınamadı.':
+          'paycore_customer_info_timeout',
+      'Müşteri bilgisi alınırken beklenmeyen bir hata oluştu.':
+          'paycore_customer_info_unexpected_error',
+      'Kart verisi alınamadı.': 'paycore_card_data_not_found',
+      'PIN durumu alınamadı.': 'paycore_pin_status_unavailable',
+      'Müşteri bilgisi alınamadı.': 'paycore_customer_info_not_found',
+      'Müşteri bilgisi şu anda görüntülenemiyor.':
+          'paycore_customer_info_unavailable_now',
+      'Zorunlu alanları doldur.': 'paycore_fill_required_fields',
+      'Adres güncellenemedi.': 'paycore_address_update_failed',
+      'Adres güncellendi.': 'paycore_address_updated',
+      'Önce müşteri kaydını oluştur ya da bilgileri yenile.':
+          'paycore_create_or_refresh_customer_first',
+      'Önce müşteri kaydını oluşturman gerekiyor.':
+          'paycore_create_customer_first',
+      'Kart oluşturmak için teslimat adresini tamamla.':
+          'paycore_complete_delivery_address',
+      'Kart numarası veya barkod numarası girin.':
+          'paycore_enter_card_or_barcode',
+      'Kart numarası 12-19 haneli olmalıdır.':
+          'paycore_card_number_length_error',
+      'SMS ile gelen doğrulama kodunu girin.':
+          'paycore_enter_sms_code',
+      'Fiziksel kart eklenemedi.': 'paycore_physical_card_add_failed',
+      'PIN durumu şu anda alınamadı. Lütfen tekrar deneyin.':
+          'paycore_pin_status_retry',
+      'Kart numarasını maskesiz girin.':
+          'paycore_enter_unmasked_card_number',
+      'Mevcut PIN 4-6 haneli sayısal olmalı.':
+          'paycore_current_pin_numeric_error',
+      'PIN 4-6 haneli sayısal olmalı.': 'paycore_pin_numeric_error',
+      'PIN tekrarı eşleşmiyor.': 'paycore_pin_repeat_mismatch',
+      'PIN set işlemi gönderildi.': 'paycore_pin_set_sent',
+      'Gerçek kart numarasını maskesiz girin.':
+          'paycore_enter_real_card_number',
+      'Ana kart güncellendi.': 'paycore_primary_card_updated',
+      'Kart iptal edildi.': 'paycore_card_cancelled',
+      'Random PIN işlemi gönderildi.': 'paycore_random_pin_sent',
+      'PIN SMS gönderildi.': 'paycore_pin_sms_sent',
+      'Önce QR kodunu okutun.': 'paycore_scan_qr_first',
+      'Tutar sıfırdan büyük olmalıdır.': 'paycore_amount_must_be_positive',
+      'Önce çekmek istediğiniz tutarı girin.':
+          'paycore_enter_withdraw_amount',
+      'İşlem iptal edildi.': 'paycore_operation_cancelled',
+    };
+
+    return keyMap[text]?.tr() ?? text;
   }
 
   @override
@@ -4210,7 +4316,9 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
 
     return Scaffold(
       appBar: CustomAppBar(
-        title: Text(widget.openActivateTab ? 'Kart Aktive Et' : 'Kartlarım'),
+        title: Text(
+          _pt(widget.openActivateTab ? 'Kart Aktive Et' : 'Kartlarım'),
+        ),
         leading: canPop
             ? IconButton(
                 icon: const Icon(Icons.arrow_back_rounded),
@@ -4405,21 +4513,21 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
         ),
         visualDensity: VisualDensity.compact,
       ),
-      segments: const [
+      segments: [
         ButtonSegment(
           value: _PaycoreModule.customer,
           icon: Icon(Icons.badge_outlined),
-          label: Text('Müşteri'),
+          label: Text(_pt('Müşteri')),
         ),
         ButtonSegment(
           value: _PaycoreModule.cards,
           icon: Icon(Icons.credit_card_outlined),
-          label: Text('Kart Açılış'),
+          label: Text(_pt('Kart Açılış')),
         ),
         ButtonSegment(
           value: _PaycoreModule.security,
           icon: Icon(Icons.lock_outline_rounded),
-          label: Text('Güvenlik'),
+          label: Text(_pt('Güvenlik')),
         ),
       ],
       selected: {_selectedModule},
@@ -4463,7 +4571,7 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
                 onPressed: _showCustomerInfoSheet,
                 style: _moduleActionStyle(),
                 icon: const Icon(Icons.manage_search_rounded),
-                label: const Text('Bilgiyi Gör'),
+                label: Text(_pt('Bilgiyi Gör')),
               ),
             ),
             const SizedBox(width: 12),
@@ -4783,7 +4891,7 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
                                 unawaited(_showAddressEditSheet(address)),
                             style: _compactActionStyle(),
                             icon: const Icon(Icons.edit_location_alt_rounded),
-                            label: const Text('Düzenle'),
+                            label: Text(_pt('Düzenle')),
                           ),
                         ),
                       ],
@@ -4956,7 +5064,7 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
                     ),
                   ),
                   icon: const Icon(Icons.qr_code_rounded, size: 18),
-                  label: const Text('Kartı Aktive Et'),
+                  label: Text(_pt('Kartı Aktive Et')),
                 ),
               ),
             ],
@@ -5288,7 +5396,7 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
                               unawaited(_showCardDetailSheet(card)),
                           style: _compactActionStyle(),
                           icon: const Icon(Icons.article_outlined, size: 16),
-                          label: const Text('Detay'),
+                          label: Text(_pt('Detay')),
                         ),
                       ),
                       const SizedBox(width: 8),
@@ -5297,7 +5405,7 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
                           onPressed: () => unawaited(_showPinStatusSheet(card)),
                           style: _compactActionStyle(),
                           icon: const Icon(Icons.search_rounded, size: 16),
-                          label: const Text('PIN Durum'),
+                          label: Text(_pt('PIN Durum')),
                         ),
                       ),
                     ],
@@ -5366,7 +5474,7 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
                               : () => unawaited(_showRandomPinSheet(card)),
                           style: _compactActionStyle(),
                           icon: const Icon(Icons.password_rounded, size: 16),
-                          label: const Text('Random PIN'),
+                          label: Text(_pt('Random PIN')),
                         ),
                       ),
                       const SizedBox(width: 8),
@@ -5379,7 +5487,7 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
                                 ),
                           style: _compactActionStyle(),
                           icon: const Icon(Icons.sms_outlined, size: 16),
-                          label: const Text('PIN SMS'),
+                          label: Text(_pt('PIN SMS')),
                         ),
                       ),
                     ],
@@ -5395,7 +5503,7 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
                         minimumSize: const Size.fromHeight(46),
                       ),
                       icon: const Icon(Icons.qr_code_scanner_rounded, size: 18),
-                      label: const Text('QR ile Öde / Para Çek'),
+                      label: Text(_pt('QR ile Öde / Para Çek')),
                     ),
                   ),
                 ],
@@ -5825,13 +5933,13 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
                 onPressed: () => unawaited(_showPinStatusSheet(card)),
                 style: _compactActionStyle(),
                 icon: const Icon(Icons.search_rounded, size: 16),
-                label: const Text('Durum'),
+                label: Text(_pt('Durum')),
               ),
               FilledButton.icon(
                 onPressed: () => unawaited(_showSetPinSheet(card)),
                 style: _filledCompactActionStyle(),
                 icon: const Icon(Icons.pin_outlined, size: 16),
-                label: const Text('PIN Set'),
+                label: Text(_pt('PIN Set')),
               ),
               OutlinedButton.icon(
                 onPressed: isBusy
@@ -5849,7 +5957,7 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
                       ),
                 style: _compactActionStyle(),
                 icon: const Icon(Icons.sms_outlined, size: 16),
-                label: const Text('SMS'),
+                label: Text(_pt('SMS')),
               ),
             ],
           ),
@@ -5866,7 +5974,7 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          title,
+          _pt(title),
           style: context.textTheme.headlineSmall?.copyWith(
             fontWeight: FontWeight.w800,
             fontSize: 18,
@@ -5874,7 +5982,7 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
         ),
         const SizedBox(height: 4),
         Text(
-          description,
+          _pt(description),
           style: context.textTheme.bodySmall?.copyWith(
             color: context.colorScheme.onSurfaceVariant,
             height: 1.35,
@@ -5887,7 +5995,7 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
 
   Widget _buildSectionTitle(String title) {
     return Text(
-      title,
+      _pt(title),
       style: context.textTheme.titleMedium?.copyWith(
         fontWeight: FontWeight.w800,
       ),
@@ -5911,7 +6019,7 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
           ),
           const SizedBox(height: 10),
           Text(
-            title,
+            _pt(title),
             textAlign: TextAlign.center,
             style: context.textTheme.titleMedium?.copyWith(
               fontWeight: FontWeight.w700,
@@ -5920,7 +6028,7 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
           ),
           const SizedBox(height: 6),
           Text(
-            description,
+            _pt(description),
             textAlign: TextAlign.center,
             style: context.textTheme.bodyMedium?.copyWith(
               color: context.colorScheme.onSurfaceVariant,
@@ -5932,7 +6040,7 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
             onPressed: onPressed,
             style: _moduleFilledActionStyle(),
             icon: const Icon(Icons.arrow_forward_rounded),
-            label: Text(actionLabel),
+            label: Text(_pt(actionLabel)),
           ),
         ],
       ),
@@ -6019,7 +6127,7 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
         borderRadius: BorderRadius.circular(999),
       ),
       child: Text(
-        text,
+        _pt(text),
         style: context.textTheme.bodySmall?.copyWith(
           color: context.colorScheme.primary,
           fontWeight: FontWeight.w700,
@@ -6061,7 +6169,7 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
         borderRadius: BorderRadius.circular(999),
       ),
       child: Text(
-        text,
+        _pt(text),
         style: const TextStyle(
           color: Colors.white,
           fontSize: 9.5,
@@ -6154,8 +6262,8 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            title,
+        Text(
+          _pt(title),
             style: context.textTheme.titleMedium?.copyWith(
               fontWeight: FontWeight.w700,
             ),
@@ -6176,7 +6284,7 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
           SizedBox(
             width: 110,
             child: Text(
-              label,
+              _pt(label),
               style: context.textTheme.bodySmall?.copyWith(
                 color: context.colorScheme.onSurfaceVariant,
                 fontWeight: FontWeight.w600,
@@ -6312,6 +6420,9 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
     bool readOnly = false,
     TextInputType? keyboardType,
   }) {
+    final localizedLabel = _pt(label);
+    final localizedHint = hint == null ? null : _pt(hint);
+
     return Padding(
       padding: const EdgeInsets.only(bottom: 12),
       child: TextField(
@@ -6321,8 +6432,8 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
         readOnly: readOnly,
         keyboardType: keyboardType,
         decoration: InputDecoration(
-          labelText: required ? '$label *' : label,
-          hintText: hint,
+          labelText: required ? '$localizedLabel *' : localizedLabel,
+          hintText: localizedHint,
           floatingLabelBehavior: FloatingLabelBehavior.always,
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(16),
@@ -6380,6 +6491,7 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
     bool required = true,
     bool enabled = true,
   }) {
+    final localizedLabel = _pt(label);
     final uniqueItems = LinkedHashSet<String>.from(
       items.where((item) => item.trim().isNotEmpty),
     ).toList();
@@ -6397,7 +6509,7 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
             ? null
             : () async {
                 final selection = await _showDropdownSelectionSheet(
-                  title: required ? '$label *' : label,
+                  title: required ? '$localizedLabel *' : localizedLabel,
                   items: uniqueItems,
                   selectedValue: selectedValue,
                   enableSearch: uniqueItems.length > 8,
@@ -6409,9 +6521,9 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
               },
         child: InputDecorator(
           isEmpty: !hasValue,
-          decoration: InputDecoration(
-            labelText: required ? '$label *' : label,
-            hintText: '$label seçin',
+        decoration: InputDecoration(
+            labelText: required ? '$localizedLabel *' : localizedLabel,
+            hintText: '${_pt('Seçin')} $localizedLabel',
             floatingLabelBehavior: FloatingLabelBehavior.always,
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(16),
@@ -6445,7 +6557,7 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
             ),
           ),
           child: Text(
-            hasValue ? displayValue : '$label seçin',
+            hasValue ? displayValue : '${_pt('Seçin')} $localizedLabel',
             style: context.textTheme.bodyMedium?.copyWith(
               color: hasValue
                   ? context.colorScheme.onSurface
@@ -6528,7 +6640,7 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
                             controller: searchController,
                             onChanged: handleSearch,
                             decoration: InputDecoration(
-                              hintText: 'Ara',
+                              hintText: _pt('Ara'),
                               prefixIcon: const Icon(Icons.search_rounded),
                               border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(14),
@@ -6549,7 +6661,7 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
                                       vertical: 24,
                                     ),
                                     child: Text(
-                                      'Sonuc bulunamadi',
+                                      _pt('Sonuc bulunamadi'),
                                       style: context.textTheme.bodyMedium
                                           ?.copyWith(
                                             color: context
