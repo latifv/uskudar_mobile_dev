@@ -18,7 +18,6 @@ import 'package:payinall/domain/usecases/get_metropol_cities_usecase.dart';
 import 'package:payinall/presentation/shared/components/toast_component.dart';
 import 'package:payinall/presentation/shared/constants/icon_asset_constants.dart';
 import 'package:payinall/presentation/shared/constants/paycore_card_asset_constants.dart';
-import 'package:payinall/presentation/pages/qr_operation/scan/qr_scan_screen.dart';
 import 'package:payinall/presentation/shared/extensions/theme_extension.dart';
 import 'package:payinall/presentation/shared/widgets/paycore_card_visual.dart';
 import 'package:payinall/presentation/widgets/custom_app_bar.dart';
@@ -3402,13 +3401,22 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
                 borderRadius: BorderRadius.circular(16),
                 onTap: () async {
                   Navigator.of(sheetContext).pop();
-                  if (!mounted) {
-                    return;
-                  }
-                  await Navigator.of(context).push<void>(
-                    MaterialPageRoute<void>(
-                      builder: (_) => const QrScanScreen(),
-                    ),
+                  await _showAtmQrSheet(
+                    card,
+                    sheetTitle: 'QR ile Öde',
+                    sheetDescription:
+                        'POS veya ATM ekranındaki QR kodunu okut, tutarı kontrol et ve işlemi kartla başlat.',
+                    scanModalTitle: 'POS / ATM QR Oku',
+                    scanModalDescription:
+                        'Kamerayı POS veya ATM ekranındaki QR koduna doğru tutun.',
+                    submitButtonLabel: 'QR İşlemini Başlat',
+                    infoCardTitle: 'QR Bilgisi',
+                    emptyQrMessage:
+                        'QR verisi bulunamadı. Lütfen QR kodunu yeniden okutun.',
+                    resolveErrorMessage: 'QR bilgisi çözümlenemedi.',
+                    resolveSuccessMessage: 'QR bilgisi çözüldü.',
+                    startErrorMessage: 'QR işlemi başlatılamadı.',
+                    startSuccessMessage: 'QR işlemi başlatıldı.',
                   );
                 },
                 child: _buildSurfaceCard(
@@ -3441,7 +3449,7 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
                             ),
                             const SizedBox(height: 4),
                             Text(
-                              'QR kodu okutarak ödeme akışını başlat.',
+                              'PayCore kartınla POS veya ATM QR işlemini başlat.',
                               style: context.textTheme.bodySmall?.copyWith(
                                 color: context.colorScheme.onSurfaceVariant,
                                 height: 1.35,
@@ -3495,7 +3503,7 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
                             ),
                             const SizedBox(height: 4),
                             Text(
-                              'ATM ekranında oluşan QR veya KKF verisini kullanarak para çekme işlemini başlat.',
+                              'ATM ekranındaki QR veya KKF verisiyle para çekme işlemini başlat.',
                               style: context.textTheme.bodySmall?.copyWith(
                                 color: context.colorScheme.onSurfaceVariant,
                                 height: 1.35,
@@ -3519,7 +3527,22 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
     );
   }
 
-  Future<void> _showAtmQrSheet(PaycoreCardSummary card) async {
+  Future<void> _showAtmQrSheet(
+    PaycoreCardSummary card, {
+    String sheetTitle = 'QR ile Öde / Para Çek',
+    String sheetDescription =
+        'ATM ekranındaki QR kodunu okut, tutarı kontrol et ve işlemi kartla başlat.',
+    String scanModalTitle = 'ATM QR Oku',
+    String scanModalDescription =
+        'Kamerayı ATM QR koduna doğru tutun.',
+    String submitButtonLabel = 'ATM QR İşlemini Başlat',
+    String infoCardTitle = 'ATM Bilgisi',
+    String emptyQrMessage = 'ATM QR verisi bulunamadı. Lütfen QR okutun.',
+    String resolveErrorMessage = 'ATM QR bilgisi çözümlenemedi.',
+    String resolveSuccessMessage = 'ATM QR bilgisi çözüldü.',
+    String startErrorMessage = 'ATM QR işlemi başlatılamadı.',
+    String startSuccessMessage = 'ATM QR işlemi başlatıldı.',
+  }) async {
     final amountController = TextEditingController();
 
     var isResolving = false;
@@ -3565,9 +3588,7 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
                 });
 
                 if (!response.isSuccess || response.data == null) {
-                  _showError(
-                    response.message ?? 'ATM QR bilgisi çözümlenemedi.',
-                  );
+                  _showError(response.message ?? resolveErrorMessage);
                   return;
                 }
 
@@ -3576,7 +3597,7 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
 
                 setSheetState(() {});
                 _showSuccess(
-                  response.data!.resultDescription ?? 'ATM QR bilgisi çözüldü.',
+                  response.data!.resultDescription ?? resolveSuccessMessage,
                 );
               }
 
@@ -3584,7 +3605,7 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
                 final normalizedKkfData = kkfData?.trim() ?? '';
 
                 if (normalizedKkfData.isEmpty) {
-                  _showError('ATM QR verisi bulunamadı. Lütfen QR okutun.');
+                  _showError(emptyQrMessage);
                   return;
                 }
 
@@ -3630,16 +3651,14 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
                 });
 
                 if (!response.isSuccess || response.data == null) {
-                  _showError(
-                    response.message ?? 'ATM QR işlemi başlatılamadı.',
-                  );
+                  _showError(response.message ?? startErrorMessage);
                   return;
                 }
 
                 _showSuccess(
                   response.data!.resultDescription ??
                       response.message ??
-                      'ATM QR işlemi başlatıldı.',
+                      startSuccessMessage,
                 );
                 if (!sheetContext.mounted) {
                   return;
@@ -3657,7 +3676,7 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
                       children: [
                         Expanded(
                           child: Text(
-                            'QR ile Öde / Para Çek',
+                            sheetTitle,
                             style: modalContext.textTheme.titleLarge?.copyWith(
                               fontWeight: FontWeight.w700,
                             ),
@@ -3680,7 +3699,7 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
                     ),
                     const SizedBox(height: 8),
                     Text(
-                      'ATM ekranındaki QR kodunu okut, tutarı kontrol et ve işlemi kartla başlat.',
+                      sheetDescription,
                       style: modalContext.textTheme.bodySmall?.copyWith(
                         color: modalContext.colorScheme.onSurfaceVariant,
                         height: 1.4,
@@ -3697,9 +3716,8 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
                                   context: sheetContext,
                                   isScrollControlled: true,
                                   builder: (context) => _PaycoreQrScanModal(
-                                    title: 'ATM QR Oku',
-                                    description:
-                                        'Kamerayı ATM QR koduna doğru tutun.',
+                                    title: scanModalTitle,
+                                    description: scanModalDescription,
                                     onClose: () => Navigator.of(context).pop(),
                                     onQrScanned: (value) async {
                                       kkfData = value.trim();
@@ -3731,7 +3749,7 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              'ATM Bilgisi',
+                              infoCardTitle,
                               style: modalContext.textTheme.titleSmall
                                   ?.copyWith(
                                     fontWeight: FontWeight.w700,
@@ -3789,7 +3807,7 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
                         label: Text(
                           isSubmitting
                               ? 'İşlem Başlatılıyor...'
-                              : 'ATM QR İşlemini Başlat',
+                              : submitButtonLabel,
                         ),
                       ),
                     ),
