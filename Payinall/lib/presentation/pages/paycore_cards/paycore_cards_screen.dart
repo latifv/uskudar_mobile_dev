@@ -3632,24 +3632,6 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
                 );
               }
 
-              Future<void> handleScanCompleted() async {
-                if (requiresManualAmount) {
-                  final enteredAmount = _parseOptionalDouble(
-                    amountController.text,
-                  );
-                  if (enteredAmount == null || enteredAmount <= 0) {
-                    _showError('Önce çekmek istediğiniz tutarı girin.');
-                    return;
-                  }
-                }
-
-                await resolveQrInfo();
-
-                if (autoStartAfterScan && qrInfo != null) {
-                  await startQrTransaction();
-                }
-              }
-
               Future<void> startQrTransaction() async {
                 final normalizedKkfData = kkfData?.trim() ?? '';
 
@@ -3715,6 +3697,24 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
                   return;
                 }
                 Navigator.of(sheetContext).pop();
+              }
+
+              Future<void> handleScanCompleted() async {
+                if (requiresManualAmount) {
+                  final enteredAmount = _parseOptionalDouble(
+                    amountController.text,
+                  );
+                  if (enteredAmount == null || enteredAmount <= 0) {
+                    _showError('Önce çekmek istediğiniz tutarı girin.');
+                    return;
+                  }
+                }
+
+                await resolveQrInfo();
+
+                if (autoStartAfterScan && qrInfo != null) {
+                  await startQrTransaction();
+                }
               }
 
               return SingleChildScrollView(
