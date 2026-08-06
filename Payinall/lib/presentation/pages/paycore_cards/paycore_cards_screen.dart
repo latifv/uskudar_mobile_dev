@@ -2701,6 +2701,12 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
   Future<void> _openCardDetailPage(PaycoreCardSummary card) async {
     final pinStatus =
         _pinStatuses[card.id] ?? await _loadPinStatus(card, silent: true);
+    final ecommerceResponse = await _paycoreService.getCardAuthorization(
+      card.id,
+    );
+    final ecommerceAuthorization = ecommerceResponse.isSuccess
+        ? ecommerceResponse.data
+        : null;
     if (!mounted) {
       return;
     }
@@ -2806,7 +2812,11 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
                       ],
                     ),
                     const SizedBox(height: 18),
-                    _buildCardDetailActions(card, currentPinStatus),
+                    _buildCardDetailActions(
+                      card,
+                      currentPinStatus,
+                      ecommerceAuthorization,
+                    ),
                   ],
                 ),
               ),
@@ -3268,9 +3278,18 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
   Widget _buildCardDetailActions(
     PaycoreCardSummary card,
     PaycorePinStatus? pinStatus,
+    PaycoreCardAuthorizationStatus? ecommerceAuthorization,
   ) {
     final isBusy = _busyCards.contains(card.id);
     final isCancelled = card.statusCode == 'I';
+    final isEcommerceEnabled =
+        ecommerceAuthorization?.isDomesticEcommerceEnabled == true ||
+        ecommerceAuthorization?.isInternationalEcommerceEnabled == true;
+    final ecommerceLabel = ecommerceAuthorization == null
+        ? 'E-Ticaret'
+        : isEcommerceEnabled
+        ? 'E-Ticareti Kapat'
+        : 'E-Ticareti Aç';
 
     return _buildSurfaceCard(
       child: Column(
@@ -3331,7 +3350,7 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
               ),
               _buildDetailActionButton(
                 icon: Icons.public_rounded,
-                label: 'E-Ticaret',
+                label: ecommerceLabel,
                 onPressed: isBusy
                     ? null
                     : () => unawaited(_showEcommerceAuthorizationSheet(card)),
