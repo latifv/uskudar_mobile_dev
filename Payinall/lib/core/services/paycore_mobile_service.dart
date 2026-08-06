@@ -45,6 +45,77 @@ final class PaycoreMobileService extends BaseRemoteDataSource {
     );
   }
 
+  Future<NetworkResponse<PaycoreCardAuthorizationStatus>> getCardAuthorization(
+    int cardId,
+  ) async {
+    final responseJson = await get(
+      endpoint: Endpoints.getPayCoreCardAuthorization(cardId),
+    );
+
+    return _mapCardAuthorizationResponse(
+      responseJson,
+      fallbackMessage: 'Kart e-ticaret yetkileri alınamadı.',
+    );
+  }
+
+  Future<NetworkResponse<PaycoreCardAuthorizationStatus>>
+  updateCardEcommerceAuthorization({
+    required int cardId,
+    required bool isDomesticEcommerceEnabled,
+    required bool isInternationalEcommerceEnabled,
+  }) async {
+    final responseJson = await put(
+      endpoint: Endpoints.updatePayCoreCardEcommerceAuthorization,
+      data: <String, dynamic>{
+        'cardId': cardId,
+        'isDomesticEcommerceEnabled': isDomesticEcommerceEnabled,
+        'isInternationalEcommerceEnabled': isInternationalEcommerceEnabled,
+      },
+    );
+
+    return _mapCardAuthorizationResponse(
+      responseJson,
+      fallbackMessage: 'Kart e-ticaret yetkileri güncellenemedi.',
+    );
+  }
+
+  NetworkResponse<PaycoreCardAuthorizationStatus> _mapCardAuthorizationResponse(
+    dynamic responseJson, {
+    required String fallbackMessage,
+  }) {
+    if (responseJson is! Map<String, dynamic>) {
+      return NetworkResponse.fromJson<PaycoreCardAuthorizationStatus>(
+        <String, dynamic>{
+          'isSuccess': false,
+          'message': fallbackMessage,
+          'data': null,
+        },
+      );
+    }
+
+    final response = NetworkResponse.fromJson<Map<String, dynamic>>(
+      responseJson,
+      fromJsonT: (json) {
+        if (json is Map<String, dynamic>) {
+          return json;
+        }
+        throw const MappingException();
+      },
+    );
+
+    try {
+      return response.map(PaycoreCardAuthorizationStatus.fromJson);
+    } on Object {
+      return NetworkResponse.fromJson<PaycoreCardAuthorizationStatus>(
+        <String, dynamic>{
+          'isSuccess': false,
+          'message': response.message ?? fallbackMessage,
+          'data': null,
+        },
+      );
+    }
+  }
+
   NetworkResponse<PaycoreCustomerInfo> _mapCustomerInfoResponse(
     dynamic responseJson, {
     required String fallbackMessage,
@@ -101,6 +172,30 @@ final class PaycoreMobileService extends BaseRemoteDataSource {
           .map(PaycoreCardSummary.fromJson)
           .toList(),
     );
+  }
+
+  Future<NetworkResponse<PaycoreCardTransactionsResponse>> getCardTransactions(
+    int cardId, {
+    int topRows = 100,
+  }) async {
+    final responseJson = await get(
+      endpoint: Endpoints.getPayCoreCardTransactions(cardId),
+      queryParameters: <String, dynamic>{
+        'topRows': topRows,
+      },
+    );
+
+    final response = NetworkResponse.fromJson<Map<String, dynamic>>(
+      responseJson as Map<String, dynamic>,
+      fromJsonT: (json) {
+        if (json is Map<String, dynamic>) {
+          return json;
+        }
+        throw const MappingException();
+      },
+    );
+
+    return response.map(PaycoreCardTransactionsResponse.fromJson);
   }
 
   Future<NetworkResponse<void>> createCustomer({

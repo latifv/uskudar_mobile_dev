@@ -74,20 +74,24 @@ final class PaycoreCardSummary {
   factory PaycoreCardSummary.fromJson(Map<String, dynamic> json) {
     final brand = _resolvePaycoreCardBrand(json);
     return PaycoreCardSummary(
-      id: (json['id'] as num?)?.toInt() ?? 0,
-      cardReference: json['cardReference'] as String? ?? '',
-      maskedCardNo: json['maskedCardNo'] as String? ?? '-',
+      id: _readInt(json, const ['id', 'Id']) ?? 0,
+      cardReference:
+          _readString(json, const ['cardReference', 'CardReference']) ?? '',
+      maskedCardNo:
+          _readString(json, const ['maskedCardNo', 'MaskedCardNo']) ?? '-',
       fullCardNo: _resolvePaycoreFullCardNo(json),
       cvv: _resolvePaycoreCvv(json),
-      productCode: json['productCode'] as String?,
-      embossName: json['embossName'] as String?,
-      expiryDate: json['expiryDate'] as String?,
-      isDigitalCard: json['isDigitalCard'] as bool? ?? false,
-      isActive: json['isActive'] as bool? ?? false,
-      statusCode: json['statusCode'] as String? ?? '',
-      statusName: json['statusName'] as String? ?? '-',
-      cardTypeName: json['cardTypeName'] as String? ?? '-',
-      isPrimary: json['isPrimary'] as bool? ?? false,
+      productCode: _readString(json, const ['productCode', 'ProductCode']),
+      embossName: _readString(json, const ['embossName', 'EmbossName']),
+      expiryDate: _readString(json, const ['expiryDate', 'ExpiryDate']),
+      isDigitalCard:
+          _readBool(json, const ['isDigitalCard', 'IsDigitalCard']) ?? false,
+      isActive: _readBool(json, const ['isActive', 'IsActive']) ?? false,
+      statusCode: _readString(json, const ['statusCode', 'StatusCode']) ?? '',
+      statusName: _readString(json, const ['statusName', 'StatusName']) ?? '-',
+      cardTypeName:
+          _readString(json, const ['cardTypeName', 'CardTypeName']) ?? '-',
+      isPrimary: _readBool(json, const ['isPrimary', 'IsPrimary']) ?? false,
       brand: brand,
       brandHint: _resolvePaycoreCardBrandHint(json),
       pin: _resolvePaycorePin(json),
@@ -115,7 +119,7 @@ final class PaycoreCardSummary {
   bool get isVirtualProduct {
     final normalizedProductCode = productCode?.trim().toUpperCase();
     return normalizedProductCode == 'TRYSNL' ||
-        normalizedProductCode == 'MCPVB';
+        normalizedProductCode == 'MCSNL';
   }
 
   bool get isPhysicalProduct {
@@ -147,7 +151,7 @@ final class PaycoreCardSummary {
     if (normalizedProductCode == 'TRYFZKSL') {
       return 'Troy Fiziki';
     }
-    if (normalizedProductCode == 'MCPVB') {
+    if (normalizedProductCode == 'MCSNL') {
       return 'Master Sanal';
     }
     if (normalizedProductCode == 'MCPSB' ||
@@ -166,7 +170,7 @@ final class PaycoreCardSummary {
 }
 
 String? _resolvePaycoreCvv(Map<String, dynamic> json) {
-  const keys = <String>['cvv', 'cvv2'];
+  const keys = <String>['cvv', 'Cvv', 'cvv2', 'Cvv2'];
 
   for (final key in keys) {
     final value = json[key];
@@ -181,10 +185,15 @@ String? _resolvePaycoreCvv(Map<String, dynamic> json) {
 String? _resolvePaycorePin(Map<String, dynamic> json) {
   const keys = <String>[
     'pin',
+    'Pin',
     'cardPin',
+    'CardPin',
     'pinCode',
+    'PinCode',
     'virtualCardPin',
+    'VirtualCardPin',
     'generatedPin',
+    'GeneratedPin',
   ];
 
   for (final key in keys) {
@@ -226,6 +235,152 @@ final class PaycoreCreatePrepaidCardResult {
   final bool? isNewCardCreated;
 }
 
+final class PaycoreCardAuthorizationStatus {
+  const PaycoreCardAuthorizationStatus({
+    required this.cardId,
+    required this.maskedCardNo,
+    required this.statusCode,
+    required this.statusName,
+    required this.isDomesticEcommerceEnabled,
+    required this.isInternationalEcommerceEnabled,
+  });
+
+  factory PaycoreCardAuthorizationStatus.fromJson(Map<String, dynamic> json) {
+    return PaycoreCardAuthorizationStatus(
+      cardId: _readInt(json, const ['cardId', 'CardId']) ?? 0,
+      maskedCardNo:
+          _readString(json, const ['maskedCardNo', 'MaskedCardNo']) ?? '-',
+      statusCode: _readString(json, const ['statusCode', 'StatusCode']) ?? '',
+      statusName: _readString(json, const ['statusName', 'StatusName']) ?? '-',
+      isDomesticEcommerceEnabled:
+          _readBool(
+            json,
+            const [
+              'isDomesticEcommerceEnabled',
+              'IsDomesticEcommerceEnabled',
+            ],
+          ) ??
+          false,
+      isInternationalEcommerceEnabled:
+          _readBool(
+            json,
+            const [
+              'isInternationalEcommerceEnabled',
+              'IsInternationalEcommerceEnabled',
+            ],
+          ) ??
+          false,
+    );
+  }
+
+  final int cardId;
+  final String maskedCardNo;
+  final String statusCode;
+  final String statusName;
+  final bool isDomesticEcommerceEnabled;
+  final bool isInternationalEcommerceEnabled;
+}
+
+final class PaycoreCardTransactionsResponse {
+  const PaycoreCardTransactionsResponse({
+    required this.cardId,
+    required this.totalDebit,
+    required this.totalCredit,
+    required this.transactions,
+  });
+
+  factory PaycoreCardTransactionsResponse.fromJson(Map<String, dynamic> json) {
+    final rawTransactions = json['transactions'];
+    return PaycoreCardTransactionsResponse(
+      cardId: _readInt(json, const ['cardId', 'CardId']) ?? 0,
+      totalDebit:
+          _readDecimal(json, const ['totalDebit', 'TotalDebit']) ?? 0,
+      totalCredit:
+          _readDecimal(json, const ['totalCredit', 'TotalCredit']) ?? 0,
+      transactions: rawTransactions is List
+          ? rawTransactions
+                .whereType<Map<String, dynamic>>()
+                .map(PaycoreCardTransactionItem.fromJson)
+                .toList()
+          : const <PaycoreCardTransactionItem>[],
+    );
+  }
+
+  final int cardId;
+  final double totalDebit;
+  final double totalCredit;
+  final List<PaycoreCardTransactionItem> transactions;
+}
+
+final class PaycoreCardTransactionItem {
+  const PaycoreCardTransactionItem({
+    required this.transactionId,
+    required this.title,
+    required this.amount,
+    this.description,
+    this.merchantName,
+    this.merchantCity,
+    this.merchantCountry,
+    this.effect,
+    this.date,
+    this.processingCode,
+    this.transactionType,
+    this.terminalType,
+    this.entryType,
+    this.status,
+    this.responseDescription,
+  });
+
+  factory PaycoreCardTransactionItem.fromJson(Map<String, dynamic> json) {
+    return PaycoreCardTransactionItem(
+      transactionId:
+          _readInt(json, const ['transactionId', 'TransactionId']) ?? 0,
+      title: _readString(json, const ['title', 'Title']) ?? 'Kart işlemi',
+      description: _readString(json, const ['description', 'Description']),
+      merchantName: _readString(json, const ['merchantName', 'MerchantName']),
+      merchantCity: _readString(json, const ['merchantCity', 'MerchantCity']),
+      merchantCountry: _readString(
+        json,
+        const ['merchantCountry', 'MerchantCountry'],
+      ),
+      amount: _readDecimal(json, const ['amount', 'Amount']) ?? 0,
+      effect: _readString(json, const ['effect', 'Effect']),
+      date: _readString(json, const ['date', 'Date']),
+      processingCode: _readString(
+        json,
+        const ['processingCode', 'ProcessingCode'],
+      ),
+      transactionType: _readString(
+        json,
+        const ['transactionType', 'TransactionType'],
+      ),
+      terminalType: _readString(json, const ['terminalType', 'TerminalType']),
+      entryType: _readString(json, const ['entryType', 'EntryType']),
+      status: _readString(json, const ['status', 'Status']),
+      responseDescription: _readString(
+        json,
+        const ['responseDescription', 'ResponseDescription'],
+      ),
+    );
+  }
+
+  final int transactionId;
+  final String title;
+  final String? description;
+  final String? merchantName;
+  final String? merchantCity;
+  final String? merchantCountry;
+  final double amount;
+  final String? effect;
+  final String? date;
+  final String? processingCode;
+  final String? transactionType;
+  final String? terminalType;
+  final String? entryType;
+  final String? status;
+  final String? responseDescription;
+}
+
 PaycoreCardBrand _resolvePaycoreCardBrand(Map<String, dynamic> json) {
   for (final hint in _brandHints(json)) {
     final normalized = _normalizeBrandHint(hint);
@@ -258,12 +413,19 @@ String? _resolvePaycoreCardBrandHint(Map<String, dynamic> json) {
 String? _resolvePaycoreFullCardNo(Map<String, dynamic> json) {
   const keys = <String>[
     'cardNo',
+    'CardNo',
     'fullCardNo',
+    'FullCardNo',
     'cardReference',
+    'CardReference',
     'pan',
+    'Pan',
     'cardNumber',
+    'CardNumber',
     'realCardNo',
+    'RealCardNo',
     'actualCardNo',
+    'ActualCardNo',
   ];
 
   for (final key in keys) {
@@ -284,15 +446,25 @@ String? _resolvePaycoreFullCardNo(Map<String, dynamic> json) {
 Iterable<String> _brandHints(Map<String, dynamic> json) sync* {
   const keys = <String>[
     'cardBrand',
+    'CardBrand',
     'cardType',
+    'CardType',
     'scheme',
+    'Scheme',
     'brand',
+    'Brand',
     'paymentSystem',
+    'PaymentSystem',
     'cardScheme',
+    'CardScheme',
     'cardNetwork',
+    'CardNetwork',
     'network',
+    'Network',
     'cardTypeName',
+    'CardTypeName',
     'productCode',
+    'ProductCode',
   ];
 
   for (final key in keys) {
@@ -305,6 +477,78 @@ Iterable<String> _brandHints(Map<String, dynamic> json) sync* {
 
 String _normalizeBrandHint(String value) {
   return value.trim().toLowerCase().replaceAll(RegExp('[^a-z0-9]+'), '');
+}
+
+String? _readString(Map<String, dynamic> json, List<String> keys) {
+  for (final key in keys) {
+    final value = json[key];
+    if (value is String) {
+      final normalized = value.trim();
+      if (normalized.isNotEmpty) {
+        return normalized;
+      }
+    }
+  }
+
+  return null;
+}
+
+int? _readInt(Map<String, dynamic> json, List<String> keys) {
+  for (final key in keys) {
+    final value = json[key];
+    if (value is num) {
+      return value.toInt();
+    }
+    if (value is String) {
+      final parsed = int.tryParse(value.trim());
+      if (parsed != null) {
+        return parsed;
+      }
+    }
+  }
+
+  return null;
+}
+
+bool? _readBool(Map<String, dynamic> json, List<String> keys) {
+  for (final key in keys) {
+    final value = json[key];
+    if (value is bool) {
+      return value;
+    }
+    if (value is num) {
+      return value != 0;
+    }
+    if (value is String) {
+      final normalized = value.trim().toLowerCase();
+      if (normalized == 'true' || normalized == '1') {
+        return true;
+      }
+      if (normalized == 'false' || normalized == '0') {
+        return false;
+      }
+    }
+  }
+
+  return null;
+}
+
+double? _readDecimal(Map<String, dynamic> json, List<String> keys) {
+  for (final key in keys) {
+    final value = json[key];
+    if (value is num) {
+      return value.toDouble();
+    }
+    if (value is String) {
+      final normalized = value.trim().replaceAll(',', '.');
+      final parsed = double.tryParse(normalized);
+      if (parsed != null) {
+        return parsed;
+      }
+    }
+  }
+
+  return null;
 }
 
 final class PaycorePinStatus {

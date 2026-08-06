@@ -20,7 +20,6 @@ import 'package:payinall/presentation/shared/components/toast_component.dart';
 import 'package:payinall/presentation/shared/constants/icon_asset_constants.dart';
 import 'package:payinall/presentation/shared/constants/paycore_card_asset_constants.dart';
 import 'package:payinall/presentation/shared/extensions/theme_extension.dart';
-import 'package:payinall/presentation/shared/widgets/paycore_card_visual.dart';
 import 'package:payinall/presentation/widgets/custom_app_bar.dart';
 import 'package:payinall/presentation/widgets/custom_loading.dart';
 import 'package:payinall/presentation/widgets/error_try_again.dart';
@@ -132,6 +131,7 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
       <PaycoreCardCreationProfile>[
         PaycoreCardCreationProfile.troyPhysical,
         PaycoreCardCreationProfile.troyVirtual,
+        PaycoreCardCreationProfile.masterVirtual,
         PaycoreCardCreationProfile.masterPhysical,
       ];
   late final PaycoreMobileService _paycoreService;
@@ -143,15 +143,15 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
   String? _loadError;
   final Set<int> _busyCards = <int>{};
   final Set<int> _loadingPinCards = <int>{};
-  final Set<int> _cvvPeekCards = <int>{};
-  final Set<int> _expandedCardMenus = <int>{};
-  final Set<int> _revealedVirtualCardNumbers = <int>{};
+  final Set<int> _loadingTransactionCards = <int>{};
 
   PaycoreCustomerInfo? _customerInfo;
   bool _hasPaycoreCustomerRecord = false;
   PaycoreCustomerAddress? _localCustomerAddressOverride;
   List<PaycoreCardSummary> _cards = const [];
   Map<int, PaycorePinStatus> _pinStatuses = const <int, PaycorePinStatus>{};
+  Map<int, PaycoreCardTransactionsResponse> _cardTransactions =
+      const <int, PaycoreCardTransactionsResponse>{};
   List<MetropolCity> _metropolCities = const [];
   List<_PaycoreCityCodeDefinition> _paycoreCityCodes =
       const <_PaycoreCityCodeDefinition>[];
@@ -181,6 +181,12 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
       );
     }
 
+    final managementResponse = await _paycoreService
+        .getCustomerInfoFromManagement(customerNumber);
+    if (managementResponse.isSuccess && managementResponse.data != null) {
+      return managementResponse;
+    }
+
     final currentCustomerResponse = await _paycoreService.getCustomerInfo();
     if (currentCustomerResponse.isSuccess &&
         currentCustomerResponse.data != null) {
@@ -192,12 +198,6 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
     if (customerNumberResponse.isSuccess &&
         customerNumberResponse.data != null) {
       return customerNumberResponse;
-    }
-
-    final managementResponse = await _paycoreService
-        .getCustomerInfoFromManagement(customerNumber);
-    if (managementResponse.isSuccess && managementResponse.data != null) {
-      return managementResponse;
     }
 
     return managementResponse.message?.trim().isNotEmpty ?? false
@@ -982,6 +982,51 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
     }
 
     return response.data;
+  }
+
+  Future<PaycoreCardTransactionsResponse?> _loadCardTransactions(
+    PaycoreCardSummary card, {
+    bool silent = false,
+  }) async {
+    if (_loadingTransactionCards.contains(card.id)) {
+      return _cardTransactions[card.id];
+    }
+
+    setState(() {
+      _loadingTransactionCards.add(card.id);
+    });
+
+    try {
+      final response = await _paycoreService.getCardTransactions(card.id);
+      if (!response.isSuccess || response.data == null) {
+        if (!silent) {
+          _showError(response.message ?? 'Kart hareketleri alınamadı.');
+        }
+        return null;
+      }
+
+      final next = Map<int, PaycoreCardTransactionsResponse>.from(
+        _cardTransactions,
+      );
+      next[card.id] = response.data!;
+      if (mounted) {
+        setState(() {
+          _cardTransactions = next;
+        });
+      }
+      return response.data!;
+    } on Object {
+      if (!silent) {
+        _showError('Kart hareketleri şu anda alınamıyor.');
+      }
+      return null;
+    } finally {
+      if (mounted) {
+        setState(() {
+          _loadingTransactionCards.remove(card.id);
+        });
+      }
+    }
   }
 
   Future<void> _showCustomerInfoSheet() async {
@@ -1807,14 +1852,6 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
                 final address2 = _normalizeSecondaryAddressLine(
                   address2Controller.text,
                 );
-
-                if (selectedProfile ==
-                    PaycoreCardCreationProfile.masterVirtual) {
-                  _showError(
-                    'Master sanal kart ürünü bu ortamda tanımlı değil. Şimdilik Troy sanal veya Master fiziki kullanın.',
-                  );
-                  return;
-                }
 
                 if ([
                   cityName,
@@ -2661,170 +2698,906 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
     return isVerified;
   }
 
-  Future<void> _showCardDetailSheet(PaycoreCardSummary card) async {
+  Future<void> _openCardDetailPage(PaycoreCardSummary card) async {
     final pinStatus =
         _pinStatuses[card.id] ?? await _loadPinStatus(card, silent: true);
     if (!mounted) {
       return;
     }
 
-    await showModalBottomSheet<void>(
-      context: context,
-      showDragHandle: true,
-      isScrollControlled: true,
-      builder: (context) => SafeArea(
-        child: FractionallySizedBox(
-          heightFactor: 0.82,
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(20, 8, 20, 24),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Row(
-                  children: [
-                    Expanded(
-                      child: Text(
-                        'Kart Detayı',
-                        style: context.textTheme.titleLarge?.copyWith(
-                          fontWeight: FontWeight.w700,
-                        ),
-                      ),
-                    ),
-                    IconButton(
-                      onPressed: () => Navigator.of(context).pop(),
-                      icon: const Icon(Icons.close_rounded),
-                      tooltip: 'Kapat',
-                    ),
-                  ],
+    final fullCardNo = _resolvedFullCardNo(card);
+    final showFullCardNo = card.resolvedIsDigitalCard && fullCardNo != null;
+    var isBackVisible = false;
+    var isCardNumberVisible = false;
+    var isCvvVisible = false;
+    var blocksNextCardFlip = false;
+
+    await Navigator.of(context).push<void>(
+      MaterialPageRoute(
+        builder: (pageContext) => StatefulBuilder(
+          builder: (detailContext, setDetailState) {
+            final currentPinStatus = _pinStatuses[card.id] ?? pinStatus;
+            return Scaffold(
+              appBar: CustomAppBar(
+                title: Text(
+                  'Kart Detayı',
+                  style: detailContext.textTheme.titleLarge?.copyWith(
+                    fontWeight: FontWeight.w700,
+                  ),
                 ),
-                const SizedBox(height: 12),
-                Expanded(
-                  child: SingleChildScrollView(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        _buildCardProductPreview(card),
-                        const SizedBox(height: 20),
-                        _buildInfoGroup(
-                          'Kart',
-                          [
-                            _buildInfoRow('Maskeli Kart', card.maskedCardNo),
-                            _buildInfoRow('Profil', card.profileLabel),
-                            _buildInfoRow('Kart Modu', card.cardModeLabel),
-                            _buildInfoRow('Ürün Kodu', card.productCode ?? '-'),
-                            _buildInfoRow('Kart Tipi', card.cardTypeName),
-                            _buildInfoRow('Durum', card.statusName),
-                            _buildInfoRow(
-                              'Son Kullanma',
-                              _cardExpiryLabel(card.expiryDate),
-                            ),
-                            _buildInfoRow(
-                              'CVV',
-                              _displayCardCvv(
-                                card,
-                                reveal: _cvvPeekCards.contains(card.id),
-                              ),
-                            ),
-                            _buildInfoRow(
-                              'Ana Kart',
-                              card.isPrimary ? 'Evet' : 'Hayır',
-                            ),
-                            _buildInfoRow(
-                              'Aktiflik',
-                              card.isActive ? 'Aktif' : 'Pasif',
-                            ),
-                            _buildInfoRow(
-                              'Kart Sahibi',
-                              _displayCardHolder(card),
-                            ),
-                            _buildInfoRow(
-                              'PIN Durumu',
-                              pinStatus == null
-                                  ? 'Henüz sorgulanmadı'
-                                  : (pinStatus.pinSetFlag
-                                        ? 'PIN Tanımlı'
-                                        : 'PIN Tanımsız'),
-                            ),
-                          ],
+              ),
+              body: SafeArea(
+                child: ListView(
+                  padding: const EdgeInsets.fromLTRB(20, 12, 20, 28),
+                  children: [
+                    _buildDetailFlipCard(
+                      card: card,
+                      isBackVisible: isBackVisible,
+                      isCardNumberVisible: isCardNumberVisible,
+                      isCvvVisible: isCvvVisible,
+                      onToggle: () {
+                        if (blocksNextCardFlip) {
+                          return;
+                        }
+                        setDetailState(() {
+                          isBackVisible = !isBackVisible;
+                        });
+                      },
+                      onSensitiveInteraction: () {
+                        blocksNextCardFlip = true;
+                        WidgetsBinding.instance.addPostFrameCallback((_) {
+                          blocksNextCardFlip = false;
+                        });
+                      },
+                      onToggleCardNumberVisibility: () => setDetailState(() {
+                        isCardNumberVisible = !isCardNumberVisible;
+                      }),
+                      onToggleCvvVisibility: () => setDetailState(() {
+                        isCvvVisible = !isCvvVisible;
+                      }),
+                    ),
+                    const SizedBox(height: 12),
+                    _buildDetailQuickActions(
+                      card: card,
+                      onTransactionsPressed: () =>
+                          unawaited(_openCardTransactionsPage(card)),
+                    ),
+                    const SizedBox(height: 18),
+                    _buildInfoGroup(
+                      'Kart',
+                      [
+                        _buildInfoRow(
+                          showFullCardNo ? 'Kart Numarası' : 'Maskeli Kart',
+                          showFullCardNo ? fullCardNo : card.maskedCardNo,
+                        ),
+                        _buildInfoRow('Profil', card.profileLabel),
+                        _buildInfoRow('Kart Modu', card.cardModeLabel),
+                        _buildInfoRow('Ürün Kodu', card.productCode ?? '-'),
+                        _buildInfoRow('Kart Tipi', card.cardTypeName),
+                        _buildInfoRow('Durum', card.statusName),
+                        _buildInfoRow(
+                          'Son Kullanma',
+                          _cardExpiryLabel(card.expiryDate),
+                        ),
+                        _buildInfoRow(
+                          'CVV',
+                          _displayCardCvv(card, reveal: true),
+                        ),
+                        _buildInfoRow(
+                          'Ana Kart',
+                          card.isPrimary ? 'Evet' : 'Hayır',
+                        ),
+                        _buildInfoRow(
+                          'Aktiflik',
+                          card.isActive ? 'Aktif' : 'Pasif',
+                        ),
+                        _buildInfoRow(
+                          'Kart Sahibi',
+                          _displayCardHolder(card),
+                        ),
+                        _buildInfoRow(
+                          'PIN Durumu',
+                          currentPinStatus == null
+                              ? 'Henüz sorgulanmadı'
+                              : (currentPinStatus.pinSetFlag
+                                    ? 'PIN Tanımlı'
+                                    : 'PIN Tanımsız'),
                         ),
                       ],
                     ),
-                  ),
-                ),
-                const SizedBox(height: 16),
-                Row(
-                  children: [
-                    Expanded(
-                      child: FilledButton.tonalIcon(
-                        onPressed: card.isPrimary
-                            ? null
-                            : () => unawaited(
-                                _runCardAction(
-                                  card,
-                                  () => _setPrimaryCard(card),
-                                ),
-                              ),
-                        icon: const Icon(Icons.workspace_premium_outlined),
-                        label: Text(
-                          card.isPrimary ? 'Ana Kart' : 'Ana Kart Ata',
-                        ),
-                        style: FilledButton.styleFrom(
-                          minimumSize: const Size.fromHeight(54),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(width: 12),
-                    Expanded(
-                      child: OutlinedButton.icon(
-                        onPressed: () => unawaited(_showSetPinSheet(card)),
-                        icon: const Icon(Icons.pin_outlined),
-                        label: Text(
-                          (pinStatus?.pinSetFlag ?? false)
-                              ? 'PIN Güncelle'
-                              : 'PIN Oluştur',
-                        ),
-                        style: OutlinedButton.styleFrom(
-                          minimumSize: const Size.fromHeight(54),
-                        ),
-                      ),
-                    ),
+                    const SizedBox(height: 18),
+                    _buildCardDetailActions(card, currentPinStatus),
                   ],
                 ),
-                const SizedBox(height: 12),
-                SizedBox(
-                  width: double.infinity,
-                  child: FilledButton.icon(
-                    onPressed: () => unawaited(_showQrPaymentOptions(card)),
-                    icon: const Icon(Icons.qr_code_scanner_rounded),
-                    label: Text(_pt('QR ile Öde / Para Çek')),
-                    style: FilledButton.styleFrom(
-                      minimumSize: const Size.fromHeight(54),
-                    ),
+              ),
+            );
+          },
+        ),
+      ),
+    );
+  }
+
+  Future<void> _openCardTransactionsPage(PaycoreCardSummary card) async {
+    var transactionsFuture = Future<PaycoreCardTransactionsResponse?>.value(
+      _cardTransactions[card.id],
+    );
+    if (_cardTransactions[card.id] == null) {
+      transactionsFuture = _loadCardTransactions(card, silent: true);
+    }
+
+    await Navigator.of(context).push<void>(
+      MaterialPageRoute(
+        builder: (pageContext) => StatefulBuilder(
+          builder: (transactionsContext, setTransactionsState) {
+            return Scaffold(
+              appBar: CustomAppBar(
+                title: Text(
+                  'Kart Hareketleri',
+                  style: transactionsContext.textTheme.titleLarge?.copyWith(
+                    fontWeight: FontWeight.w700,
                   ),
                 ),
-                if (card.isActive && card.statusCode != 'I') ...[
-                  const SizedBox(height: 12),
-                  SizedBox(
-                    width: double.infinity,
-                    child: OutlinedButton.icon(
-                      onPressed: () => unawaited(
-                        _runCardAction(card, () => _cancelCard(card)),
-                      ),
-                      icon: const Icon(Icons.block_outlined),
-                      label: Text(_pt('Kartı İptal Et')),
-                      style: OutlinedButton.styleFrom(
-                        foregroundColor: const Color(0xFFB3261E),
-                        side: const BorderSide(color: Color(0xFFB3261E)),
-                        minimumSize: const Size.fromHeight(54),
-                      ),
-                    ),
+                actions: [
+                  IconButton(
+                    tooltip: 'Yenile',
+                    onPressed: () {
+                      setTransactionsState(() {
+                        transactionsFuture = _loadCardTransactions(
+                          card,
+                          silent: true,
+                        );
+                      });
+                    },
+                    icon: const Icon(Icons.refresh_rounded),
                   ),
                 ],
-              ],
+              ),
+              body: SafeArea(
+                child: FutureBuilder<PaycoreCardTransactionsResponse?>(
+                  future: transactionsFuture,
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState != ConnectionState.done) {
+                      return const Center(child: CircularProgressIndicator());
+                    }
+
+                    return ListView(
+                      padding: const EdgeInsets.fromLTRB(20, 16, 20, 28),
+                      children: [
+                        Text(
+                          card.maskedCardNo,
+                          style: transactionsContext.textTheme.titleMedium
+                              ?.copyWith(fontWeight: FontWeight.w800),
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          card.profileLabel,
+                          style: transactionsContext.textTheme.bodyMedium
+                              ?.copyWith(
+                                color: context.colorScheme.onSurfaceVariant,
+                              ),
+                        ),
+                        const SizedBox(height: 16),
+                        _buildCardTransactionsSection(card, snapshot.data),
+                      ],
+                    );
+                  },
+                ),
+              ),
+            );
+          },
+        ),
+      ),
+    );
+  }
+
+  Widget _buildDetailFlipCard({
+    required PaycoreCardSummary card,
+    required bool isBackVisible,
+    required bool isCardNumberVisible,
+    required bool isCvvVisible,
+    required VoidCallback onToggle,
+    required VoidCallback onSensitiveInteraction,
+    required VoidCallback onToggleCardNumberVisibility,
+    required VoidCallback onToggleCvvVisibility,
+  }) {
+    final fullCardNo = _resolvedFullCardNo(card);
+    final canRevealCardNo = card.resolvedIsDigitalCard && fullCardNo != null;
+    final canRevealCvv = card.cvv?.trim().isNotEmpty ?? false;
+    final displayCardNo = canRevealCardNo && isCardNumberVisible
+        ? _formatCardNoGroups(fullCardNo)
+        : card.maskedCardNo;
+    final cvv = _displayCardCvv(card, reveal: isCvvVisible);
+    final expiry = _cardExpiryLabel(card.expiryDate);
+    final holder = _displayCardHolder(card);
+    final frontAsset = PaycoreCardAssetConstants.frontForSummary(card);
+    final backAsset = PaycoreCardAssetConstants.backForSummary(card);
+
+    return GestureDetector(
+      onTap: onToggle,
+      onLongPress: fullCardNo == null
+          ? null
+          : () {
+              unawaited(Clipboard.setData(ClipboardData(text: fullCardNo)));
+              _showSuccess('Kart numarası kopyalandı.');
+            },
+      child: TweenAnimationBuilder<double>(
+        tween: Tween<double>(end: isBackVisible ? 1 : 0),
+        duration: const Duration(milliseconds: 360),
+        curve: Curves.easeInOutCubic,
+        builder: (context, value, child) {
+          final showBack = value >= 0.5;
+          final rotation = value * 3.1415926535;
+
+          return Transform(
+            alignment: Alignment.center,
+            transform: Matrix4.identity()
+              ..setEntry(3, 2, 0.001)
+              ..rotateY(rotation),
+            child: Transform(
+              alignment: Alignment.center,
+              transform: Matrix4.identity()
+                ..rotateY(showBack ? 3.1415926535 : 0),
+              child: AspectRatio(
+                aspectRatio: 1.586,
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(22),
+                  child: Stack(
+                    fit: StackFit.expand,
+                    children: [
+                      Image.asset(
+                        showBack ? backAsset : frontAsset,
+                        fit: BoxFit.cover,
+                      ),
+                      if (!showBack) ...[
+                        Positioned(
+                          left: 22,
+                          right: 22,
+                          bottom: 60,
+                          child: GestureDetector(
+                            behavior: HitTestBehavior.opaque,
+                            onTapDown: canRevealCardNo && isCardNumberVisible
+                                ? (_) => onSensitiveInteraction()
+                                : null,
+                            onTap: canRevealCardNo && isCardNumberVisible
+                                ? () {
+                                    onSensitiveInteraction();
+                                    unawaited(
+                                      Clipboard.setData(
+                                        ClipboardData(text: fullCardNo),
+                                      ),
+                                    );
+                                    _showSuccess('Kart numarası kopyalandı.');
+                                  }
+                                : null,
+                            child: Row(
+                              children: [
+                                Flexible(
+                                  child: Text(
+                                    displayCardNo,
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: context.textTheme.titleLarge
+                                        ?.copyWith(
+                                          color: Colors.white,
+                                          fontSize: 15,
+                                          fontWeight: FontWeight.w800,
+                                          letterSpacing: 0.2,
+                                          shadows: const [
+                                            Shadow(
+                                              color: Colors.black54,
+                                              blurRadius: 7,
+                                              offset: Offset(0, 2),
+                                            ),
+                                          ],
+                                        ),
+                                  ),
+                                ),
+                                if (canRevealCardNo) ...[
+                                  const SizedBox(width: 6),
+                                  GestureDetector(
+                                    behavior: HitTestBehavior.opaque,
+                                    onTapDown: (_) => onSensitiveInteraction(),
+                                    onTap: () {
+                                      onSensitiveInteraction();
+                                      onToggleCardNumberVisibility();
+                                    },
+                                    child: _buildCardEyeButton(
+                                      isVisible: isCardNumberVisible,
+                                    ),
+                                  ),
+                                ],
+                              ],
+                            ),
+                          ),
+                        ),
+                        Positioned(
+                          left: 22,
+                          right: 22,
+                          bottom: 28,
+                          child: Text(
+                            holder,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: context.textTheme.titleMedium?.copyWith(
+                              color: Colors.white,
+                              fontSize: 13,
+                              fontWeight: FontWeight.w800,
+                              letterSpacing: 0.2,
+                              shadows: const [
+                                Shadow(
+                                  color: Colors.black54,
+                                  blurRadius: 6,
+                                  offset: Offset(0, 2),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        Positioned(
+                          right: 24,
+                          bottom: 60,
+                          child: _buildInlineCardMeta('SKT', expiry),
+                        ),
+                      ] else ...[
+                        Positioned(
+                          right: 24,
+                          top: 118,
+                          child: _buildSecureCardMeta(
+                            label: 'CVV',
+                            value: cvv,
+                            canReveal: canRevealCvv,
+                            isVisible: isCvvVisible,
+                            onSensitiveInteraction: onSensitiveInteraction,
+                            onToggle: () {
+                              onSensitiveInteraction();
+                              onToggleCvvVisibility();
+                            },
+                          ),
+                        ),
+                      ],
+                      Positioned(
+                        right: 18,
+                        bottom: 16,
+                        child: Icon(
+                          Icons.flip_camera_android_rounded,
+                          color: Colors.white.withValues(alpha: 0.82),
+                          size: 22,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
             ),
+          );
+        },
+      ),
+    );
+  }
+
+  Widget _buildGlassPill(String text) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
+      decoration: BoxDecoration(
+        color: Colors.white.withValues(alpha: 0.16),
+        borderRadius: BorderRadius.circular(999),
+        border: Border.all(color: Colors.white.withValues(alpha: 0.15)),
+      ),
+      child: Text(
+        text,
+        style: context.textTheme.bodySmall?.copyWith(
+          color: Colors.white,
+          fontSize: 10,
+          fontWeight: FontWeight.w800,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildCardEyeButton({required bool isVisible}) {
+    return SizedBox(
+      width: 26,
+      height: 26,
+      child: Icon(
+        isVisible ? Icons.visibility_off_outlined : Icons.visibility_outlined,
+        color: Colors.white,
+        size: 21,
+      ),
+    );
+  }
+
+  Widget _buildInlineCardMeta(String label, String value) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.end,
+      children: [
+        Text(
+          label,
+          style: context.textTheme.bodySmall?.copyWith(
+            color: Colors.white.withValues(alpha: 0.78),
+            fontSize: 10,
+            fontWeight: FontWeight.w900,
+          ),
+        ),
+        Text(
+          value,
+          maxLines: 1,
+          style: context.textTheme.bodySmall?.copyWith(
+            color: Colors.white,
+            fontSize: 12,
+            fontWeight: FontWeight.w900,
+            height: 1.05,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildSecureCardMeta({
+    required String label,
+    required String value,
+    required bool canReveal,
+    required bool isVisible,
+    required VoidCallback onSensitiveInteraction,
+    required VoidCallback onToggle,
+  }) {
+    return Container(
+      constraints: const BoxConstraints(minWidth: 76),
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+      decoration: BoxDecoration(
+        color: Colors.black.withValues(alpha: 0.34),
+        borderRadius: BorderRadius.circular(13),
+        border: Border.all(color: Colors.white.withValues(alpha: 0.14)),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              Text(
+                label,
+                style: context.textTheme.bodySmall?.copyWith(
+                  color: Colors.white.withValues(alpha: 0.78),
+                  fontSize: 10,
+                  fontWeight: FontWeight.w800,
+                ),
+              ),
+              const SizedBox(height: 2),
+              Text(
+                value,
+                maxLines: 1,
+                style: context.textTheme.bodyMedium?.copyWith(
+                  color: Colors.white,
+                  fontWeight: FontWeight.w900,
+                  fontSize: 13,
+                ),
+              ),
+            ],
+          ),
+          if (canReveal) ...[
+            const SizedBox(width: 8),
+            GestureDetector(
+              behavior: HitTestBehavior.opaque,
+              onTapDown: (_) => onSensitiveInteraction(),
+              onTap: onToggle,
+              child: _buildCardEyeButton(isVisible: isVisible),
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+
+  Widget _buildDetailQuickActions({
+    required PaycoreCardSummary card,
+    required VoidCallback onTransactionsPressed,
+  }) {
+    return Row(
+      children: [
+        Expanded(
+          child: _buildDetailQuickActionButton(
+            icon: Icons.receipt_long_outlined,
+            label: 'Kart Hareketleri',
+            onPressed: onTransactionsPressed,
+          ),
+        ),
+        const SizedBox(width: 10),
+        Expanded(
+          child: _buildDetailQuickActionButton(
+            icon: Icons.qr_code_scanner_rounded,
+            label: 'QR ile Öde',
+            filled: true,
+            onPressed: () => unawaited(_showQrPaymentOptions(card)),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildDetailQuickActionButton({
+    required IconData icon,
+    required String label,
+    required VoidCallback onPressed,
+    bool filled = false,
+  }) {
+    final foreground = filled ? Colors.white : context.colorScheme.primary;
+    final background = filled
+        ? context.colorScheme.primary
+        : context.colorScheme.surface;
+
+    return Material(
+      color: background,
+      borderRadius: BorderRadius.circular(18),
+      child: InkWell(
+        borderRadius: BorderRadius.circular(18),
+        onTap: onPressed,
+        child: Container(
+          height: 50,
+          padding: const EdgeInsets.symmetric(horizontal: 12),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(18),
+            border: Border.all(
+              color: filled
+                  ? context.colorScheme.primary
+                  : context.colorScheme.outline.withValues(alpha: 0.5),
+            ),
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(icon, color: foreground, size: 19),
+              const SizedBox(width: 8),
+              Flexible(
+                child: Text(
+                  label,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: context.textTheme.bodyMedium?.copyWith(
+                    color: foreground,
+                    fontWeight: FontWeight.w800,
+                  ),
+                ),
+              ),
+            ],
           ),
         ),
       ),
+    );
+  }
+
+  Widget _buildCardDetailActions(
+    PaycoreCardSummary card,
+    PaycorePinStatus? pinStatus,
+  ) {
+    final isBusy = _busyCards.contains(card.id);
+    final isCancelled = card.statusCode == 'I';
+
+    return _buildSurfaceCard(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'Kart İşlemleri',
+            style: context.textTheme.titleMedium?.copyWith(
+              fontWeight: FontWeight.w800,
+            ),
+          ),
+          const SizedBox(height: 12),
+          GridView.count(
+            crossAxisCount: 2,
+            childAspectRatio: 3.4,
+            crossAxisSpacing: 10,
+            mainAxisSpacing: 10,
+            physics: const NeverScrollableScrollPhysics(),
+            shrinkWrap: true,
+            children: [
+              _buildDetailActionButton(
+                icon: Icons.search_rounded,
+                label: 'PIN Durum',
+                onPressed: () => unawaited(_showPinStatusSheet(card)),
+              ),
+              _buildDetailActionButton(
+                icon: Icons.pin_outlined,
+                label: (pinStatus?.pinSetFlag ?? false)
+                    ? 'PIN Güncelle'
+                    : 'PIN Oluştur',
+                filled: true,
+                onPressed: () => unawaited(_showSetPinSheet(card)),
+              ),
+              _buildDetailActionButton(
+                icon: Icons.workspace_premium_outlined,
+                label: card.isPrimary ? 'Ana Kart' : 'Ana Kart Ata',
+                onPressed: card.isPrimary || isBusy
+                    ? null
+                    : () => unawaited(
+                        _runCardAction(card, () => _setPrimaryCard(card)),
+                      ),
+              ),
+              _buildDetailActionButton(
+                icon: Icons.password_rounded,
+                label: 'Random PIN',
+                onPressed: isBusy
+                    ? null
+                    : () => unawaited(_showRandomPinSheet(card)),
+              ),
+              _buildDetailActionButton(
+                icon: Icons.sms_outlined,
+                label: 'PIN SMS',
+                onPressed: isBusy
+                    ? null
+                    : () => unawaited(
+                        _runCardAction(card, () => _sendPinSms(card)),
+                      ),
+              ),
+              _buildDetailActionButton(
+                icon: Icons.public_rounded,
+                label: 'E-Ticaret',
+                onPressed: isBusy
+                    ? null
+                    : () => unawaited(_showEcommerceAuthorizationSheet(card)),
+              ),
+              if (card.isActive && !isCancelled)
+                _buildDetailActionButton(
+                  icon: Icons.block_outlined,
+                  label: 'Kartı İptal Et',
+                  danger: true,
+                  onPressed: isBusy
+                      ? null
+                      : () => unawaited(
+                          _runCardAction(card, () => _cancelCard(card)),
+                        ),
+                ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildCardTransactionsSection(
+    PaycoreCardSummary card,
+    PaycoreCardTransactionsResponse? transactions,
+  ) {
+    final isLoading = _loadingTransactionCards.contains(card.id);
+    final items =
+        transactions?.transactions ?? const <PaycoreCardTransactionItem>[];
+
+    return _buildSurfaceCard(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Expanded(
+                child: Text(
+                  'Kart Hareketleri',
+                  style: context.textTheme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.w800,
+                  ),
+                ),
+              ),
+              if (transactions != null)
+                Text(
+                  '${items.length} kayıt',
+                  style: context.textTheme.bodySmall?.copyWith(
+                    color: context.colorScheme.onSurfaceVariant,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+            ],
+          ),
+          const SizedBox(height: 12),
+          if (transactions != null)
+            Wrap(
+              spacing: 10,
+              runSpacing: 10,
+              children: [
+                _buildSummaryMetric(
+                  'Toplam Borç',
+                  _formatMoney(transactions.totalDebit),
+                  const Color(0xFFB42318),
+                ),
+                _buildSummaryMetric(
+                  'Toplam Alacak',
+                  _formatMoney(transactions.totalCredit),
+                  const Color(0xFF027A48),
+                ),
+              ],
+            ),
+          if (transactions != null) const SizedBox(height: 14),
+          if (isLoading)
+            const Padding(
+              padding: EdgeInsets.symmetric(vertical: 18),
+              child: Center(child: CircularProgressIndicator()),
+            )
+          else if (items.isEmpty)
+            Text(
+              'Bu kart için gösterilecek hareket bulunamadı.',
+              style: context.textTheme.bodyMedium?.copyWith(
+                color: context.colorScheme.onSurfaceVariant,
+              ),
+            )
+          else
+            Column(
+              children: items
+                  .take(20)
+                  .map((item) => _buildTransactionTile(item))
+                  .toList(),
+            ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSummaryMetric(String label, String value, Color accent) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+      decoration: BoxDecoration(
+        color: accent.withValues(alpha: 0.08),
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: accent.withValues(alpha: 0.16)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            label,
+            style: context.textTheme.bodySmall?.copyWith(
+              color: accent,
+              fontWeight: FontWeight.w800,
+            ),
+          ),
+          const SizedBox(height: 4),
+          Text(
+            value,
+            style: context.textTheme.titleMedium?.copyWith(
+              color: context.colorScheme.onSurface,
+              fontWeight: FontWeight.w900,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildTransactionTile(PaycoreCardTransactionItem item) {
+    final isCredit = (item.effect ?? '').trim().toUpperCase() == 'C';
+    final amountColor = isCredit
+        ? const Color(0xFF027A48)
+        : const Color(0xFFB42318);
+    final subtitleParts = <String>[
+      if ((item.merchantName ?? '').trim().isNotEmpty)
+        item.merchantName!.trim(),
+      if ((item.merchantCity ?? '').trim().isNotEmpty)
+        item.merchantCity!.trim(),
+      if ((item.transactionType ?? '').trim().isNotEmpty)
+        item.transactionType!.trim(),
+    ];
+
+    return Container(
+      margin: const EdgeInsets.only(bottom: 10),
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(18),
+        border: Border.all(color: Colors.black12),
+        color: Colors.white,
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  item.title,
+                  style: context.textTheme.titleSmall?.copyWith(
+                    fontWeight: FontWeight.w800,
+                  ),
+                ),
+                if (subtitleParts.isNotEmpty) ...[
+                  const SizedBox(height: 4),
+                  Text(
+                    subtitleParts.join(' • '),
+                    style: context.textTheme.bodySmall?.copyWith(
+                      color: context.colorScheme.onSurfaceVariant,
+                    ),
+                  ),
+                ],
+                if ((item.description ?? '').trim().isNotEmpty) ...[
+                  const SizedBox(height: 4),
+                  Text(
+                    item.description!.trim(),
+                    style: context.textTheme.bodySmall?.copyWith(
+                      color: context.colorScheme.onSurfaceVariant,
+                    ),
+                  ),
+                ],
+                const SizedBox(height: 8),
+                Text(
+                  _formatTransactionDate(item.date),
+                  style: context.textTheme.labelMedium?.copyWith(
+                    color: context.colorScheme.onSurfaceVariant,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(width: 12),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              Text(
+                _formatMoney(item.amount),
+                style: context.textTheme.titleSmall?.copyWith(
+                  color: amountColor,
+                  fontWeight: FontWeight.w900,
+                ),
+              ),
+              if ((item.status ?? '').trim().isNotEmpty) ...[
+                const SizedBox(height: 6),
+                _buildGlassPill(item.status!.trim()),
+              ],
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildDetailActionButton({
+    required IconData icon,
+    required String label,
+    required VoidCallback? onPressed,
+    bool filled = false,
+    bool danger = false,
+  }) {
+    final foreground = danger
+        ? const Color(0xFFB3261E)
+        : filled
+        ? Colors.white
+        : context.colorScheme.primary;
+
+    final child = Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Icon(icon, size: 18),
+        const SizedBox(width: 8),
+        Flexible(
+          child: Text(
+            _pt(label),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
+        ),
+      ],
+    );
+
+    if (filled) {
+      return FilledButton(
+        onPressed: onPressed,
+        style: FilledButton.styleFrom(
+          foregroundColor: foreground,
+          padding: const EdgeInsets.symmetric(horizontal: 10),
+          textStyle: const TextStyle(fontSize: 13, fontWeight: FontWeight.w800),
+        ),
+        child: child,
+      );
+    }
+
+    return OutlinedButton(
+      onPressed: onPressed,
+      style: OutlinedButton.styleFrom(
+        foregroundColor: foreground,
+        side: BorderSide(
+          color: danger ? const Color(0xFFB3261E) : Colors.black,
+          width: 1.2,
+        ),
+        padding: const EdgeInsets.symmetric(horizontal: 10),
+        textStyle: const TextStyle(fontSize: 13, fontWeight: FontWeight.w800),
+      ),
+      child: child,
     );
   }
 
@@ -2952,6 +3725,241 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
           fit: BoxFit.cover,
         ),
       ),
+    );
+  }
+
+  Future<void> _showEcommerceAuthorizationSheet(
+    PaycoreCardSummary card,
+  ) async {
+    var hasLoaded = false;
+    var isLoading = true;
+    var isSubmitting = false;
+    var domesticEnabled = false;
+    var internationalEnabled = false;
+    String? loadError;
+
+    await showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      showDragHandle: true,
+      builder: (sheetContext) {
+        Future<void> loadAuthorization(StateSetter setSheetState) async {
+          setSheetState(() {
+            isLoading = true;
+            loadError = null;
+          });
+
+          final response = await _paycoreService.getCardAuthorization(card.id);
+          if (!mounted || !sheetContext.mounted) {
+            return;
+          }
+
+          final authorization = response.data;
+          if (!response.isSuccess || authorization == null) {
+            setSheetState(() {
+              isLoading = false;
+              loadError =
+                  response.message ?? 'Kart e-ticaret yetkileri alınamadı.';
+            });
+            return;
+          }
+
+          setSheetState(() {
+            domesticEnabled = authorization.isDomesticEcommerceEnabled;
+            internationalEnabled =
+                authorization.isInternationalEcommerceEnabled;
+            isLoading = false;
+          });
+        }
+
+        Future<void> submitAuthorization(StateSetter setSheetState) async {
+          setSheetState(() => isSubmitting = true);
+
+          final response = await _paycoreService
+              .updateCardEcommerceAuthorization(
+                cardId: card.id,
+                isDomesticEcommerceEnabled: domesticEnabled,
+                isInternationalEcommerceEnabled: internationalEnabled,
+              );
+
+          if (!mounted || !sheetContext.mounted) {
+            return;
+          }
+
+          setSheetState(() => isSubmitting = false);
+
+          if (!response.isSuccess) {
+            _showError(
+              response.message ?? 'Kart e-ticaret yetkileri güncellenemedi.',
+            );
+            return;
+          }
+
+          Navigator.of(sheetContext).pop();
+          _showSuccess(
+            response.message ?? 'Kart e-ticaret yetkileri güncellendi.',
+          );
+          await _loadData(silent: true);
+        }
+
+        return StatefulBuilder(
+          builder: (modalContext, setSheetState) {
+            if (!hasLoaded) {
+              hasLoaded = true;
+              unawaited(loadAuthorization(setSheetState));
+            }
+
+            return SafeArea(
+              child: Padding(
+                padding: EdgeInsets.only(
+                  left: 20,
+                  right: 20,
+                  top: 8,
+                  bottom: MediaQuery.of(modalContext).viewInsets.bottom + 24,
+                ),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                _pt('E-Ticaret Yetkileri'),
+                                style: modalContext.textTheme.headlineSmall
+                                    ?.copyWith(fontWeight: FontWeight.w900),
+                              ),
+                              const SizedBox(height: 6),
+                              Text(
+                                '${card.maskedCardNo} • ${card.profileLabel}',
+                                style: modalContext.textTheme.bodyMedium
+                                    ?.copyWith(
+                                      color: modalContext
+                                          .colorScheme
+                                          .onSurfaceVariant,
+                                    ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        IconButton(
+                          onPressed: isSubmitting
+                              ? null
+                              : () => Navigator.of(sheetContext).pop(),
+                          icon: const Icon(Icons.close_rounded),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 16),
+                    if (isLoading)
+                      const Padding(
+                        padding: EdgeInsets.symmetric(vertical: 28),
+                        child: Center(child: CircularProgressIndicator()),
+                      )
+                    else if (loadError != null)
+                      _buildSurfaceCard(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              _pt(loadError!),
+                              style: modalContext.textTheme.bodyMedium
+                                  ?.copyWith(
+                                    color: modalContext.colorScheme.error,
+                                    fontWeight: FontWeight.w700,
+                                  ),
+                            ),
+                            const SizedBox(height: 12),
+                            OutlinedButton.icon(
+                              onPressed: () =>
+                                  unawaited(loadAuthorization(setSheetState)),
+                              icon: const Icon(Icons.refresh_rounded),
+                              label: Text(_pt('Tekrar Dene')),
+                            ),
+                          ],
+                        ),
+                      )
+                    else ...[
+                      _buildSurfaceCard(
+                        child: Column(
+                          children: [
+                            SwitchListTile.adaptive(
+                              contentPadding: EdgeInsets.zero,
+                              title: Text(
+                                _pt('Yurt içi e-ticaret'),
+                                style: modalContext.textTheme.titleMedium
+                                    ?.copyWith(fontWeight: FontWeight.w800),
+                              ),
+                              subtitle: Text(
+                                _pt(
+                                  'Türkiye içindeki online ödeme yetkisini aç/kapat.',
+                                ),
+                              ),
+                              value: domesticEnabled,
+                              onChanged: isSubmitting
+                                  ? null
+                                  : (value) => setSheetState(
+                                      () => domesticEnabled = value,
+                                    ),
+                            ),
+                            const Divider(height: 20),
+                            SwitchListTile.adaptive(
+                              contentPadding: EdgeInsets.zero,
+                              title: Text(
+                                _pt('Yurt dışı e-ticaret'),
+                                style: modalContext.textTheme.titleMedium
+                                    ?.copyWith(fontWeight: FontWeight.w800),
+                              ),
+                              subtitle: Text(
+                                _pt(
+                                  'Yurt dışı online ödeme yetkisini aç/kapat.',
+                                ),
+                              ),
+                              value: internationalEnabled,
+                              onChanged: isSubmitting
+                                  ? null
+                                  : (value) => setSheetState(
+                                      () => internationalEnabled = value,
+                                    ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+                      SizedBox(
+                        width: double.infinity,
+                        child: FilledButton.icon(
+                          onPressed: isSubmitting
+                              ? null
+                              : () => unawaited(
+                                  submitAuthorization(setSheetState),
+                                ),
+                          icon: Icon(
+                            isSubmitting
+                                ? Icons.sync_rounded
+                                : Icons.save_rounded,
+                          ),
+                          label: Text(
+                            _pt(
+                              isSubmitting
+                                  ? 'Kaydediliyor...'
+                                  : 'Yetkileri Kaydet',
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ],
+                ),
+              ),
+            );
+          },
+        );
+      },
     );
   }
 
@@ -3557,8 +4565,7 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
     String sheetDescription =
         'ATM ekranındaki QR kodunu okut, tutarı kontrol et ve işlemi kartla başlat.',
     String scanModalTitle = 'ATM QR Oku',
-    String scanModalDescription =
-        'Kamerayı ATM QR koduna doğru tutun.',
+    String scanModalDescription = 'Kamerayı ATM QR koduna doğru tutun.',
     String submitButtonLabel = 'ATM QR İşlemini Başlat',
     String infoCardTitle = 'ATM Bilgisi',
     String emptyQrMessage = 'ATM QR verisi bulunamadı. Lütfen QR okutun.',
@@ -4260,8 +5267,7 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
       'Kart listesi zamanında alınamadı.': 'paycore_card_list_timeout',
       'Kart listesi alınırken beklenmeyen bir hata oluştu.':
           'paycore_card_list_unexpected_error',
-      'Müşteri bilgisi zamanında alınamadı.':
-          'paycore_customer_info_timeout',
+      'Müşteri bilgisi zamanında alınamadı.': 'paycore_customer_info_timeout',
       'Müşteri bilgisi alınırken beklenmeyen bir hata oluştu.':
           'paycore_customer_info_unexpected_error',
       'Kart verisi alınamadı.': 'paycore_card_data_not_found',
@@ -4282,13 +5288,11 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
           'paycore_enter_card_or_barcode',
       'Kart numarası 12-19 haneli olmalıdır.':
           'paycore_card_number_length_error',
-      'SMS ile gelen doğrulama kodunu girin.':
-          'paycore_enter_sms_code',
+      'SMS ile gelen doğrulama kodunu girin.': 'paycore_enter_sms_code',
       'Fiziksel kart eklenemedi.': 'paycore_physical_card_add_failed',
       'PIN durumu şu anda alınamadı. Lütfen tekrar deneyin.':
           'paycore_pin_status_retry',
-      'Kart numarasını maskesiz girin.':
-          'paycore_enter_unmasked_card_number',
+      'Kart numarasını maskesiz girin.': 'paycore_enter_unmasked_card_number',
       'Mevcut PIN 4-6 haneli sayısal olmalı.':
           'paycore_current_pin_numeric_error',
       'PIN 4-6 haneli sayısal olmalı.': 'paycore_pin_numeric_error',
@@ -4302,8 +5306,7 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
       'PIN SMS gönderildi.': 'paycore_pin_sms_sent',
       'Önce QR kodunu okutun.': 'paycore_scan_qr_first',
       'Tutar sıfırdan büyük olmalıdır.': 'paycore_amount_must_be_positive',
-      'Önce çekmek istediğiniz tutarı girin.':
-          'paycore_enter_withdraw_amount',
+      'Önce çekmek istediğiniz tutarı girin.': 'paycore_enter_withdraw_amount',
       'İşlem iptal edildi.': 'paycore_operation_cancelled',
     };
 
@@ -5297,545 +6300,85 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
   }
 
   Widget _buildCardModuleItem(PaycoreCardSummary card) {
-    final isBusy = _busyCards.contains(card.id);
-    final pinStatus = _pinStatuses[card.id];
-    final isExpanded =
-        _expandedCardMenus.isEmpty || _expandedCardMenus.contains(card.id);
-
-    return Container(
+    return Padding(
       key: ValueKey('paycore-card-module-${card.id}'),
-      margin: const EdgeInsets.only(bottom: 12),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          PaycoreCardVisual(
-            card: card,
-            enableFlip: true,
-            aspectRatio: 1.48,
-            margin: const EdgeInsets.only(bottom: 8),
-            shouldIgnoreFlipTap:
-                (
-                  localPosition,
-                  size, {
-                  required isBackVisible,
-                }) {
-                  if (!isBackVisible) {
-                    return false;
-                  }
-
-                  return localPosition.dx >= size.width - 170 &&
-                      localPosition.dy >= size.height * 0.42 &&
-                      localPosition.dy <= size.height * 0.78;
-                },
-            frontChild: _buildCardFrontFace(card, pinStatus),
-            backChild: _buildCardBackFace(card, pinStatus),
-          ),
-          _buildSurfaceCard(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+      padding: const EdgeInsets.only(bottom: 4),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          borderRadius: BorderRadius.circular(12),
+          onTap: () => unawaited(_openCardDetailPage(card)),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 10),
+            child: Row(
               children: [
-                InkWell(
-                  borderRadius: BorderRadius.circular(14),
-                  onTap: () {
-                    setState(() {
-                      if (_expandedCardMenus.isEmpty) {
-                        _expandedCardMenus.addAll(
-                          _cards.map((item) => item.id),
-                        );
-                      }
-
-                      if (_expandedCardMenus.contains(card.id)) {
-                        _expandedCardMenus.remove(card.id);
-                      } else {
-                        _expandedCardMenus.add(card.id);
-                      }
-                    });
-                  },
-                  child: Row(
+                _buildCardListThumbnail(card),
+                const SizedBox(width: 14),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              '${card.profileLabel} • ${card.cardTypeName}',
-                              style: context.textTheme.bodyMedium?.copyWith(
-                                fontWeight: FontWeight.w800,
-                                fontSize: 14,
-                              ),
-                            ),
-                            const SizedBox(height: 4),
-                            Text(
-                              'PIN: ${_pinStatusLabel(pinStatus)}',
-                              style: context.textTheme.bodySmall?.copyWith(
-                                color: context.colorScheme.onSurfaceVariant,
-                                fontSize: 12.5,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      AnimatedRotation(
-                        turns: isExpanded ? 0.5 : 0,
-                        duration: const Duration(milliseconds: 180),
-                        child: Icon(
-                          Icons.keyboard_arrow_down_rounded,
-                          color: context.colorScheme.onSurfaceVariant,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                if (isExpanded) ...[
-                  const SizedBox(height: 12),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: OutlinedButton.icon(
-                          onPressed: () =>
-                              unawaited(_showCardDetailSheet(card)),
-                          style: _compactActionStyle(),
-                          icon: const Icon(Icons.article_outlined, size: 16),
-                          label: Text(_pt('Detay')),
-                        ),
-                      ),
-                      const SizedBox(width: 8),
-                      Expanded(
-                        child: OutlinedButton.icon(
-                          onPressed: () => unawaited(_showPinStatusSheet(card)),
-                          style: _compactActionStyle(),
-                          icon: const Icon(Icons.search_rounded, size: 16),
-                          label: Text(_pt('PIN Durum')),
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 8),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: OutlinedButton.icon(
-                          onPressed: isBusy || card.isPrimary
-                              ? null
-                              : () => unawaited(
-                                  _runCardAction(
-                                    card,
-                                    () => _setPrimaryCard(card),
-                                  ),
-                                ),
-                          style: OutlinedButton.styleFrom(
-                            foregroundColor: const Color(0xFF143D9C),
-                            visualDensity: VisualDensity.compact,
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 10,
-                              vertical: 10,
-                            ),
-                            textStyle: const TextStyle(
-                              fontSize: 12,
-                              fontWeight: FontWeight.w700,
-                            ),
-                            side: BorderSide(
-                              color: card.isPrimary
-                                  ? context.colorScheme.outlineVariant
-                                  : const Color(0xFF1E1E1E),
-                            ),
-                          ),
-                          icon: const Icon(
-                            Icons.workspace_premium_outlined,
-                            size: 16,
-                          ),
-                          label: Text(
-                            card.isPrimary ? 'Ana Kart' : 'Ana Kart Ata',
-                          ),
-                        ),
-                      ),
-                      const SizedBox(width: 8),
-                      Expanded(
-                        child: FilledButton.icon(
-                          onPressed: () => unawaited(_showSetPinSheet(card)),
-                          style: _filledCompactActionStyle(),
-                          icon: const Icon(Icons.pin_outlined, size: 16),
-                          label: Text(
-                            (pinStatus?.pinSetFlag ?? false)
-                                ? 'PIN Güncelle'
-                                : 'PIN Oluştur',
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 8),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: OutlinedButton.icon(
-                          onPressed: isBusy
-                              ? null
-                              : () => unawaited(_showRandomPinSheet(card)),
-                          style: _compactActionStyle(),
-                          icon: const Icon(Icons.password_rounded, size: 16),
-                          label: Text(_pt('Random PIN')),
-                        ),
-                      ),
-                      const SizedBox(width: 8),
-                      Expanded(
-                        child: OutlinedButton.icon(
-                          onPressed: isBusy
-                              ? null
-                              : () => unawaited(
-                                  _runCardAction(card, () => _sendPinSms(card)),
-                                ),
-                          style: _compactActionStyle(),
-                          icon: const Icon(Icons.sms_outlined, size: 16),
-                          label: Text(_pt('PIN SMS')),
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 8),
-                  SizedBox(
-                    width: double.infinity,
-                    child: FilledButton.tonalIcon(
-                      onPressed: isBusy
-                          ? null
-                          : () => unawaited(_showQrPaymentOptions(card)),
-                      style: FilledButton.styleFrom(
-                        minimumSize: const Size.fromHeight(46),
-                      ),
-                      icon: const Icon(Icons.qr_code_scanner_rounded, size: 18),
-                      label: Text(_pt('QR ile Öde / Para Çek')),
-                    ),
-                  ),
-                ],
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildCardFrontFace(
-    PaycoreCardSummary card,
-    PaycorePinStatus? pinStatus,
-  ) {
-    final resolvedFullCardNo = _resolvedFullCardNo(card);
-    final embossName = card.embossName?.trim().isNotEmpty ?? false
-        ? card.embossName!.trim().toUpperCase()
-        : 'KART SAHIBI';
-    final canRevealCardNumber =
-        card.resolvedIsDigitalCard && resolvedFullCardNo != null;
-    final isCardNumberVisible = _revealedVirtualCardNumbers.contains(card.id);
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Expanded(
-              child: Wrap(
-                spacing: 6,
-                runSpacing: 6,
-                children: [
-                  _buildChip(card.brand.label),
-                  _buildChip(card.cardModeLabel),
-                  _buildChip(card.isActive ? 'Aktif' : 'Pasif'),
-                  if (card.isPrimary) _buildPrimaryPill('Ana Kart'),
-                ],
-              ),
-            ),
-          ],
-        ),
-        const Spacer(),
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.end,
-          children: [
-            Expanded(
-              child: GestureDetector(
-                behavior: HitTestBehavior.opaque,
-                onTap: () async {
-                  if (!canRevealCardNumber || !isCardNumberVisible) {
-                    return;
-                  }
-
-                  await Clipboard.setData(
-                    ClipboardData(text: resolvedFullCardNo!),
-                  );
-                  if (!mounted) {
-                    return;
-                  }
-                  ToastComponent.showSuccessToast(
-                    context: context,
-                    message: 'Kart numarası kopyalandı.',
-                  );
-                },
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Flexible(
-                          child: Text(
-                            isCardNumberVisible && canRevealCardNumber
-                                ? resolvedFullCardNo!
-                                : card.maskedCardNo,
-                            style: context.textTheme.titleMedium?.copyWith(
-                              color: Colors.white,
-                              fontWeight: FontWeight.w800,
-                              letterSpacing: 0.8,
-                              fontSize: 16,
-                            ),
-                          ),
-                        ),
-                        if (canRevealCardNumber) ...[
-                          const SizedBox(width: 8),
-                          GestureDetector(
-                            behavior: HitTestBehavior.opaque,
-                            onTap: () {
-                              setState(() {
-                                if (isCardNumberVisible) {
-                                  _revealedVirtualCardNumbers.remove(card.id);
-                                } else {
-                                  _revealedVirtualCardNumbers.add(card.id);
-                                }
-                              });
-                            },
-                            child: Container(
-                              width: 28,
-                              height: 28,
-                              decoration: BoxDecoration(
-                                color: Colors.white.withValues(alpha: 0.12),
-                                shape: BoxShape.circle,
-                                border: Border.all(
-                                  color: Colors.white.withValues(alpha: 0.15),
-                                ),
-                              ),
-                              child: Icon(
-                                isCardNumberVisible
-                                    ? Icons.visibility_off_outlined
-                                    : Icons.visibility_outlined,
-                                color: Colors.white,
-                                size: 16,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ],
-                    ),
-                    if (canRevealCardNumber && isCardNumberVisible) ...[
-                      const SizedBox(height: 2),
                       Text(
-                        'Dokun ve kopyala',
+                        card.profileLabel,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: context.textTheme.bodyMedium?.copyWith(
+                          fontWeight: FontWeight.w800,
+                          color: context.colorScheme.onSurface,
+                          fontSize: 14,
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        card.maskedCardNo,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
                         style: context.textTheme.bodySmall?.copyWith(
-                          color: Colors.white.withValues(alpha: 0.72),
-                          fontSize: 9.5,
+                          color: context.colorScheme.onSurfaceVariant,
                           fontWeight: FontWeight.w600,
+                          letterSpacing: 0.2,
                         ),
                       ),
                     ],
-                  ],
-                ),
-              ),
-            ),
-            const SizedBox(width: 12),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                Text(
-                  'SKT',
-                  style: context.textTheme.bodySmall?.copyWith(
-                    color: Colors.white.withValues(alpha: 0.72),
-                    fontSize: 9.5,
-                    fontWeight: FontWeight.w700,
                   ),
                 ),
-                const SizedBox(height: 1),
-                Text(
-                  _cardExpiryLabel(card.expiryDate),
-                  style: context.textTheme.bodyMedium?.copyWith(
-                    color: Colors.white,
-                    fontWeight: FontWeight.w700,
-                    fontSize: 11,
-                  ),
+                const SizedBox(width: 8),
+                Icon(
+                  Icons.chevron_right_rounded,
+                  color: context.colorScheme.onSurfaceVariant,
+                  size: 24,
                 ),
               ],
             ),
-          ],
-        ),
-        const SizedBox(height: 12),
-        SizedBox(
-          width: double.infinity,
-          child: Text(
-            embossName,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-            style: context.textTheme.bodyMedium?.copyWith(
-              color: Colors.white,
-              fontWeight: FontWeight.w700,
-              fontSize: 12,
-              letterSpacing: 0.8,
-            ),
           ),
-        ),
-        const SizedBox(height: 2),
-        Text(
-          '${card.profileLabel} • ${card.cardTypeName}',
-          maxLines: 1,
-          overflow: TextOverflow.ellipsis,
-          style: context.textTheme.bodySmall?.copyWith(
-            color: Colors.white.withValues(alpha: 0.9),
-            fontWeight: FontWeight.w500,
-            fontSize: 10.5,
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildCardBackFace(
-    PaycoreCardSummary card,
-    PaycorePinStatus? pinStatus,
-  ) {
-    final isCvvPeeked = _cvvPeekCards.contains(card.id);
-    final canRevealCvv =
-        card.resolvedIsDigitalCard && (card.cvv?.trim().isNotEmpty ?? false);
-    final resolvedPin = pinStatus?.pinValue?.trim().isNotEmpty ?? false
-        ? pinStatus!.pinValue!.trim()
-        : (card.pin?.trim().isNotEmpty ?? false)
-        ? card.pin!.trim()
-        : null;
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
-          children: [
-            _buildChip('Arka Yüz'),
-            const SizedBox(width: 6),
-            _buildChip(card.brand.label),
-            const SizedBox(width: 6),
-            _buildChip(card.cardModeLabel),
-            const Spacer(),
-            Text(
-              card.statusName,
-              style: context.textTheme.bodySmall?.copyWith(
-                color: Colors.white.withValues(alpha: 0.88),
-                fontWeight: FontWeight.w700,
-              ),
-            ),
-          ],
-        ),
-        const SizedBox(height: 28),
-        Container(
-          height: 36,
-          decoration: BoxDecoration(
-            color: Colors.black.withValues(alpha: 0.72),
-            borderRadius: BorderRadius.circular(8),
-          ),
-        ),
-        const SizedBox(height: 12),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: [
-            if (resolvedPin != null) ...[
-              SizedBox(
-                width: 112,
-                child: _buildBackInfoBlock(
-                  title: 'PIN',
-                  value: resolvedPin,
-                  alignEnd: true,
-                ),
-              ),
-              const SizedBox(width: 10),
-            ],
-            SizedBox(
-              width: 136,
-              child: GestureDetector(
-                behavior: HitTestBehavior.opaque,
-                onTap: () {
-                  if (!canRevealCvv) {
-                    return;
-                  }
-                  setState(() {
-                    if (isCvvPeeked) {
-                      _cvvPeekCards.remove(card.id);
-                    } else {
-                      _cvvPeekCards.add(card.id);
-                    }
-                  });
-                },
-                child: _buildBackInfoBlock(
-                  title: 'CVV',
-                  value: _displayCardCvv(card, reveal: isCvvPeeked),
-                  alignEnd: true,
-                  trailingIcon: !canRevealCvv
-                      ? null
-                      : isCvvPeeked
-                      ? Icons.visibility_off_outlined
-                      : Icons.visibility_outlined,
-                ),
-              ),
-            ),
-          ],
-        ),
-        const Spacer(),
-      ],
-    );
-  }
-
-  Widget _buildBackInfoBlock({
-    required String title,
-    required String value,
-    bool alignEnd = false,
-    IconData? trailingIcon,
-  }) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-      decoration: BoxDecoration(
-        color: Colors.white.withValues(alpha: 0.12),
-        borderRadius: BorderRadius.circular(10),
-        border: Border.all(
-          color: Colors.white.withValues(alpha: 0.14),
         ),
       ),
-      child: Column(
-        crossAxisAlignment: alignEnd
-            ? CrossAxisAlignment.end
-            : CrossAxisAlignment.start,
-        children: [
-          Text(
-            title,
-            style: context.textTheme.bodySmall?.copyWith(
-              color: Colors.white.withValues(alpha: 0.72),
-              fontSize: 10,
-              fontWeight: FontWeight.w700,
+    );
+  }
+
+  Widget _buildCardListThumbnail(PaycoreCardSummary card) {
+    final asset = PaycoreCardAssetConstants.frontForSummary(card);
+
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(4),
+      child: SizedBox(
+        width: 44,
+        height: 28,
+        child: Image.asset(
+          asset,
+          fit: BoxFit.cover,
+          alignment: Alignment.center,
+          errorBuilder: (_, __, ___) => Container(
+            color: const Color(0xFF111827),
+            alignment: Alignment.bottomRight,
+            padding: const EdgeInsets.all(3),
+            child: Icon(
+              Icons.credit_card_rounded,
+              size: 12,
+              color: Colors.white.withValues(alpha: 0.9),
             ),
           ),
-          const SizedBox(height: 4),
-          Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                value,
-                style: context.textTheme.bodyMedium?.copyWith(
-                  color: Colors.white,
-                  fontWeight: FontWeight.w700,
-                  fontSize: 11.5,
-                ),
-              ),
-              if (trailingIcon != null) ...[
-                const SizedBox(width: 6),
-                Icon(
-                  trailingIcon,
-                  size: 15,
-                  color: Colors.white.withValues(alpha: 0.84),
-                ),
-              ],
-            ],
-          ),
-        ],
+        ),
       ),
     );
   }
@@ -6161,24 +6704,6 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
     );
   }
 
-  Widget _buildChip(String text) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-      decoration: BoxDecoration(
-        color: Colors.white.withValues(alpha: 0.16),
-        borderRadius: BorderRadius.circular(999),
-      ),
-      child: Text(
-        _pt(text),
-        style: const TextStyle(
-          color: Colors.white,
-          fontSize: 9.5,
-          fontWeight: FontWeight.w700,
-        ),
-      ),
-    );
-  }
-
   ButtonStyle _moduleActionStyle() {
     return OutlinedButton.styleFrom(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
@@ -6262,8 +6787,8 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-        Text(
-          _pt(title),
+          Text(
+            _pt(title),
             style: context.textTheme.titleMedium?.copyWith(
               fontWeight: FontWeight.w700,
             ),
@@ -6304,6 +6829,31 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
         ],
       ),
     );
+  }
+
+  String _formatMoney(num? value) {
+    if (value == null) {
+      return '-';
+    }
+
+    return NumberFormat.currency(
+      locale: 'tr_TR',
+      symbol: 'TL',
+      decimalDigits: 2,
+    ).format(value);
+  }
+
+  String _formatTransactionDate(String? value) {
+    if (value == null || value.trim().isEmpty) {
+      return '-';
+    }
+
+    final date = DateTime.tryParse(value);
+    if (date == null) {
+      return value;
+    }
+
+    return DateFormat('dd.MM.yyyy HH:mm', 'tr_TR').format(date.toLocal());
   }
 
   List<Widget> _buildCustomerInfoRows(List<(String, String?)> items) {
@@ -6483,6 +7033,24 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
     return null;
   }
 
+  String _formatCardNoGroups(String value) {
+    final digits = value.replaceAll(RegExp('[^0-9]'), '').trim();
+    if (digits.isEmpty) {
+      return value;
+    }
+
+    final buffer = StringBuffer();
+    for (var i = 0; i < digits.length; i += 4) {
+      if (buffer.isNotEmpty) {
+        buffer.write(' ');
+      }
+      final end = i + 4 > digits.length ? digits.length : i + 4;
+      buffer.write(digits.substring(i, end));
+    }
+
+    return buffer.toString();
+  }
+
   Widget _buildDropdownField({
     required String label,
     required List<String> items,
@@ -6521,7 +7089,7 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
               },
         child: InputDecorator(
           isEmpty: !hasValue,
-        decoration: InputDecoration(
+          decoration: InputDecoration(
             labelText: required ? '$localizedLabel *' : localizedLabel,
             hintText: '${_pt('Seçin')} $localizedLabel',
             floatingLabelBehavior: FloatingLabelBehavior.always,
