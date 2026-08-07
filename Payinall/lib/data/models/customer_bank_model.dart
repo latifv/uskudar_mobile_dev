@@ -8,6 +8,7 @@ final class CustomerBankModel extends CustomerBank {
     required super.bankName,
     required super.iban,
     required super.title,
+    required super.isOwnerIban,
   });
 
   factory CustomerBankModel.fromResponse(CustomerBankResponse response) {
@@ -23,6 +24,7 @@ final class CustomerBankModel extends CustomerBank {
       bankName: response.bankName!,
       iban: response.iban!,
       title: response.title!,
+      isOwnerIban: response.isOwnerIban ?? false,
     );
   }
 }

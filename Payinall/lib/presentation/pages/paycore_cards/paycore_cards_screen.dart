@@ -2767,6 +2767,7 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
                       card: card,
                       onTransactionsPressed: () =>
                           unawaited(_openCardTransactionsPage(card)),
+                      showQrPayment: !_userInfoManager.isMerchant,
                     ),
                     const SizedBox(height: 18),
                     _buildInfoGroup(
@@ -2812,11 +2813,12 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
                       ],
                     ),
                     const SizedBox(height: 18),
-                    _buildCardDetailActions(
-                      card,
-                      currentPinStatus,
-                      ecommerceAuthorization,
-                    ),
+                    if (!_userInfoManager.isMerchant)
+                      _buildCardDetailActions(
+                        card,
+                        currentPinStatus,
+                        ecommerceAuthorization,
+                      ),
                   ],
                 ),
               ),
@@ -3201,6 +3203,7 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
   Widget _buildDetailQuickActions({
     required PaycoreCardSummary card,
     required VoidCallback onTransactionsPressed,
+    bool showQrPayment = true,
   }) {
     return Row(
       children: [
@@ -3211,15 +3214,17 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
             onPressed: onTransactionsPressed,
           ),
         ),
-        const SizedBox(width: 10),
-        Expanded(
-          child: _buildDetailQuickActionButton(
-            icon: Icons.qr_code_scanner_rounded,
-            label: 'QR ile Öde',
-            filled: true,
-            onPressed: () => unawaited(_showQrPaymentOptions(card)),
+        if (showQrPayment) ...[
+          const SizedBox(width: 10),
+          Expanded(
+            child: _buildDetailQuickActionButton(
+              icon: Icons.qr_code_scanner_rounded,
+              label: 'QR ile Öde',
+              filled: true,
+              onPressed: () => unawaited(_showQrPaymentOptions(card)),
+            ),
           ),
-        ),
+        ],
       ],
     );
   }
@@ -3230,7 +3235,12 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
     required VoidCallback onPressed,
     bool filled = false,
   }) {
-    final foreground = filled ? Colors.white : context.colorScheme.primary;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final foreground = filled
+        ? Colors.white
+        : isDark
+        ? context.colorScheme.onSurface
+        : context.colorScheme.primary;
     final background = filled
         ? context.colorScheme.primary
         : context.colorScheme.surface;
@@ -3572,10 +3582,13 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
     bool filled = false,
     bool danger = false,
   }) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     final foreground = danger
         ? const Color(0xFFB3261E)
         : filled
         ? Colors.white
+        : isDark
+        ? context.colorScheme.onSurface
         : context.colorScheme.primary;
 
     final child = Row(
@@ -3610,7 +3623,11 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
       style: OutlinedButton.styleFrom(
         foregroundColor: foreground,
         side: BorderSide(
-          color: danger ? const Color(0xFFB3261E) : Colors.black,
+          color: danger
+              ? const Color(0xFFB3261E)
+              : isDark
+              ? context.colorScheme.onSurface.withValues(alpha: 0.72)
+              : context.colorScheme.outline,
           width: 1.2,
         ),
         padding: const EdgeInsets.symmetric(horizontal: 10),
@@ -5385,7 +5402,9 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
             _buildInlineErrorBanner(loadError),
             const SizedBox(height: 12),
           ],
-          if (widget.openActivateTab) ...[
+          if (_userInfoManager.isMerchant) ...[
+            _buildMerchantCardsBody(),
+          ] else if (widget.openActivateTab) ...[
             _buildHeroCard(),
             const SizedBox(height: 12),
             _buildStandaloneActivationPage(),
@@ -5398,6 +5417,21 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
           ],
         ],
       ),
+    );
+  }
+
+  Widget _buildMerchantCardsBody() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        _buildSectionTitle('Kart Ekle'),
+        const SizedBox(height: 10),
+        _buildCardActivationPage(canAddCard: _hasPaycoreCustomerRecord),
+        const SizedBox(height: 18),
+        _buildSectionTitle('Kartlarım'),
+        const SizedBox(height: 10),
+        _buildCardsListSection(),
+      ],
     );
   }
 
@@ -5986,8 +6020,10 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
             description:
                 'İlk kart açılışını yaptıktan sonra kartların burada maskeli PAN ile listelenecek.',
             icon: Icons.credit_card_off_outlined,
-            actionLabel: 'Kart Oluştur',
-            onPressed: _handleCreateCardPressed,
+            actionLabel: _userInfoManager.isMerchant ? null : 'Kart Oluştur',
+            onPressed: _userInfoManager.isMerchant
+                ? null
+                : _handleCreateCardPressed,
           )
         else
           ..._cards.map(_buildCardModuleItem),
@@ -6568,8 +6604,8 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
     required String title,
     required String description,
     required IconData icon,
-    required String actionLabel,
-    required VoidCallback? onPressed,
+    String? actionLabel,
+    VoidCallback? onPressed,
   }) {
     return _buildSurfaceCard(
       child: Column(
@@ -6597,13 +6633,15 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
               fontSize: 13,
             ),
           ),
-          const SizedBox(height: 12),
-          FilledButton.icon(
-            onPressed: onPressed,
-            style: _moduleFilledActionStyle(),
-            icon: const Icon(Icons.arrow_forward_rounded),
-            label: Text(_pt(actionLabel)),
-          ),
+          if (actionLabel != null && onPressed != null) ...[
+            const SizedBox(height: 12),
+            FilledButton.icon(
+              onPressed: onPressed,
+              style: _moduleFilledActionStyle(),
+              icon: const Icon(Icons.arrow_forward_rounded),
+              label: Text(_pt(actionLabel)),
+            ),
+          ],
         ],
       ),
     );

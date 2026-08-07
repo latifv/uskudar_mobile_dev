@@ -292,7 +292,6 @@ final class BlocModule extends DIModule {
       ..registerFactory<TransferMethodBloc>(
         () => TransferMethodBloc(
           getCustomerBanksUsecase: getIt(),
-          getFrequentIbansUsecase: getIt(),
           getFrequentlySentsUsecase: getIt(),
           userInfoManager: getIt(),
         ),

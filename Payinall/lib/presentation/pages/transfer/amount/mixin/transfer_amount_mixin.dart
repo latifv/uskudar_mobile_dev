@@ -107,34 +107,11 @@ mixin TransferAmountMixin<T extends StatefulWidget> on State<T> {
     if (isMerchant &&
         transferMethod == TransferMethod.bankAccount &&
         (iban == null || iban!.isEmpty)) {
-      if (submitIban == null || submitIban.isEmpty) {
-        ToastComponent.showErrorToast(
-          context: context,
-          message: LocaleKeys.iban_required.translate,
-        );
-        return;
-      }
-      if (amount <= 0) {
-        ToastComponent.showErrorToast(
-          context: context,
-          message: LocaleKeys.amount_required.translate,
-        );
-        return;
-      }
-      if (firstNameController.text.isEmpty) {
-        ToastComponent.showErrorToast(
-          context: context,
-          message: LocaleKeys.first_name_required.translate,
-        );
-        return;
-      }
-      if (lastNameController.text.isEmpty) {
-        ToastComponent.showErrorToast(
-          context: context,
-          message: LocaleKeys.last_name_required.translate,
-        );
-        return;
-      }
+      ToastComponent.showErrorToast(
+        context: context,
+        message: 'Lütfen firma hesabı listesinden bir IBAN seçin.',
+      );
+      return;
     }
 
     bloc.add(

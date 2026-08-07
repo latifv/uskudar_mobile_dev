@@ -280,13 +280,14 @@ final class _HomeBalanceSectionState extends State<HomeBalanceSection> {
                                 _isBalanceVisible
                                     ? _formatCurrency(widget.balance)
                                     : '*****,**${AppConstants.currencySymbol}',
-                                style: context.textTheme.displayMedium?.copyWith(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.w800,
-                                  letterSpacing: -1.1,
-                                  fontSize: 32,
-                                  height: 1,
-                                ),
+                                style: context.textTheme.displayMedium
+                                    ?.copyWith(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.w800,
+                                      letterSpacing: -1.1,
+                                      fontSize: 32,
+                                      height: 1,
+                                    ),
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
                               ),
@@ -402,59 +403,57 @@ final class _HomeBalanceSectionState extends State<HomeBalanceSection> {
                               ),
                             ),
                           ),
-                          if (!widget.isMerchant) ...[
-                            const SizedBox(width: 8),
-                            InkWell(
-                              onTap: widget.onLoadMoneyPressed,
-                              borderRadius: BorderRadius.circular(18),
-                              child: Container(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 18,
-                                  vertical: 12,
+                          const SizedBox(width: 8),
+                          InkWell(
+                            onTap: widget.onLoadMoneyPressed,
+                            borderRadius: BorderRadius.circular(18),
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 18,
+                                vertical: 12,
+                              ),
+                              decoration: BoxDecoration(
+                                gradient: const LinearGradient(
+                                  colors: [
+                                    Color(0xFF07A956),
+                                    Color(0xFF0FCB6C),
+                                  ],
+                                  begin: Alignment.centerLeft,
+                                  end: Alignment.centerRight,
                                 ),
-                                decoration: BoxDecoration(
-                                  gradient: const LinearGradient(
-                                    colors: [
-                                      Color(0xFF07A956),
-                                      Color(0xFF0FCB6C),
-                                    ],
-                                    begin: Alignment.centerLeft,
-                                    end: Alignment.centerRight,
+                                borderRadius: BorderRadius.circular(20),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: const Color(
+                                      0xFF08A857,
+                                    ).withValues(alpha: 0.28),
+                                    blurRadius: 16,
+                                    offset: const Offset(0, 8),
                                   ),
-                                  borderRadius: BorderRadius.circular(20),
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: const Color(
-                                        0xFF08A857,
-                                      ).withValues(alpha: 0.28),
-                                      blurRadius: 16,
-                                      offset: const Offset(0, 8),
-                                    ),
-                                  ],
-                                ),
-                                child: Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    Text(
-                                      LocaleKeys.money_load.translate,
-                                      style: context.textTheme.bodyMedium
-                                          ?.copyWith(
-                                            color: Colors.white,
-                                            fontWeight: FontWeight.w800,
-                                            fontSize: 13.5,
-                                          ),
-                                    ),
-                                    const SizedBox(width: 8),
-                                    const Icon(
-                                      Icons.arrow_upward_rounded,
-                                      color: Colors.white,
-                                      size: IconSizeConstants.n,
-                                    ),
-                                  ],
-                                ),
+                                ],
+                              ),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Text(
+                                    LocaleKeys.money_load.translate,
+                                    style: context.textTheme.bodyMedium
+                                        ?.copyWith(
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.w800,
+                                          fontSize: 13.5,
+                                        ),
+                                  ),
+                                  const SizedBox(width: 8),
+                                  const Icon(
+                                    Icons.arrow_upward_rounded,
+                                    color: Colors.white,
+                                    size: IconSizeConstants.n,
+                                  ),
+                                ],
                               ),
                             ),
-                          ],
+                          ),
                         ],
                       ),
                     ],

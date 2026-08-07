@@ -9,6 +9,7 @@ final class CustomerBankResponse {
     this.bankName,
     this.iban,
     this.title,
+    this.isOwnerIban,
   });
 
   factory CustomerBankResponse.fromJson(Map<String, dynamic> json) =>
@@ -18,4 +19,5 @@ final class CustomerBankResponse {
   final String? bankName;
   final String? iban;
   final String? title;
+  final bool? isOwnerIban;
 }

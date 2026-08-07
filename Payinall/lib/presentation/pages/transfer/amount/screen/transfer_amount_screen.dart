@@ -88,7 +88,8 @@ final class _TransferAmountScreenState extends State<TransferAmountScreen>
                 children: [
                   _buildHeaderCard(context),
                   if (transferMethod == TransferMethod.bankAccount &&
-                      (iban == null || iban!.isEmpty))
+                      (iban == null || iban!.isEmpty) &&
+                      !isMerchant)
                     _buildManualBankInputs(context),
                   if (isMerchant &&
                       transferMethod == TransferMethod.bankAccount &&

@@ -7,7 +7,6 @@ import 'package:payinall/domain/entities/frequent_iban.dart';
 import 'package:payinall/domain/entities/frequently_sent.dart';
 import 'package:payinall/domain/enums/transfer_method.dart';
 import 'package:payinall/domain/usecases/get_customer_banks_usecase.dart';
-import 'package:payinall/domain/usecases/get_frequent_ibans_usecase.dart';
 import 'package:payinall/domain/usecases/get_frequently_sents_usecase.dart';
 
 part 'transfer_method_event.dart';
@@ -17,11 +16,9 @@ final class TransferMethodBloc
     extends Bloc<TransferMethodEvent, TransferMethodState> {
   TransferMethodBloc({
     required GetCustomerBanksUsecase getCustomerBanksUsecase,
-    required GetFrequentIbansUsecase getFrequentIbansUsecase,
     required GetFrequentlySentsUsecase getFrequentlySentsUsecase,
     required UserInfoManager userInfoManager,
   }) : _getCustomerBanksUsecase = getCustomerBanksUsecase,
-       _getFrequentIbansUsecase = getFrequentIbansUsecase,
        _getFrequentlySentsUsecase = getFrequentlySentsUsecase,
        _userInfoManager = userInfoManager,
        super(const TransferMethodState()) {
@@ -33,7 +30,6 @@ final class TransferMethodBloc
   }
 
   final GetCustomerBanksUsecase _getCustomerBanksUsecase;
-  final GetFrequentIbansUsecase _getFrequentIbansUsecase;
   final GetFrequentlySentsUsecase _getFrequentlySentsUsecase;
   final UserInfoManager _userInfoManager;
 
@@ -45,14 +41,11 @@ final class TransferMethodBloc
 
     final bankAccountsResult = await _getCustomerBanksUsecase();
 
-    // Merchant ise FrequentIbans, bireysel ise FrequentlySents yükle
+    // Merchant transfers can only target the company's verified IBANs.
     var frequentIbans = <FrequentIban>[];
     var frequentlySents = <FrequentlySent>[];
 
-    if (_userInfoManager.isMerchant) {
-      final ibansResult = await _getFrequentIbansUsecase();
-      ibansResult.fold((_) {}, (ibans) => frequentIbans = ibans);
-    } else {
+    if (!_userInfoManager.isMerchant) {
       final sentsResult = await _getFrequentlySentsUsecase();
       sentsResult.fold((_) {}, (sents) => frequentlySents = sents);
     }
@@ -64,7 +57,9 @@ final class TransferMethodBloc
       (r) => emit(
         state.copyWith(
           status: TransferMethodStatus.loaded,
-          bankAccounts: r,
+          bankAccounts: _userInfoManager.isMerchant
+              ? r.where((account) => account.isOwnerIban).toList()
+              : r,
           frequentIbans: frequentIbans,
           frequentlySents: frequentlySents,
           method: event.initialMethod ?? TransferMethod.wallet,

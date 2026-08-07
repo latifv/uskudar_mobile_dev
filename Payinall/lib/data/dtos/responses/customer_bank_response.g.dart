@@ -13,4 +13,5 @@ CustomerBankResponse _$CustomerBankResponseFromJson(
   bankName: json['bankName'] as String?,
   iban: json['iban'] as String?,
   title: json['title'] as String?,
+  isOwnerIban: json['isOwnerIban'] as bool?,
 );

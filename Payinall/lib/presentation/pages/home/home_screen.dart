@@ -6,7 +6,6 @@ import 'package:payinall/presentation/pages/home/bloc/home_bloc.dart';
 import 'package:payinall/presentation/pages/home/mixin/home_mixin.dart';
 import 'package:payinall/presentation/pages/home/widgets/campaign_banner.dart';
 import 'package:payinall/presentation/pages/home/widgets/feature_cards_banner.dart';
-import 'package:payinall/presentation/pages/home/widgets/home_action_buttons.dart';
 import 'package:payinall/presentation/pages/home/widgets/home_app_bar.dart';
 import 'package:payinall/presentation/pages/home/widgets/home_balance_section.dart';
 import 'package:payinall/presentation/pages/home/widgets/home_paycore_cards_carousel.dart';
@@ -69,7 +68,9 @@ final class _HomeScreenState extends State<HomeScreen> with HomeMixin {
           firstName: state.firstName?.split(' ').first ?? '',
           onNotificationPressed: navigateToNotification,
           onSearchPressed: navigateToPageSearch,
-          onAvatarPressed: navigateToProfile,
+          onAvatarPressed: userInfoManager.isMerchant
+              ? navigateToPaycoreCards
+              : navigateToProfile,
           avatarImage: state.image,
         ),
         context.spacingLowHeight,
@@ -118,11 +119,13 @@ final class _HomeScreenState extends State<HomeScreen> with HomeMixin {
           ),
         ] else ...[
           context.spacingLowHeight,
-          HomeActionButtons(
+          HomePaycoreCardsCarousel(
+            onPressed: navigateToPaycoreCards,
             onSendPressed: navigateToSendMoney,
-            onWithdrawPressed: navigateToWithdrawMoney,
             onRequestPressed: navigateToRequestMoney,
-            isMerchant: userInfoManager.isMerchant,
+            onWithdrawPressed: navigateToWithdrawMoney,
+            refreshSeed:
+                '${state.walletAddress ?? ''}_${state.balance ?? 0}_${state.blockBalance ?? 0}_${state.transactions?.length ?? 0}',
           ),
         ],
         if (!userInfoManager.isMerchant) ...[

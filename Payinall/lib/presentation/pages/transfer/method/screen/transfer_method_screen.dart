@@ -7,7 +7,6 @@ import 'package:payinall/core/generated/locale_keys.g.dart';
 import 'package:payinall/core/managers/user_info_manager.dart';
 import 'package:payinall/di/di.dart';
 import 'package:payinall/domain/enums/transfer_method.dart';
-import 'package:payinall/presentation/pages/registered_users/widgets/frequent_iban_card.dart';
 import 'package:payinall/presentation/pages/registered_users/widgets/frequently_sent_card.dart';
 import 'package:payinall/presentation/pages/transfer/method/bloc/transfer_method_bloc.dart';
 import 'package:payinall/presentation/pages/transfer/method/mixin/transfer_method_mixin.dart';
@@ -95,27 +94,10 @@ final class _TransferMethodScreenState extends State<TransferMethodScreen>
                       ),
                     context.spacingNormalHeight,
                     if (isMerchant) ...[
-                      PrimaryElevatedButton(
-                        text: LocaleKeys.manual_iban_transfer.translate,
-                        onPressed: () {
-                          unawaited(
-                            context.router.push(
-                              TransferAmountRoute(
-                                transferMethod:
-                                    TransferMethod.bankAccount.value,
-                              ),
-                            ),
-                          );
-                        },
-                      ),
-                      context.spacingLowHeight,
-                      Center(
-                        child: Text(
-                          LocaleKeys.or.translate,
-                          style: context.textTheme.bodyMedium?.copyWith(
-                            color: context.colorScheme.onSurface.withAlpha(179),
-                          ),
-                          textAlign: TextAlign.center,
+                      Text(
+                        'Yalnızca firmana tanımlı hesaplara transfer yapabilirsin.',
+                        style: context.textTheme.bodyMedium?.copyWith(
+                          color: context.colorScheme.onSurfaceVariant,
                         ),
                       ),
                       context.spacingLowHeight,
@@ -124,36 +106,6 @@ final class _TransferMethodScreenState extends State<TransferMethodScreen>
                         selectedBankAccount: state.selectedBankAccount,
                         onBankAccountSelected: onBankAccountSelected,
                       ),
-                      if (state.frequentIbans.isNotEmpty) ...[
-                        context.spacingNormalHeight,
-                        Text(
-                          LocaleKeys.registered_users_select.translate,
-                          style: context.textTheme.titleMedium?.copyWith(
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        context.spacingLowHeight,
-                        ...state.frequentIbans.map(
-                          (iban) => Padding(
-                            padding: context.paddingLowBottom,
-                            child: FrequentIbanCard(
-                              iban: iban,
-                              showDelete: false,
-                              onTap: () {
-                                unawaited(
-                                  context.router.push(
-                                    TransferAmountRoute(
-                                      transferMethod:
-                                          TransferMethod.bankAccount.value,
-                                      iban: iban.ibanNo,
-                                    ),
-                                  ),
-                                );
-                              },
-                            ),
-                          ),
-                        ),
-                      ],
                     ] else ...[
                       if (state.method == TransferMethod.bankAccount)
                         BankAccountList(
