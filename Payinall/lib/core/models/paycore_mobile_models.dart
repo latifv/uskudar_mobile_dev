@@ -169,6 +169,20 @@ final class PaycoreCardSummary {
   }
 }
 
+final class PaycoreVirtualCardSecurity {
+  const PaycoreVirtualCardSecurity({this.cardNo, this.cvv});
+
+  factory PaycoreVirtualCardSecurity.fromJson(Map<String, dynamic> json) {
+    return PaycoreVirtualCardSecurity(
+      cardNo: _resolvePaycoreFullCardNo(json),
+      cvv: _resolvePaycoreCvv(json),
+    );
+  }
+
+  final String? cardNo;
+  final String? cvv;
+}
+
 String? _resolvePaycoreCvv(Map<String, dynamic> json) {
   const keys = <String>['cvv', 'Cvv', 'cvv2', 'Cvv2'];
 
@@ -293,8 +307,7 @@ final class PaycoreCardTransactionsResponse {
     final rawTransactions = json['transactions'];
     return PaycoreCardTransactionsResponse(
       cardId: _readInt(json, const ['cardId', 'CardId']) ?? 0,
-      totalDebit:
-          _readDecimal(json, const ['totalDebit', 'TotalDebit']) ?? 0,
+      totalDebit: _readDecimal(json, const ['totalDebit', 'TotalDebit']) ?? 0,
       totalCredit:
           _readDecimal(json, const ['totalCredit', 'TotalCredit']) ?? 0,
       transactions: rawTransactions is List

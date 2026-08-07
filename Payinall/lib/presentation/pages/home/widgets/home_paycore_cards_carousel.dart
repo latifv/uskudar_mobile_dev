@@ -134,7 +134,7 @@ final class _HomePaycoreCardsCarouselState
         ),
         const SizedBox(height: 6),
         SizedBox(
-          height: 194,
+          height: 218,
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 6),
             child: PageView.builder(

@@ -99,6 +99,8 @@ final class Endpoints {
   static const String setPayCorePrimaryCard = '$payCoreCards/set-primary-card';
   static String getPayCoreCardAuthorization(int cardId) =>
       '$payCoreCards/card-authorization/$cardId';
+  static String getPayCoreVirtualCardSecurity(int cardId) =>
+      '$payCoreCards/virtual-card-security/$cardId';
   static const String updatePayCoreCardEcommerceAuthorization =
       '$payCoreCards/card-ecommerce-authorization';
   static const String addPayCorePhysicalCard =

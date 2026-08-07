@@ -2704,6 +2704,9 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
     final ecommerceResponse = await _paycoreService.getCardAuthorization(
       card.id,
     );
+    final virtualCardSecurityResponse = card.resolvedIsDigitalCard
+        ? await _paycoreService.getVirtualCardSecurity(card.id)
+        : null;
     final ecommerceAuthorization = ecommerceResponse.isSuccess
         ? ecommerceResponse.data
         : null;
@@ -2711,8 +2714,17 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
       return;
     }
 
-    final fullCardNo = _resolvedFullCardNo(card);
-    final showFullCardNo = card.resolvedIsDigitalCard && fullCardNo != null;
+    final virtualCardSecurity = virtualCardSecurityResponse?.isSuccess == true
+        ? virtualCardSecurityResponse?.data
+        : null;
+    final fullCardNo =
+        _normalizeFullCardNo(
+          virtualCardSecurity?.cardNo,
+        ) ??
+        _resolvedFullCardNo(card);
+    final cvv = virtualCardSecurity?.cvv?.trim() ?? card.cvv?.trim();
+    final canRevealCardNo = card.resolvedIsDigitalCard && fullCardNo != null;
+    final canRevealCvv = card.resolvedIsDigitalCard && cvv?.isNotEmpty == true;
     var isBackVisible = false;
     var isCardNumberVisible = false;
     var isCvvVisible = false;
@@ -2738,6 +2750,8 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
                   children: [
                     _buildDetailFlipCard(
                       card: card,
+                      fullCardNo: fullCardNo,
+                      cvv: cvv,
                       isBackVisible: isBackVisible,
                       isCardNumberVisible: isCardNumberVisible,
                       isCvvVisible: isCvvVisible,
@@ -2774,8 +2788,18 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
                       'Kart',
                       [
                         _buildInfoRow(
-                          showFullCardNo ? 'Kart Numarası' : 'Maskeli Kart',
-                          showFullCardNo ? fullCardNo : card.maskedCardNo,
+                          canRevealCardNo ? 'Kart Numarası' : 'Maskeli Kart',
+                          canRevealCardNo && isCardNumberVisible
+                              ? _formatCardNoGroups(fullCardNo)
+                              : card.maskedCardNo,
+                          trailing: canRevealCardNo
+                              ? _buildDetailEyeButton(
+                                  isVisible: isCardNumberVisible,
+                                  onPressed: () => setDetailState(() {
+                                    isCardNumberVisible = !isCardNumberVisible;
+                                  }),
+                                )
+                              : null,
                         ),
                         _buildInfoRow('Profil', card.profileLabel),
                         _buildInfoRow('Kart Modu', card.cardModeLabel),
@@ -2788,7 +2812,15 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
                         ),
                         _buildInfoRow(
                           'CVV',
-                          _displayCardCvv(card, reveal: true),
+                          _displayCvv(cvv, reveal: isCvvVisible),
+                          trailing: canRevealCvv
+                              ? _buildDetailEyeButton(
+                                  isVisible: isCvvVisible,
+                                  onPressed: () => setDetailState(() {
+                                    isCvvVisible = !isCvvVisible;
+                                  }),
+                                )
+                              : null,
                         ),
                         _buildInfoRow(
                           'Ana Kart',
@@ -2904,6 +2936,8 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
 
   Widget _buildDetailFlipCard({
     required PaycoreCardSummary card,
+    required String? fullCardNo,
+    required String? cvv,
     required bool isBackVisible,
     required bool isCardNumberVisible,
     required bool isCvvVisible,
@@ -2912,13 +2946,12 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
     required VoidCallback onToggleCardNumberVisibility,
     required VoidCallback onToggleCvvVisibility,
   }) {
-    final fullCardNo = _resolvedFullCardNo(card);
     final canRevealCardNo = card.resolvedIsDigitalCard && fullCardNo != null;
-    final canRevealCvv = card.cvv?.trim().isNotEmpty ?? false;
+    final canRevealCvv = card.resolvedIsDigitalCard && cvv?.isNotEmpty == true;
     final displayCardNo = canRevealCardNo && isCardNumberVisible
         ? _formatCardNoGroups(fullCardNo)
         : card.maskedCardNo;
-    final cvv = _displayCardCvv(card, reveal: isCvvVisible);
+    final displayCvv = _displayCvv(cvv, reveal: isCvvVisible);
     final expiry = _cardExpiryLabel(card.expiryDate);
     final holder = _displayCardHolder(card);
     final frontAsset = PaycoreCardAssetConstants.frontForSummary(card);
@@ -3056,7 +3089,7 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
                           top: 118,
                           child: _buildSecureCardMeta(
                             label: 'CVV',
-                            value: cvv,
+                            value: displayCvv,
                             canReveal: canRevealCvv,
                             isVisible: isCvvVisible,
                             onSensitiveInteraction: onSensitiveInteraction,
@@ -6694,8 +6727,8 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
     return value;
   }
 
-  String _displayCardCvv(PaycoreCardSummary card, {required bool reveal}) {
-    final cvv = card.cvv?.trim();
+  String _displayCvv(String? rawCvv, {required bool reveal}) {
+    final cvv = rawCvv?.trim();
     if (cvv == null || cvv.isEmpty) {
       return '***';
     }
@@ -6857,7 +6890,7 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
     );
   }
 
-  Widget _buildInfoRow(String label, String value) {
+  Widget _buildInfoRow(String label, String value, {Widget? trailing}) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 12),
       child: Row(
@@ -6875,17 +6908,46 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
           ),
           const SizedBox(width: 12),
           Expanded(
-            child: Text(
-              value.isEmpty ? '-' : value,
-              style: context.textTheme.bodyMedium?.copyWith(
-                fontWeight: FontWeight.w600,
-                height: 1.25,
-              ),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    value.isEmpty ? '-' : value,
+                    style: context.textTheme.bodyMedium?.copyWith(
+                      fontWeight: FontWeight.w600,
+                      height: 1.25,
+                    ),
+                  ),
+                ),
+                if (trailing != null) trailing,
+              ],
             ),
           ),
         ],
       ),
     );
+  }
+
+  Widget _buildDetailEyeButton({
+    required bool isVisible,
+    required VoidCallback onPressed,
+  }) {
+    return IconButton(
+      tooltip: isVisible ? 'Gizle' : 'Göster',
+      onPressed: onPressed,
+      icon: Icon(
+        isVisible ? Icons.visibility_off_outlined : Icons.visibility_outlined,
+        color: context.colorScheme.primary,
+      ),
+    );
+  }
+
+  String? _normalizeFullCardNo(String? value) {
+    final digits = value?.replaceAll(RegExp('[^0-9]'), '').trim();
+    if (digits != null && digits.length >= 12) {
+      return digits;
+    }
+    return null;
   }
 
   String _formatMoney(num? value) {

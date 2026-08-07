@@ -58,6 +58,46 @@ final class PaycoreMobileService extends BaseRemoteDataSource {
     );
   }
 
+  Future<NetworkResponse<PaycoreVirtualCardSecurity>> getVirtualCardSecurity(
+    int cardId,
+  ) async {
+    final responseJson = await get(
+      endpoint: Endpoints.getPayCoreVirtualCardSecurity(cardId),
+    );
+
+    if (responseJson is! Map<String, dynamic>) {
+      return NetworkResponse.fromJson<PaycoreVirtualCardSecurity>(
+        <String, dynamic>{
+          'isSuccess': false,
+          'message': 'Sanal kart bilgileri alınamadı.',
+          'data': null,
+        },
+      );
+    }
+
+    final response = NetworkResponse.fromJson<Map<String, dynamic>>(
+      responseJson,
+      fromJsonT: (json) {
+        if (json is Map<String, dynamic>) {
+          return json;
+        }
+        throw const MappingException();
+      },
+    );
+
+    try {
+      return response.map(PaycoreVirtualCardSecurity.fromJson);
+    } on Object {
+      return NetworkResponse.fromJson<PaycoreVirtualCardSecurity>(
+        <String, dynamic>{
+          'isSuccess': false,
+          'message': response.message ?? 'Sanal kart bilgileri alınamadı.',
+          'data': null,
+        },
+      );
+    }
+  }
+
   Future<NetworkResponse<PaycoreCardAuthorizationStatus>>
   updateCardEcommerceAuthorization({
     required int cardId,
