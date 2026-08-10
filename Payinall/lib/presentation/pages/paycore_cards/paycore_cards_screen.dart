@@ -26,6 +26,15 @@ import 'package:payinall/presentation/widgets/error_try_again.dart';
 
 enum _PaycoreModule { customer, cards, security }
 
+enum _CardTransactionRange {
+  sevenDays,
+  oneMonth,
+  threeMonths,
+  sixMonths,
+  oneYear,
+  custom,
+}
+
 final class _PaycoreTownCodeDefinition {
   const _PaycoreTownCodeDefinition({required this.name, required this.code});
 
@@ -987,6 +996,8 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
   Future<PaycoreCardTransactionsResponse?> _loadCardTransactions(
     PaycoreCardSummary card, {
     bool silent = false,
+    DateTime? startDate,
+    DateTime? endDate,
   }) async {
     if (_loadingTransactionCards.contains(card.id)) {
       return _cardTransactions[card.id];
@@ -997,7 +1008,11 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
     });
 
     try {
-      final response = await _paycoreService.getCardTransactions(card.id);
+      final response = await _paycoreService.getCardTransactions(
+        card.id,
+        startDate: startDate,
+        endDate: endDate,
+      );
       if (!response.isSuccess || response.data == null) {
         if (!silent) {
           _showError(response.message ?? 'Kart hareketleri alınamadı.');
@@ -2801,6 +2816,22 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
                                 )
                               : null,
                         ),
+                        if (canRevealCardNo)
+                          Align(
+                            alignment: Alignment.centerRight,
+                            child: TextButton.icon(
+                              onPressed: () async {
+                                await Clipboard.setData(
+                                  ClipboardData(text: fullCardNo),
+                                );
+                                if (detailContext.mounted) {
+                                  _showSuccess('Kart numarası kopyalandı.');
+                                }
+                              },
+                              icon: const Icon(Icons.copy_outlined, size: 17),
+                              label: const Text('Kart Numarasını Kopyala'),
+                            ),
+                          ),
                         _buildInfoRow('Profil', card.profileLabel),
                         _buildInfoRow('Kart Modu', card.cardModeLabel),
                         _buildInfoRow('Ürün Kodu', card.productCode ?? '-'),
@@ -2850,6 +2881,7 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
                         card,
                         currentPinStatus,
                         ecommerceAuthorization,
+                        fullCardNo: fullCardNo,
                       ),
                   ],
                 ),
@@ -2862,17 +2894,146 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
   }
 
   Future<void> _openCardTransactionsPage(PaycoreCardSummary card) async {
-    var transactionsFuture = Future<PaycoreCardTransactionsResponse?>.value(
-      _cardTransactions[card.id],
+    var selectedRange = _CardTransactionRange.sevenDays;
+    var endDate = DateTime.now();
+    var startDate = endDate.subtract(const Duration(days: 7));
+    var transactionsFuture = _loadCardTransactions(
+      card,
+      silent: true,
+      startDate: startDate,
+      endDate: endDate,
     );
-    if (_cardTransactions[card.id] == null) {
-      transactionsFuture = _loadCardTransactions(card, silent: true);
-    }
 
     await Navigator.of(context).push<void>(
       MaterialPageRoute(
         builder: (pageContext) => StatefulBuilder(
           builder: (transactionsContext, setTransactionsState) {
+            String rangeLabel() {
+              switch (selectedRange) {
+                case _CardTransactionRange.sevenDays:
+                  return 'Son 7 Gün';
+                case _CardTransactionRange.oneMonth:
+                  return 'Son 1 Ay';
+                case _CardTransactionRange.threeMonths:
+                  return 'Son 3 Ay';
+                case _CardTransactionRange.sixMonths:
+                  return 'Son 6 Ay';
+                case _CardTransactionRange.oneYear:
+                  return 'Son 1 Yıl';
+                case _CardTransactionRange.custom:
+                  return '${DateFormat('dd.MM.yyyy').format(startDate)} - '
+                      '${DateFormat('dd.MM.yyyy').format(endDate)}';
+              }
+            }
+
+            Future<void> applyRange(_CardTransactionRange range) async {
+              if (range == _CardTransactionRange.custom) {
+                final selected = await showDateRangePicker(
+                  context: transactionsContext,
+                  firstDate: DateTime.now().subtract(const Duration(days: 365)),
+                  lastDate: DateTime.now(),
+                  initialDateRange: DateTimeRange(
+                    start: startDate,
+                    end: endDate,
+                  ),
+                  helpText: 'Kart hareketleri tarih aralığı',
+                );
+                if (selected == null || !mounted) return;
+
+                setTransactionsState(() {
+                  selectedRange = range;
+                  startDate = selected.start;
+                  endDate = selected.end
+                      .add(const Duration(days: 1))
+                      .subtract(const Duration(milliseconds: 1));
+                  transactionsFuture = _loadCardTransactions(
+                    card,
+                    silent: true,
+                    startDate: startDate,
+                    endDate: endDate,
+                  );
+                });
+                return;
+              }
+
+              final now = DateTime.now();
+              final durationDays = switch (range) {
+                _CardTransactionRange.sevenDays => 7,
+                _CardTransactionRange.oneMonth => 30,
+                _CardTransactionRange.threeMonths => 90,
+                _CardTransactionRange.sixMonths => 180,
+                _CardTransactionRange.oneYear => 365,
+                _CardTransactionRange.custom => 0,
+              };
+              setTransactionsState(() {
+                selectedRange = range;
+                endDate = now;
+                startDate = now.subtract(Duration(days: durationDays));
+                transactionsFuture = _loadCardTransactions(
+                  card,
+                  silent: true,
+                  startDate: startDate,
+                  endDate: endDate,
+                );
+              });
+            }
+
+            Future<void> selectRange() async {
+              final selected =
+                  await showModalBottomSheet<_CardTransactionRange>(
+                    context: transactionsContext,
+                    showDragHandle: true,
+                    builder: (sheetContext) => SafeArea(
+                      child: Padding(
+                        padding: const EdgeInsets.fromLTRB(20, 4, 20, 24),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Tarih Aralığı',
+                              style: sheetContext.textTheme.titleLarge
+                                  ?.copyWith(
+                                    fontWeight: FontWeight.w800,
+                                  ),
+                            ),
+                            const SizedBox(height: 12),
+                            for (final option in _CardTransactionRange.values)
+                              ListTile(
+                                contentPadding: EdgeInsets.zero,
+                                title: Text(
+                                  switch (option) {
+                                    _CardTransactionRange.sevenDays =>
+                                      'Son 7 Gün',
+                                    _CardTransactionRange.oneMonth =>
+                                      'Son 1 Ay',
+                                    _CardTransactionRange.threeMonths =>
+                                      'Son 3 Ay',
+                                    _CardTransactionRange.sixMonths =>
+                                      'Son 6 Ay',
+                                    _CardTransactionRange.oneYear =>
+                                      'Son 1 Yıl',
+                                    _CardTransactionRange.custom =>
+                                      'Özel Tarih',
+                                  },
+                                ),
+                                trailing: option == selectedRange
+                                    ? Icon(
+                                        Icons.check_circle_rounded,
+                                        color: sheetContext.colorScheme.primary,
+                                      )
+                                    : const Icon(Icons.chevron_right_rounded),
+                                onTap: () =>
+                                    Navigator.of(sheetContext).pop(option),
+                              ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  );
+              if (selected != null && mounted) await applyRange(selected);
+            }
+
             return Scaffold(
               appBar: CustomAppBar(
                 title: Text(
@@ -2889,6 +3050,8 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
                         transactionsFuture = _loadCardTransactions(
                           card,
                           silent: true,
+                          startDate: startDate,
+                          endDate: endDate,
                         );
                       });
                     },
@@ -2907,18 +3070,51 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
                     return ListView(
                       padding: const EdgeInsets.fromLTRB(20, 16, 20, 28),
                       children: [
-                        Text(
-                          card.maskedCardNo,
-                          style: transactionsContext.textTheme.titleMedium
-                              ?.copyWith(fontWeight: FontWeight.w800),
-                        ),
-                        const SizedBox(height: 4),
-                        Text(
-                          card.profileLabel,
-                          style: transactionsContext.textTheme.bodyMedium
-                              ?.copyWith(
-                                color: context.colorScheme.onSurfaceVariant,
+                        Semantics(
+                          button: true,
+                          label: 'Tarih aralığı: ${rangeLabel()}',
+                          child: InkWell(
+                            borderRadius: BorderRadius.circular(16),
+                            onTap: () => unawaited(selectRange()),
+                            child: Ink(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 16,
+                                vertical: 15,
                               ),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(16),
+                                color: transactionsContext
+                                    .colorScheme
+                                    .surfaceContainerHighest,
+                                border: Border.all(
+                                  color: transactionsContext.colorScheme.outline
+                                      .withValues(alpha: 0.45),
+                                ),
+                              ),
+                              child: Row(
+                                children: [
+                                  Icon(
+                                    Icons.calendar_month_outlined,
+                                    color:
+                                        transactionsContext.colorScheme.primary,
+                                  ),
+                                  const SizedBox(width: 12),
+                                  Expanded(
+                                    child: Text(
+                                      rangeLabel(),
+                                      style: transactionsContext
+                                          .textTheme
+                                          .titleSmall
+                                          ?.copyWith(
+                                            fontWeight: FontWeight.w700,
+                                          ),
+                                    ),
+                                  ),
+                                  const Icon(Icons.keyboard_arrow_down_rounded),
+                                ],
+                              ),
+                            ),
+                          ),
                         ),
                         const SizedBox(height: 16),
                         _buildCardTransactionsSection(card, snapshot.data),
@@ -3321,8 +3517,9 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
   Widget _buildCardDetailActions(
     PaycoreCardSummary card,
     PaycorePinStatus? pinStatus,
-    PaycoreCardAuthorizationStatus? ecommerceAuthorization,
-  ) {
+    PaycoreCardAuthorizationStatus? ecommerceAuthorization, {
+    String? fullCardNo,
+  }) {
     final isBusy = _busyCards.contains(card.id);
     final isCancelled = card.statusCode == 'I';
     final isEcommerceEnabled =
@@ -3356,7 +3553,9 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
               _buildDetailActionButton(
                 icon: Icons.search_rounded,
                 label: 'PIN Durum',
-                onPressed: () => unawaited(_showPinStatusSheet(card)),
+                onPressed: () => unawaited(
+                  _showPinStatusSheet(card, fullCardNo: fullCardNo),
+                ),
               ),
               _buildDetailActionButton(
                 icon: Icons.pin_outlined,
@@ -3364,7 +3563,9 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
                     ? 'PIN Güncelle'
                     : 'PIN Oluştur',
                 filled: true,
-                onPressed: () => unawaited(_showSetPinSheet(card)),
+                onPressed: () => unawaited(
+                  _showSetPinSheet(card, fullCardNo: fullCardNo),
+                ),
               ),
               _buildDetailActionButton(
                 icon: Icons.workspace_premium_outlined,
@@ -3380,7 +3581,9 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
                 label: 'Random PIN',
                 onPressed: isBusy
                     ? null
-                    : () => unawaited(_showRandomPinSheet(card)),
+                    : () => unawaited(
+                        _showRandomPinSheet(card, fullCardNo: fullCardNo),
+                      ),
               ),
               _buildDetailActionButton(
                 icon: Icons.sms_outlined,
@@ -3388,7 +3591,10 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
                 onPressed: isBusy
                     ? null
                     : () => unawaited(
-                        _runCardAction(card, () => _sendPinSms(card)),
+                        _runCardAction(
+                          card,
+                          () => _sendPinSms(card, fullCardNo: fullCardNo),
+                        ),
                       ),
               ),
               _buildDetailActionButton(
@@ -3670,7 +3876,10 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
     );
   }
 
-  Future<void> _showPinStatusSheet(PaycoreCardSummary card) async {
+  Future<void> _showPinStatusSheet(
+    PaycoreCardSummary card, {
+    String? fullCardNo,
+  }) async {
     final cachedPinStatus = _pinStatuses[card.id];
     final pinStatus = await _loadPinStatus(
       card,
@@ -3703,7 +3912,13 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
                 ),
               ),
               const SizedBox(height: 16),
-              _buildInfoRow('Kart', card.maskedCardNo),
+              _buildInfoRow(
+                card.resolvedIsDigitalCard &&
+                        _normalizeFullCardNo(fullCardNo) != null
+                    ? 'Kart Numarası'
+                    : 'Kart',
+                _normalizeFullCardNo(fullCardNo) ?? card.maskedCardNo,
+              ),
               _buildInfoRow(
                 'Durum',
                 effectivePinStatus.pinSetFlag ? 'PIN Tanımlı' : 'PIN Tanımsız',
@@ -4032,8 +4247,12 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
     );
   }
 
-  Future<void> _showSetPinSheet(PaycoreCardSummary card) async {
-    final resolvedFullCardNo = _resolvedFullCardNo(card);
+  Future<void> _showSetPinSheet(
+    PaycoreCardSummary card, {
+    String? fullCardNo,
+  }) async {
+    final resolvedFullCardNo =
+        _normalizeFullCardNo(fullCardNo) ?? _resolvedFullCardNo(card);
     final pinStatus = _pinStatuses[card.id];
     final requiresCurrentPin = pinStatus?.pinSetFlag ?? false;
     final actionLabel = requiresCurrentPin ? 'PIN Güncelle' : 'PIN Oluştur';
@@ -4209,8 +4428,12 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
     pinRepeatController.dispose();
   }
 
-  Future<void> _showRandomPinSheet(PaycoreCardSummary card) async {
-    final resolvedFullCardNo = _resolvedFullCardNo(card);
+  Future<void> _showRandomPinSheet(
+    PaycoreCardSummary card, {
+    String? fullCardNo,
+  }) async {
+    final resolvedFullCardNo =
+        _normalizeFullCardNo(fullCardNo) ?? _resolvedFullCardNo(card);
     final fullCardNoController = TextEditingController(
       text: resolvedFullCardNo ?? '',
     );
@@ -4426,10 +4649,14 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
     return null;
   }
 
-  Future<String?> _sendPinSms(PaycoreCardSummary card) async {
+  Future<String?> _sendPinSms(
+    PaycoreCardSummary card, {
+    String? fullCardNo,
+  }) async {
     final cardNo = await _promptFullCardNo(
       title: 'PIN SMS Gönder',
       card: card,
+      fullCardNo: fullCardNo,
       description:
           'PIN SMS gönderimi için kart numarasını maskesiz olarak girin.',
     );
@@ -4969,8 +5196,10 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
     required String title,
     required PaycoreCardSummary card,
     required String description,
+    String? fullCardNo,
   }) async {
-    final resolvedFullCardNo = _resolvedFullCardNo(card);
+    final resolvedFullCardNo =
+        _normalizeFullCardNo(fullCardNo) ?? _resolvedFullCardNo(card);
     final controller = TextEditingController(text: resolvedFullCardNo ?? '');
     String? value;
 
@@ -6932,12 +7161,13 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
     required bool isVisible,
     required VoidCallback onPressed,
   }) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return IconButton(
       tooltip: isVisible ? 'Gizle' : 'Göster',
       onPressed: onPressed,
       icon: Icon(
         isVisible ? Icons.visibility_off_outlined : Icons.visibility_outlined,
-        color: context.colorScheme.primary,
+        color: isDark ? Colors.white : context.colorScheme.primary,
       ),
     );
   }

@@ -187,9 +187,9 @@ String? _resolvePaycoreCvv(Map<String, dynamic> json) {
   const keys = <String>['cvv', 'Cvv', 'cvv2', 'Cvv2'];
 
   for (final key in keys) {
-    final value = json[key];
-    if (value is String && value.trim().isNotEmpty) {
-      return value.trim();
+    final value = _readPaycoreSecurityValue(json[key]);
+    if (value != null) {
+      return value;
     }
   }
 
@@ -442,8 +442,8 @@ String? _resolvePaycoreFullCardNo(Map<String, dynamic> json) {
   ];
 
   for (final key in keys) {
-    final value = json[key];
-    if (value is! String) {
+    final value = _readPaycoreSecurityValue(json[key]);
+    if (value == null) {
       continue;
     }
 
@@ -451,6 +451,18 @@ String? _resolvePaycoreFullCardNo(Map<String, dynamic> json) {
     if (normalized.length >= 12) {
       return normalized;
     }
+  }
+
+  return null;
+}
+
+String? _readPaycoreSecurityValue(dynamic value) {
+  if (value is String) {
+    final normalized = value.trim();
+    return normalized.isEmpty ? null : normalized;
+  }
+  if (value is int) {
+    return value.toString();
   }
 
   return null;

@@ -217,11 +217,15 @@ final class PaycoreMobileService extends BaseRemoteDataSource {
   Future<NetworkResponse<PaycoreCardTransactionsResponse>> getCardTransactions(
     int cardId, {
     int topRows = 100,
+    DateTime? startDate,
+    DateTime? endDate,
   }) async {
     final responseJson = await get(
       endpoint: Endpoints.getPayCoreCardTransactions(cardId),
       queryParameters: <String, dynamic>{
         'topRows': topRows,
+        if (startDate != null) 'startDate': startDate.toIso8601String(),
+        if (endDate != null) 'endDate': endDate.toIso8601String(),
       },
     );
 
