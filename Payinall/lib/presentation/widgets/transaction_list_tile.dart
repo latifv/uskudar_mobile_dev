@@ -58,7 +58,7 @@ final class TransactionListTile extends StatelessWidget {
           overflow: TextOverflow.ellipsis,
         ),
         subtitle: Text(
-          transaction.transferType,
+          _subtitle,
           style: context.textTheme.bodySmall?.copyWith(
             color: context.colorScheme.onSurface.withAlpha(
               _titleColorOpacityAlpha,
@@ -87,6 +87,12 @@ final class TransactionListTile extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  String get _subtitle {
+    if (transaction.commissionAmount <= 0) return transaction.transferType;
+
+    return '${transaction.transferType} • Komisyon: ${transaction.commissionAmount.toFormattedCurrency()}';
   }
 
   double _getDisplayAmount() {
