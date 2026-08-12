@@ -2741,7 +2741,7 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
     final canRevealCardNo = card.resolvedIsDigitalCard && fullCardNo != null;
     final canRevealCvv = card.resolvedIsDigitalCard && cvv?.isNotEmpty == true;
     var isBackVisible = false;
-    var isCardNumberVisible = false;
+    var isCardNumberVisible = canRevealCardNo;
     var isCvvVisible = false;
     var blocksNextCardFlip = false;
 

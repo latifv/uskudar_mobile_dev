@@ -183,19 +183,6 @@ final class PaycoreVirtualCardSecurity {
   final String? cvv;
 }
 
-String? _resolvePaycoreCvv(Map<String, dynamic> json) {
-  const keys = <String>['cvv', 'Cvv', 'cvv2', 'Cvv2'];
-
-  for (final key in keys) {
-    final value = _readPaycoreSecurityValue(json[key]);
-    if (value != null) {
-      return value;
-    }
-  }
-
-  return null;
-}
-
 String? _resolvePaycorePin(Map<String, dynamic> json) {
   const keys = <String>[
     'pin',
@@ -304,7 +291,7 @@ final class PaycoreCardTransactionsResponse {
   });
 
   factory PaycoreCardTransactionsResponse.fromJson(Map<String, dynamic> json) {
-    final rawTransactions = json['transactions'];
+    final rawTransactions = _resolvePaycoreTransactionList(json);
     return PaycoreCardTransactionsResponse(
       cardId: _readInt(json, const ['cardId', 'CardId']) ?? 0,
       totalDebit: _readDecimal(json, const ['totalDebit', 'TotalDebit']) ?? 0,
@@ -312,7 +299,8 @@ final class PaycoreCardTransactionsResponse {
           _readDecimal(json, const ['totalCredit', 'TotalCredit']) ?? 0,
       transactions: rawTransactions is List
           ? rawTransactions
-                .whereType<Map<String, dynamic>>()
+                .where((item) => item is Map)
+                .map((item) => Map<String, dynamic>.from(item as Map))
                 .map(PaycoreCardTransactionItem.fromJson)
                 .toList()
           : const <PaycoreCardTransactionItem>[],
@@ -429,6 +417,20 @@ String? _resolvePaycoreFullCardNo(Map<String, dynamic> json) {
     'CardNo',
     'fullCardNo',
     'FullCardNo',
+    'fullPan',
+    'FullPan',
+    'clearCardNo',
+    'ClearCardNo',
+    'clearCardNumber',
+    'ClearCardNumber',
+    'unmaskedCardNo',
+    'UnmaskedCardNo',
+    'unmaskedCardNumber',
+    'UnmaskedCardNumber',
+    'openCardNo',
+    'OpenCardNo',
+    'plainCardNo',
+    'PlainCardNo',
     'cardReference',
     'CardReference',
     'pan',
@@ -441,15 +443,93 @@ String? _resolvePaycoreFullCardNo(Map<String, dynamic> json) {
     'ActualCardNo',
   ];
 
+  return _resolvePaycoreSecurityValue(
+    json,
+    keys,
+    validator: _isPaycoreFullCardNo,
+    normalizer: (value) => value.replaceAll(RegExp('[^0-9]'), '').trim(),
+  );
+}
+
+String? _resolvePaycoreCvv(Map<String, dynamic> json) {
+  const keys = <String>[
+    'cvv',
+    'Cvv',
+    'CVV',
+    'cvv2',
+    'Cvv2',
+    'CVV2',
+    'cvc',
+    'Cvc',
+    'CVC',
+    'securityCode',
+    'SecurityCode',
+    'cardSecurityCode',
+    'CardSecurityCode',
+  ];
+
+  return _resolvePaycoreSecurityValue(
+    json,
+    keys,
+    validator: _isPaycoreCvv,
+    normalizer: (value) => value.replaceAll(RegExp('[^0-9]'), '').trim(),
+  );
+}
+
+String? _resolvePaycoreSecurityValue(
+  Map<String, dynamic> json,
+  List<String> keys, {
+  required bool Function(String value) validator,
+  required String Function(String value) normalizer,
+  Set<int>? visited,
+}) {
+  final seen = visited ?? <int>{};
+  final identity = identityHashCode(json);
+  if (!seen.add(identity)) {
+    return null;
+  }
+
   for (final key in keys) {
-    final value = _readPaycoreSecurityValue(json[key]);
+    final value = _readPaycoreSecurityValue(_readCaseInsensitive(json, key));
     if (value == null) {
       continue;
     }
 
-    final normalized = value.replaceAll(RegExp('[^0-9]'), '').trim();
-    if (normalized.length >= 12) {
+    if (validator(value)) {
+      final normalized = normalizer(value);
       return normalized;
+    }
+  }
+
+  for (final value in json.values) {
+    if (value is Map) {
+      final nested = _resolvePaycoreSecurityValue(
+        Map<String, dynamic>.from(value),
+        keys,
+        validator: validator,
+        normalizer: normalizer,
+        visited: seen,
+      );
+      if (nested != null) {
+        return nested;
+      }
+    }
+    if (value is List) {
+      for (final item in value) {
+        if (item is! Map) {
+          continue;
+        }
+        final nested = _resolvePaycoreSecurityValue(
+          Map<String, dynamic>.from(item),
+          keys,
+          validator: validator,
+          normalizer: normalizer,
+          visited: seen,
+        );
+        if (nested != null) {
+          return nested;
+        }
+      }
     }
   }
 
@@ -463,6 +543,89 @@ String? _readPaycoreSecurityValue(dynamic value) {
   }
   if (value is int) {
     return value.toString();
+  }
+  if (value is num) {
+    return value.toInt().toString();
+  }
+
+  return null;
+}
+
+bool _isPaycoreFullCardNo(String value) {
+  if (value.contains('*')) {
+    return false;
+  }
+
+  final normalized = value.replaceAll(RegExp('[^0-9]'), '').trim();
+  return normalized.length >= 12;
+}
+
+bool _isPaycoreCvv(String value) {
+  if (value.contains('*')) {
+    return false;
+  }
+
+  final normalized = value.replaceAll(RegExp('[^0-9]'), '').trim();
+  return normalized.length >= 3 && normalized.length <= 4;
+}
+
+dynamic _readCaseInsensitive(Map<String, dynamic> json, String key) {
+  if (json.containsKey(key)) {
+    return json[key];
+  }
+
+  final normalizedKey = key.toLowerCase();
+  for (final entry in json.entries) {
+    if (entry.key.toLowerCase() == normalizedKey) {
+      return entry.value;
+    }
+  }
+
+  return null;
+}
+
+List<dynamic>? _resolvePaycoreTransactionList(dynamic payload) {
+  if (payload is List) {
+    return payload;
+  }
+
+  if (payload is! Map) {
+    return null;
+  }
+
+  final json = Map<String, dynamic>.from(payload);
+  const keys = <String>[
+    'transactions',
+    'Transactions',
+    'transactionList',
+    'TransactionList',
+    'cardTransactions',
+    'CardTransactions',
+    'items',
+    'Items',
+    'list',
+    'List',
+    'rows',
+    'Rows',
+    'records',
+    'Records',
+    'movements',
+    'Movements',
+  ];
+
+  for (final key in keys) {
+    final value = _readCaseInsensitive(json, key);
+    if (value is List) {
+      return value;
+    }
+  }
+
+  for (final key in const ['data', 'Data', 'result', 'Result']) {
+    final nested = _readCaseInsensitive(json, key);
+    final transactions = _resolvePaycoreTransactionList(nested);
+    if (transactions != null) {
+      return transactions;
+    }
   }
 
   return null;

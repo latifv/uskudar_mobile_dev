@@ -75,19 +75,13 @@ final class PaycoreMobileService extends BaseRemoteDataSource {
       );
     }
 
-    final response = NetworkResponse.fromJson<Map<String, dynamic>>(
+    final response = NetworkResponse.fromJson<dynamic>(
       responseJson,
-      fromJsonT: (json) {
-        if (json is Map<String, dynamic>) {
-          return json;
-        }
-        throw const MappingException();
-      },
+      fromJsonT: (json) => json,
     );
 
-    try {
-      return response.map(PaycoreVirtualCardSecurity.fromJson);
-    } on Object {
+    final securityPayload = _extractFirstPayloadMap(response.data);
+    if (securityPayload == null) {
       return NetworkResponse.fromJson<PaycoreVirtualCardSecurity>(
         <String, dynamic>{
           'isSuccess': false,
@@ -96,6 +90,17 @@ final class PaycoreMobileService extends BaseRemoteDataSource {
         },
       );
     }
+
+    return NetworkResponse.fromJson<PaycoreVirtualCardSecurity>(
+      <String, dynamic>{
+        'isSuccess': response.isSuccess,
+        'message': response.message,
+        'data': securityPayload,
+      },
+      fromJsonT: (json) => PaycoreVirtualCardSecurity.fromJson(
+        json as Map<String, dynamic>,
+      ),
+    );
   }
 
   Future<NetworkResponse<PaycoreCardAuthorizationStatus>>
@@ -229,17 +234,47 @@ final class PaycoreMobileService extends BaseRemoteDataSource {
       },
     );
 
-    final response = NetworkResponse.fromJson<Map<String, dynamic>>(
+    final response = NetworkResponse.fromJson<dynamic>(
       responseJson as Map<String, dynamic>,
-      fromJsonT: (json) {
-        if (json is Map<String, dynamic>) {
-          return json;
-        }
-        throw const MappingException();
-      },
+      fromJsonT: (json) => json,
     );
 
-    return response.map(PaycoreCardTransactionsResponse.fromJson);
+    final payload = response.data;
+    final transactionPayload = payload is Map
+        ? Map<String, dynamic>.from(payload)
+        : <String, dynamic>{'transactions': payload};
+
+    return NetworkResponse.fromJson<PaycoreCardTransactionsResponse>(
+      <String, dynamic>{
+        'isSuccess': response.isSuccess,
+        'message': response.message,
+        'data': transactionPayload,
+      },
+      fromJsonT: (json) => PaycoreCardTransactionsResponse.fromJson(
+        json as Map<String, dynamic>,
+      ),
+    );
+  }
+
+  Map<String, dynamic>? _extractFirstPayloadMap(dynamic payload) {
+    if (payload is Map<String, dynamic>) {
+      return payload;
+    }
+
+    if (payload is Map) {
+      return Map<String, dynamic>.from(payload);
+    }
+
+    if (payload is List) {
+      for (final item in payload) {
+        final mapped = _extractFirstPayloadMap(item);
+        if (mapped != null) {
+          return mapped;
+        }
+      }
+    }
+
+    return null;
   }
 
   Future<NetworkResponse<void>> createCustomer({
