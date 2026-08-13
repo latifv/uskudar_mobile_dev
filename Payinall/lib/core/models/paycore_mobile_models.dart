@@ -299,8 +299,8 @@ final class PaycoreCardTransactionsResponse {
           _readDecimal(json, const ['totalCredit', 'TotalCredit']) ?? 0,
       transactions: rawTransactions is List
           ? rawTransactions
-                .where((item) => item is Map)
-                .map((item) => Map<String, dynamic>.from(item as Map))
+                .whereType<Map<dynamic, dynamic>>()
+                .map(Map<String, dynamic>.from)
                 .map(PaycoreCardTransactionItem.fromJson)
                 .toList()
           : const <PaycoreCardTransactionItem>[],
@@ -333,27 +333,110 @@ final class PaycoreCardTransactionItem {
   });
 
   factory PaycoreCardTransactionItem.fromJson(Map<String, dynamic> json) {
+    final title =
+        _readString(json, const [
+          'title',
+          'Title',
+          'transactionTitle',
+          'TransactionTitle',
+          'txnName',
+          'TxnName',
+          'transactionName',
+          'TransactionName',
+          'operationName',
+          'OperationName',
+          'merchantName',
+          'MerchantName',
+        ]) ??
+        'Kart işlemi';
+    final description = _readString(json, const [
+      'description',
+      'Description',
+      'transactionDescription',
+      'TransactionDescription',
+      'explanation',
+      'Explanation',
+      'transactionCode',
+      'TransactionCode',
+      'txnCode',
+      'TxnCode',
+    ]);
+    final amount =
+        _readDecimal(json, const [
+          'amount',
+          'Amount',
+          'billingAmount',
+          'BillingAmount',
+          'originalAmount',
+          'OriginalAmount',
+          'settlementAmount',
+          'SettlementAmount',
+          'transactionAmount',
+          'TransactionAmount',
+          'txnAmount',
+          'TxnAmount',
+        ]) ??
+        0;
+    final effect =
+        _readString(json, const [
+          'effect',
+          'Effect',
+          'direction',
+          'Direction',
+          'debitCredit',
+          'DebitCredit',
+          'financialType',
+          'FinancialType',
+        ]) ??
+        (amount < 0 ? 'D' : null);
+
     return PaycoreCardTransactionItem(
       transactionId:
-          _readInt(json, const ['transactionId', 'TransactionId']) ?? 0,
-      title: _readString(json, const ['title', 'Title']) ?? 'Kart işlemi',
-      description: _readString(json, const ['description', 'Description']),
+          _readInt(json, const [
+            'transactionId',
+            'TransactionId',
+            'txnId',
+            'TxnId',
+            'id',
+            'Id',
+          ]) ??
+          0,
+      title: title,
+      description: description,
       merchantName: _readString(json, const ['merchantName', 'MerchantName']),
       merchantCity: _readString(json, const ['merchantCity', 'MerchantCity']),
       merchantCountry: _readString(
         json,
         const ['merchantCountry', 'MerchantCountry'],
       ),
-      amount: _readDecimal(json, const ['amount', 'Amount']) ?? 0,
-      effect: _readString(json, const ['effect', 'Effect']),
-      date: _readString(json, const ['date', 'Date']),
+      amount: amount.abs(),
+      effect: effect,
+      date: _readString(json, const [
+        'date',
+        'Date',
+        'transactionDate',
+        'TransactionDate',
+        'insertDate',
+        'InsertDate',
+        'txnDate',
+        'TxnDate',
+        'localDate',
+        'LocalDate',
+      ]),
       processingCode: _readString(
         json,
-        const ['processingCode', 'ProcessingCode'],
+        const ['processingCode', 'ProcessingCode', 'procCode', 'ProcCode'],
       ),
       transactionType: _readString(
         json,
-        const ['transactionType', 'TransactionType'],
+        const [
+          'transactionType',
+          'TransactionType',
+          'transactionCode',
+          'TransactionCode',
+          'mti',
+          'Mti',
+        ],
       ),
       terminalType: _readString(json, const ['terminalType', 'TerminalType']),
       entryType: _readString(json, const ['entryType', 'EntryType']),
@@ -669,12 +752,14 @@ String _normalizeBrandHint(String value) {
 
 String? _readString(Map<String, dynamic> json, List<String> keys) {
   for (final key in keys) {
-    final value = json[key];
+    final value = _readCaseInsensitive(json, key);
     if (value is String) {
       final normalized = value.trim();
       if (normalized.isNotEmpty) {
         return normalized;
       }
+    } else if (value is num || value is bool) {
+      return value.toString();
     }
   }
 
@@ -683,7 +768,7 @@ String? _readString(Map<String, dynamic> json, List<String> keys) {
 
 int? _readInt(Map<String, dynamic> json, List<String> keys) {
   for (final key in keys) {
-    final value = json[key];
+    final value = _readCaseInsensitive(json, key);
     if (value is num) {
       return value.toInt();
     }
@@ -700,7 +785,7 @@ int? _readInt(Map<String, dynamic> json, List<String> keys) {
 
 bool? _readBool(Map<String, dynamic> json, List<String> keys) {
   for (final key in keys) {
-    final value = json[key];
+    final value = _readCaseInsensitive(json, key);
     if (value is bool) {
       return value;
     }
@@ -723,7 +808,7 @@ bool? _readBool(Map<String, dynamic> json, List<String> keys) {
 
 double? _readDecimal(Map<String, dynamic> json, List<String> keys) {
   for (final key in keys) {
-    final value = json[key];
+    final value = _readCaseInsensitive(json, key);
     if (value is num) {
       return value.toDouble();
     }

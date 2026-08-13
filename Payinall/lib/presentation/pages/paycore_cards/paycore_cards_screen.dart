@@ -998,8 +998,9 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
     bool silent = false,
     DateTime? startDate,
     DateTime? endDate,
+    bool forceRefresh = false,
   }) async {
-    if (_loadingTransactionCards.contains(card.id)) {
+    if (!forceRefresh && _loadingTransactionCards.contains(card.id)) {
       return _cardTransactions[card.id];
     }
 
@@ -2951,6 +2952,7 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
                     silent: true,
                     startDate: startDate,
                     endDate: endDate,
+                    forceRefresh: true,
                   );
                 });
                 return;
@@ -2974,6 +2976,7 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
                   silent: true,
                   startDate: startDate,
                   endDate: endDate,
+                  forceRefresh: true,
                 );
               });
             }
@@ -3052,6 +3055,7 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
                           silent: true,
                           startDate: startDate,
                           endDate: endDate,
+                          forceRefresh: true,
                         );
                       });
                     },
