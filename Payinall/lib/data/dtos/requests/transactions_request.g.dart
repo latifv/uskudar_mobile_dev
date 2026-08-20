@@ -12,4 +12,6 @@ Map<String, dynamic> _$TransactionsRequestToJson(
   'startDate': instance.startDate.toIso8601String(),
   'endDate': instance.endDate.toIso8601String(),
   'transferOperationType': instance.transferOperationType,
+  'pageNumber': instance.pageNumber,
+  'pageSize': instance.pageSize,
 };

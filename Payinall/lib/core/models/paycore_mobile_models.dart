@@ -254,22 +254,16 @@ final class PaycoreCardAuthorizationStatus {
       statusCode: _readString(json, const ['statusCode', 'StatusCode']) ?? '',
       statusName: _readString(json, const ['statusName', 'StatusName']) ?? '-',
       isDomesticEcommerceEnabled:
-          _readBool(
-            json,
-            const [
-              'isDomesticEcommerceEnabled',
-              'IsDomesticEcommerceEnabled',
-            ],
-          ) ??
+          _readBool(json, const [
+            'isDomesticEcommerceEnabled',
+            'IsDomesticEcommerceEnabled',
+          ]) ??
           false,
       isInternationalEcommerceEnabled:
-          _readBool(
-            json,
-            const [
-              'isInternationalEcommerceEnabled',
-              'IsInternationalEcommerceEnabled',
-            ],
-          ) ??
+          _readBool(json, const [
+            'isInternationalEcommerceEnabled',
+            'IsInternationalEcommerceEnabled',
+          ]) ??
           false,
     );
   }
@@ -288,6 +282,9 @@ final class PaycoreCardTransactionsResponse {
     required this.totalDebit,
     required this.totalCredit,
     required this.transactions,
+    required this.pageNumber,
+    required this.pageSize,
+    required this.hasMore,
   });
 
   factory PaycoreCardTransactionsResponse.fromJson(Map<String, dynamic> json) {
@@ -304,6 +301,11 @@ final class PaycoreCardTransactionsResponse {
                 .map(PaycoreCardTransactionItem.fromJson)
                 .toList()
           : const <PaycoreCardTransactionItem>[],
+      pageNumber: _readInt(json, const ['pageNumber', 'PageNumber']) ?? 1,
+      pageSize: _readInt(json, const ['pageSize', 'PageSize']) ?? 20,
+      hasMore:
+          _readBool(json, const ['hasMore', 'HasMore']) ??
+          (rawTransactions is List && rawTransactions.length >= 20),
     );
   }
 
@@ -311,6 +313,9 @@ final class PaycoreCardTransactionsResponse {
   final double totalDebit;
   final double totalCredit;
   final List<PaycoreCardTransactionItem> transactions;
+  final int pageNumber;
+  final int pageSize;
+  final bool hasMore;
 }
 
 final class PaycoreCardTransactionItem {
@@ -405,10 +410,10 @@ final class PaycoreCardTransactionItem {
       description: description,
       merchantName: _readString(json, const ['merchantName', 'MerchantName']),
       merchantCity: _readString(json, const ['merchantCity', 'MerchantCity']),
-      merchantCountry: _readString(
-        json,
-        const ['merchantCountry', 'MerchantCountry'],
-      ),
+      merchantCountry: _readString(json, const [
+        'merchantCountry',
+        'MerchantCountry',
+      ]),
       amount: amount.abs(),
       effect: effect,
       date: _readString(json, const [
@@ -423,28 +428,27 @@ final class PaycoreCardTransactionItem {
         'localDate',
         'LocalDate',
       ]),
-      processingCode: _readString(
-        json,
-        const ['processingCode', 'ProcessingCode', 'procCode', 'ProcCode'],
-      ),
-      transactionType: _readString(
-        json,
-        const [
-          'transactionType',
-          'TransactionType',
-          'transactionCode',
-          'TransactionCode',
-          'mti',
-          'Mti',
-        ],
-      ),
+      processingCode: _readString(json, const [
+        'processingCode',
+        'ProcessingCode',
+        'procCode',
+        'ProcCode',
+      ]),
+      transactionType: _readString(json, const [
+        'transactionType',
+        'TransactionType',
+        'transactionCode',
+        'TransactionCode',
+        'mti',
+        'Mti',
+      ]),
       terminalType: _readString(json, const ['terminalType', 'TerminalType']),
       entryType: _readString(json, const ['entryType', 'EntryType']),
       status: _readString(json, const ['status', 'Status']),
-      responseDescription: _readString(
-        json,
-        const ['responseDescription', 'ResponseDescription'],
-      ),
+      responseDescription: _readString(json, const [
+        'responseDescription',
+        'ResponseDescription',
+      ]),
     );
   }
 

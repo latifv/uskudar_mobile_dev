@@ -8,8 +8,6 @@ import 'package:payinall/presentation/pages/metropol/mixin/metropol_mixin.dart';
 import 'package:payinall/presentation/pages/metropol/widgets/metropol_action_buttons.dart';
 import 'package:payinall/presentation/pages/metropol/widgets/metropol_balance_card.dart';
 import 'package:payinall/presentation/pages/metropol/widgets/metropol_user_info_card.dart';
-import 'package:payinall/presentation/shared/extensions/padding_extension.dart';
-import 'package:payinall/presentation/shared/extensions/spacing_extension.dart';
 import 'package:payinall/presentation/widgets/custom_app_bar.dart';
 import 'package:payinall/presentation/widgets/custom_loading.dart';
 import 'package:payinall/presentation/widgets/error_try_again.dart';
@@ -33,8 +31,8 @@ final class _MetropolScreenState extends State<MetropolScreen>
         listener: blocListener,
         builder: (context, state) {
           return switch (state.status) {
-            MetropolStatus.initial || MetropolStatus.loading =>
-              const Center(child: CustomLoading()),
+            MetropolStatus.initial ||
+            MetropolStatus.loading => const Center(child: CustomLoading()),
             MetropolStatus.error when state.userDetail == null => Center(
               child: ErrorTryAgain(
                 message: state.message,
@@ -53,16 +51,16 @@ final class _MetropolScreenState extends State<MetropolScreen>
       onRefresh: () async => loadMetropol(),
       child: SingleChildScrollView(
         physics: const AlwaysScrollableScrollPhysics(),
-        padding: context.paddingBaseLow,
+        padding: const EdgeInsets.fromLTRB(16, 12, 16, 28),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             if (state.userDetail != null)
               MetropolUserInfoCard(userDetail: state.userDetail!),
-            context.spacingNormalHeight,
+            const SizedBox(height: 12),
             if (state.balance != null)
               MetropolBalanceCard(balance: state.balance!),
-            context.spacingNormalHeight,
+            const SizedBox(height: 12),
             MetropolActionButtons(
               onMarketTransferPressed: navigateToTransfer,
               onGiftTransferPressed: navigateToGiftTransfer,

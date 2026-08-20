@@ -6,8 +6,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:payinall/presentation/pages/gift_checks/bloc/gift_checks_bloc.dart';
 import 'package:payinall/presentation/pages/gift_checks/mixin/gift_checks_mixin.dart';
 import 'package:payinall/presentation/pages/gift_checks/widgets/gift_check_category_item.dart';
-import 'package:payinall/presentation/shared/extensions/padding_extension.dart';
-import 'package:payinall/presentation/shared/extensions/spacing_extension.dart';
 import 'package:payinall/presentation/shared/extensions/theme_extension.dart';
 import 'package:payinall/presentation/widgets/custom_app_bar.dart';
 import 'package:payinall/presentation/widgets/custom_empty_list.dart';
@@ -45,8 +43,7 @@ final class _GiftChecksScreenState extends State<GiftChecksScreen>
         builder: (context, state) {
           return switch (state.status) {
             GiftChecksStatus.initial ||
-            GiftChecksStatus.loading =>
-              const Center(child: CustomLoading()),
+            GiftChecksStatus.loading => const Center(child: CustomLoading()),
             GiftChecksStatus.error => Center(
               child: ErrorTryAgain(
                 message: state.message,
@@ -74,9 +71,9 @@ final class _GiftChecksScreenState extends State<GiftChecksScreen>
     return RefreshIndicator(
       onRefresh: () async => loadCategories(),
       child: ListView.separated(
-        padding: context.paddingBaseLow,
+        padding: const EdgeInsets.fromLTRB(16, 12, 16, 24),
         itemCount: state.categories!.length,
-        separatorBuilder: (_, __) => context.spacingLowHeight,
+        separatorBuilder: (_, __) => const SizedBox(height: 8),
         itemBuilder: (context, index) {
           final category = state.categories![index];
           return GiftCheckCategoryItem(

@@ -5,15 +5,12 @@ import 'package:payinall/presentation/shared/extensions/string_extension.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:payinall/presentation/pages/add_fuel_card/bloc/add_fuel_card_bloc.dart';
 import 'package:payinall/presentation/pages/add_fuel_card/mixin/add_fuel_card_mixin.dart';
-import 'package:payinall/presentation/shared/extensions/border_radius_extension.dart';
-import 'package:payinall/presentation/shared/extensions/media_query_extension.dart';
-import 'package:payinall/presentation/shared/extensions/padding_extension.dart';
-import 'package:payinall/presentation/shared/extensions/spacing_extension.dart';
 import 'package:payinall/presentation/shared/extensions/theme_extension.dart';
 import 'package:payinall/presentation/widgets/custom_app_bar.dart';
 import 'package:payinall/presentation/widgets/custom_loading.dart';
 import 'package:payinall/presentation/widgets/custom_text_form_field.dart';
 import 'package:payinall/presentation/widgets/primary_elevated_button.dart';
+import 'package:payinall/presentation/widgets/integration_components.dart';
 
 @RoutePage()
 final class AddFuelCardScreen extends StatefulWidget {
@@ -38,7 +35,7 @@ final class _AddFuelCardScreenState extends State<AddFuelCardScreen>
           }
           return SafeArea(
             child: SingleChildScrollView(
-              padding: context.paddingBase,
+              padding: const EdgeInsets.fromLTRB(16, 12, 16, 24),
               child: _buildBody(),
             ),
           );
@@ -53,67 +50,69 @@ final class _AddFuelCardScreenState extends State<AddFuelCardScreen>
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          SizedBox(
-            height: context.dynamicHeight(0.2),
-            child: _buildIcon(),
-          ),
+          _buildIntro(context),
+          const SizedBox(height: 16),
           _buildCardTypeInfo(context),
-          context.spacingNormalHeight,
+          const SizedBox(height: 12),
           _buildCardNoField(context),
-          context.spacingMediumHeight,
+          const SizedBox(height: 20),
           _buildSubmitButton(),
         ],
       ),
     );
   }
 
-  Widget _buildIcon() {
-    return Center(
-      child: Icon(
-        Icons.local_gas_station_rounded,
-        size: context.dynamicHeight(0.15),
-        color: context.colorScheme.primary,
-      ),
+  Widget _buildIntro(BuildContext context) {
+    return Row(
+      children: [
+        const IntegrationIconBox(
+          icon: Icons.local_gas_station_rounded,
+          size: 48,
+        ),
+        const SizedBox(width: 12),
+        Expanded(
+          child: Text(
+            LocaleKeys.add_fuel_card.translate,
+            style: context.textTheme.displaySmall?.copyWith(
+              fontWeight: FontWeight.w800,
+            ),
+          ),
+        ),
+      ],
     );
   }
 
   Widget _buildCardTypeInfo(BuildContext context) {
-    return Card(
-      elevation: 0,
-      color: context.colorScheme.primary.withAlpha(15),
-      shape: RoundedRectangleBorder(
-        borderRadius: context.borderRadiusNormalAll,
-      ),
-      child: Padding(
-        padding: context.paddingNormalAll,
-        child: Row(
-          children: [
-            Icon(
-              Icons.local_gas_station_rounded,
-              color: context.colorScheme.primary,
-            ),
-            context.spacingNormalWidth,
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    LocaleKeys.card_type.translate,
-                    style: context.textTheme.labelSmall?.copyWith(
-                      color: context.colorScheme.onSurface.withAlpha(164),
-                    ),
+    return IntegrationSurface(
+      backgroundColor: context.colorScheme.primary.withAlpha(12),
+      padding: const EdgeInsets.all(12),
+      child: Row(
+        children: [
+          const IntegrationIconBox(
+            icon: Icons.local_gas_station_rounded,
+            size: 38,
+          ),
+          const SizedBox(width: 10),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  LocaleKeys.card_type.translate,
+                  style: context.textTheme.labelSmall?.copyWith(
+                    color: context.colorScheme.onSurfaceVariant,
                   ),
-                  Text(
-                    LocaleKeys.shell.translate,
-                    style: context.textTheme.titleSmall?.copyWith(
-                      fontWeight: FontWeight.w600,
-                    ),
+                ),
+                Text(
+                  LocaleKeys.shell.translate,
+                  style: context.textTheme.bodySmall?.copyWith(
+                    fontWeight: FontWeight.w700,
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

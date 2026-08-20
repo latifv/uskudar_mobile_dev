@@ -23,6 +23,7 @@ final class TransactionHistoryBloc
        _userInfoManager = userInfoManager,
        super(const TransactionHistoryState()) {
     on<TransactionHistoryLoadData>(_onLoadData);
+    on<TransactionHistoryLoadMore>(_onLoadMore);
     on<TransactionHistoryFilterChange>(_onFilterChange);
     on<TransactionHistoryDateRangeChange>(_onDateRangeChange);
   }
@@ -30,6 +31,7 @@ final class TransactionHistoryBloc
   final GetTransactionsUsecase _getTransactionsUsecase;
   final GetMerchantUserTransactionsUsecase _getMerchantUserTransactionsUsecase;
   final UserInfoManager _userInfoManager;
+  static const int _pageSize = 20;
 
   Future<void> _onLoadData(
     TransactionHistoryLoadData event,
@@ -44,6 +46,8 @@ final class TransactionHistoryBloc
       startDate: startDate,
       endDate: endDate,
       transferOperationType: 0,
+      pageNumber: 1,
+      pageSize: _pageSize,
     );
 
     final result = _userInfoManager.isMerchant
@@ -58,20 +62,28 @@ final class TransactionHistoryBloc
         ),
       ),
       (transactions) {
+        final sortedTransactions = _sortTransactions(transactions);
         final filteredTransactions = _getFilteredTransactions(
-          transactions,
+          sortedTransactions,
           state.filter,
         );
+        final hasMore = transactions.length >= _pageSize;
 
         emit(
           state.copyWith(
             status: TransactionHistoryStatus.loaded,
-            allTransactions: transactions,
+            allTransactions: sortedTransactions,
             transactions: filteredTransactions,
             startDate: startDate,
             endDate: endDate,
+            pageNumber: 1,
+            hasMore: hasMore,
+            isLoadingMore: false,
           ),
         );
+        if (filteredTransactions.length < _pageSize && hasMore) {
+          add(const TransactionHistoryLoadMore());
+        }
       },
     );
   }
@@ -92,6 +104,9 @@ final class TransactionHistoryBloc
           filter: event.filter,
         ),
       );
+      if (filteredTransactions.length < _pageSize && state.hasMore) {
+        add(const TransactionHistoryLoadMore());
+      }
     }
   }
 
@@ -105,6 +120,8 @@ final class TransactionHistoryBloc
       startDate: event.startDate,
       endDate: event.endDate,
       transferOperationType: 0,
+      pageNumber: 1,
+      pageSize: _pageSize,
     );
 
     final result = _userInfoManager.isMerchant
@@ -119,22 +136,104 @@ final class TransactionHistoryBloc
         ),
       ),
       (transactions) {
+        final sortedTransactions = _sortTransactions(transactions);
         final filteredTransactions = _getFilteredTransactions(
-          transactions,
+          sortedTransactions,
           state.filter,
         );
+        final hasMore = transactions.length >= _pageSize;
 
         emit(
           state.copyWith(
             status: TransactionHistoryStatus.loaded,
-            allTransactions: transactions,
+            allTransactions: sortedTransactions,
             transactions: filteredTransactions,
             startDate: event.startDate,
             endDate: event.endDate,
+            pageNumber: 1,
+            hasMore: hasMore,
+            isLoadingMore: false,
           ),
         );
+        if (filteredTransactions.length < _pageSize && hasMore) {
+          add(const TransactionHistoryLoadMore());
+        }
       },
     );
+  }
+
+  Future<void> _onLoadMore(
+    TransactionHistoryLoadMore event,
+    Emitter<TransactionHistoryState> emit,
+  ) async {
+    if (state.status != TransactionHistoryStatus.loaded ||
+        state.isLoadingMore ||
+        !state.hasMore ||
+        state.startDate == null ||
+        state.endDate == null) {
+      return;
+    }
+
+    final nextPage = state.pageNumber + 1;
+    emit(state.copyWith(isLoadingMore: true));
+
+    final params = TransactionsParams(
+      startDate: state.startDate!,
+      endDate: state.endDate!,
+      transferOperationType: 0,
+      pageNumber: nextPage,
+      pageSize: _pageSize,
+    );
+    final result = _userInfoManager.isMerchant
+        ? await _getMerchantUserTransactionsUsecase(params)
+        : await _getTransactionsUsecase(params);
+
+    result.fold(
+      (failure) => emit(
+        state.copyWith(
+          isLoadingMore: false,
+          message: failure.message,
+        ),
+      ),
+      (nextTransactions) {
+        final currentTransactions = state.allTransactions ?? const [];
+        final mergedById = <String, Transaction>{
+          for (final transaction in currentTransactions)
+            transaction.id: transaction,
+          for (final transaction in nextTransactions)
+            transaction.id: transaction,
+        };
+        final mergedTransactions = _sortTransactions(
+          mergedById.values.toList(),
+        );
+        final addedItemCount =
+            mergedTransactions.length - currentTransactions.length;
+
+        final filteredTransactions = _getFilteredTransactions(
+          mergedTransactions,
+          state.filter,
+        );
+        final hasMore =
+            nextTransactions.length >= _pageSize && addedItemCount > 0;
+
+        emit(
+          state.copyWith(
+            allTransactions: mergedTransactions,
+            transactions: filteredTransactions,
+            pageNumber: nextPage,
+            hasMore: hasMore,
+            isLoadingMore: false,
+          ),
+        );
+        if (filteredTransactions.length < _pageSize && hasMore) {
+          add(const TransactionHistoryLoadMore());
+        }
+      },
+    );
+  }
+
+  List<Transaction> _sortTransactions(List<Transaction> transactions) {
+    return [...transactions]..sort((a, b) => b.date.compareTo(a.date));
   }
 
   List<Transaction> _getFilteredTransactions(

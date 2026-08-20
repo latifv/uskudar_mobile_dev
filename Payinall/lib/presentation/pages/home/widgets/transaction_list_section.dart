@@ -65,7 +65,10 @@ final class TransactionListSection extends StatelessWidget {
                       height: 0.5,
                       color: context.colorScheme.onSurface.withAlpha(64),
                     ),
-                  TransactionListTile(transaction: transactions[index]),
+                  TransactionListTile(
+                    transaction: transactions[index],
+                    compact: true,
+                  ),
                 ],
               );
             },

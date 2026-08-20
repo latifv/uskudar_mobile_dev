@@ -2,11 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:payinall/core/generated/locale_keys.g.dart';
 import 'package:payinall/presentation/shared/extensions/string_extension.dart';
 import 'package:payinall/domain/entities/fuel_card.dart';
-import 'package:payinall/presentation/shared/extensions/border_radius_extension.dart';
 import 'package:payinall/presentation/shared/extensions/double_extension.dart';
-import 'package:payinall/presentation/shared/extensions/padding_extension.dart';
-import 'package:payinall/presentation/shared/extensions/spacing_extension.dart';
 import 'package:payinall/presentation/shared/extensions/theme_extension.dart';
+import 'package:payinall/presentation/widgets/integration_components.dart';
 
 final class FuelCardItem extends StatelessWidget {
   const FuelCardItem({
@@ -24,26 +22,17 @@ final class FuelCardItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      elevation: 0,
-      shape: RoundedRectangleBorder(
-        borderRadius: context.borderRadiusNormalAll,
-        side: BorderSide(color: context.colorScheme.outlineVariant),
-      ),
-      child: Padding(
-        padding: context.paddingNormalAll,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _buildHeader(context),
-            context.spacingLowHeight,
-            Divider(color: context.colorScheme.outlineVariant),
-            context.spacingLowHeight,
-            _buildBalanceRow(context),
-            context.spacingNormalHeight,
-            _buildActions(context),
-          ],
-        ),
+    return IntegrationSurface(
+      padding: const EdgeInsets.all(12),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _buildHeader(context),
+          const SizedBox(height: 10),
+          _buildBalanceRow(context),
+          const SizedBox(height: 12),
+          _buildActions(context),
+        ],
       ),
     );
   }
@@ -51,27 +40,24 @@ final class FuelCardItem extends StatelessWidget {
   Widget _buildHeader(BuildContext context) {
     return Row(
       children: [
-        CircleAvatar(
-          backgroundColor: context.colorScheme.primary.withAlpha(25),
-          child: Icon(
-            Icons.local_gas_station_rounded,
-            color: context.colorScheme.primary,
-          ),
+        const IntegrationIconBox(
+          icon: Icons.local_gas_station_rounded,
+          size: 42,
         ),
-        context.spacingNormalWidth,
+        const SizedBox(width: 10),
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
                 card.cardTypeName,
-                style: context.textTheme.titleMedium?.copyWith(
-                  fontWeight: FontWeight.bold,
+                style: context.textTheme.bodyMedium?.copyWith(
+                  fontWeight: FontWeight.w800,
                 ),
               ),
               Text(
                 card.cardNo,
-                style: context.textTheme.bodyMedium?.copyWith(
+                style: context.textTheme.labelSmall?.copyWith(
                   color: context.colorScheme.onSurfaceVariant,
                 ),
               ),
@@ -96,14 +82,14 @@ final class FuelCardItem extends StatelessWidget {
       children: [
         Text(
           LocaleKeys.balance.translate,
-          style: context.textTheme.bodyMedium?.copyWith(
+          style: context.textTheme.bodySmall?.copyWith(
             color: context.colorScheme.onSurfaceVariant,
           ),
         ),
         Text(
           balance != null ? balance!.toFormattedCurrency() : '-',
-          style: context.textTheme.titleLarge?.copyWith(
-            fontWeight: FontWeight.bold,
+          style: context.textTheme.displaySmall?.copyWith(
+            fontWeight: FontWeight.w800,
             color: context.colorScheme.primary,
           ),
         ),
@@ -116,8 +102,12 @@ final class FuelCardItem extends StatelessWidget {
       width: double.infinity,
       child: FilledButton.icon(
         onPressed: onTopUp,
-        icon: const Icon(Icons.add_rounded),
-        label: Text(LocaleKeys.top_up_balance.translate),
+        style: FilledButton.styleFrom(minimumSize: const Size.fromHeight(44)),
+        icon: const Icon(Icons.add_rounded, size: 18),
+        label: Text(
+          LocaleKeys.top_up_balance.translate,
+          style: const TextStyle(fontSize: 13),
+        ),
       ),
     );
   }

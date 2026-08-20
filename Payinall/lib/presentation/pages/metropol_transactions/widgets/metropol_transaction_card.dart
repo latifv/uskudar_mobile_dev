@@ -2,10 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:payinall/core/generated/locale_keys.g.dart';
 import 'package:payinall/presentation/shared/extensions/string_extension.dart';
 import 'package:payinall/domain/entities/metropol_transaction.dart';
-import 'package:payinall/presentation/shared/extensions/border_radius_extension.dart';
-import 'package:payinall/presentation/shared/extensions/padding_extension.dart';
-import 'package:payinall/presentation/shared/extensions/spacing_extension.dart';
 import 'package:payinall/presentation/shared/extensions/theme_extension.dart';
+import 'package:payinall/presentation/widgets/integration_components.dart';
 
 final class MetropolTransactionCard extends StatelessWidget {
   const MetropolTransactionCard({required this.transaction, super.key});
@@ -44,59 +42,47 @@ final class MetropolTransactionCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      elevation: 0,
-      shape: RoundedRectangleBorder(
-        borderRadius: context.borderRadiusNormalAll,
-        side: BorderSide(color: context.colorScheme.outlineVariant),
-      ),
-      child: Padding(
-        padding: context.paddingNormalAll,
-        child: Row(
-          children: [
-            CircleAvatar(
-              backgroundColor: context.colorScheme.primary.withAlpha(25),
-              child: Icon(
-                _transactionIcon,
-                color: context.colorScheme.primary,
-              ),
-            ),
-            context.spacingNormalWidth,
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    transaction.merchantName.isNotEmpty
-                        ? transaction.merchantName
-                        : _transactionTypeLabel,
-                    style: context.textTheme.titleSmall?.copyWith(
-                      fontWeight: FontWeight.w600,
-                    ),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
+    return IntegrationSurface(
+      padding: const EdgeInsets.all(12),
+      child: Row(
+        children: [
+          IntegrationIconBox(icon: _transactionIcon, size: 38),
+          const SizedBox(width: 10),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  transaction.merchantName.isNotEmpty
+                      ? transaction.merchantName
+                      : _transactionTypeLabel,
+                  style: context.textTheme.bodySmall?.copyWith(
+                    fontWeight: FontWeight.w700,
                   ),
-                  Text(
-                    '${transaction.walletName} • ${transaction.transactionDate}',
-                    style: context.textTheme.bodySmall?.copyWith(
-                      color: context.colorScheme.onSurfaceVariant,
-                    ),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                const SizedBox(height: 3),
+                Text(
+                  '${transaction.walletName} • ${transaction.transactionDate}',
+                  style: context.textTheme.labelSmall?.copyWith(
+                    color: context.colorScheme.onSurfaceVariant,
                   ),
-                ],
-              ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ],
             ),
-            context.spacingLowWidth,
-            Text(
-              '${transaction.amount} ₺',
-              style: context.textTheme.titleSmall?.copyWith(
-                fontWeight: FontWeight.bold,
-                color: context.colorScheme.primary,
-              ),
+          ),
+          const SizedBox(width: 8),
+          Text(
+            '${transaction.amount} ₺',
+            style: context.textTheme.bodySmall?.copyWith(
+              fontWeight: FontWeight.w800,
+              color: context.colorScheme.primary,
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

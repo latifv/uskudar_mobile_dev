@@ -6,7 +6,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:payinall/presentation/pages/fuel_cards/bloc/fuel_cards_bloc.dart';
 import 'package:payinall/presentation/pages/fuel_cards/mixin/fuel_cards_mixin.dart';
 import 'package:payinall/presentation/pages/fuel_cards/widgets/fuel_card_item.dart';
-import 'package:payinall/presentation/shared/extensions/padding_extension.dart';
 import 'package:payinall/presentation/shared/extensions/spacing_extension.dart';
 import 'package:payinall/presentation/shared/extensions/theme_extension.dart';
 import 'package:payinall/presentation/widgets/custom_app_bar.dart';
@@ -44,14 +43,14 @@ final class _FuelCardsScreenState extends State<FuelCardsScreen>
         listener: blocListener,
         builder: (context, state) {
           return switch (state.status) {
-            FuelCardsStatus.initial || FuelCardsStatus.loading =>
-              const Center(child: CustomLoading()),
+            FuelCardsStatus.initial ||
+            FuelCardsStatus.loading => const Center(child: CustomLoading()),
             FuelCardsStatus.error when state.cards.isEmpty => Center(
-                child: ErrorTryAgain(
-                  message: state.message,
-                  onTryAgain: loadCards,
-                ),
+              child: ErrorTryAgain(
+                message: state.message,
+                onTryAgain: loadCards,
               ),
+            ),
             _ => _buildContent(state),
           };
         },
@@ -67,10 +66,10 @@ final class _FuelCardsScreenState extends State<FuelCardsScreen>
     return RefreshIndicator(
       onRefresh: () async => loadCards(),
       child: ListView.separated(
-        padding: context.paddingNormalAll,
+        padding: const EdgeInsets.fromLTRB(16, 12, 16, 24),
         physics: const AlwaysScrollableScrollPhysics(),
         itemCount: state.cards.length,
-        separatorBuilder: (_, __) => context.spacingNormalHeight,
+        separatorBuilder: (_, __) => const SizedBox(height: 10),
         itemBuilder: (context, index) {
           final card = state.cards[index];
           return FuelCardItem(
@@ -91,7 +90,7 @@ final class _FuelCardsScreenState extends State<FuelCardsScreen>
         children: [
           Icon(
             Icons.local_gas_station_outlined,
-            size: 64,
+            size: 40,
             color: context.colorScheme.onSurfaceVariant.withAlpha(100),
           ),
           context.spacingNormalHeight,

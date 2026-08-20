@@ -71,6 +71,8 @@ final class _TransactionHistoryScreenState
           child: TransactionListSection(
             transactions: state.transactions ?? [],
             filter: state.filter,
+            scrollController: transactionScrollController,
+            isLoadingMore: state.isLoadingMore,
           ),
         ),
       ],

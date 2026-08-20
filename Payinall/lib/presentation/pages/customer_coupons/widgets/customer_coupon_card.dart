@@ -4,13 +4,9 @@ import 'package:payinall/presentation/shared/extensions/string_extension.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:payinall/domain/entities/customer_coupon.dart';
-import 'package:payinall/presentation/shared/components/image_network_component.dart';
 import 'package:payinall/presentation/shared/components/toast_component.dart';
-import 'package:payinall/presentation/shared/extensions/border_radius_extension.dart';
-import 'package:payinall/presentation/shared/extensions/media_query_extension.dart';
-import 'package:payinall/presentation/shared/extensions/padding_extension.dart';
-import 'package:payinall/presentation/shared/extensions/spacing_extension.dart';
 import 'package:payinall/presentation/shared/extensions/theme_extension.dart';
+import 'package:payinall/presentation/widgets/integration_components.dart';
 
 final class CustomerCouponCard extends StatelessWidget {
   const CustomerCouponCard({required this.coupon, super.key});
@@ -19,25 +15,16 @@ final class CustomerCouponCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      elevation: 0,
-      shape: RoundedRectangleBorder(
-        borderRadius: context.borderRadiusNormalAll,
-        side: BorderSide(color: Colors.grey.shade400),
-      ),
-      child: Padding(
-        padding: context.paddingNormalAll,
-        child: Column(
-          children: [
-            _buildHeader(context),
-            context.spacingLowHeight,
-            Divider(color: Colors.grey.shade300, thickness: 0.5),
-            context.spacingLowHeight,
-            _buildCodeSection(context),
-            context.spacingLowHeight,
-            _buildFooter(context),
-          ],
-        ),
+    return IntegrationSurface(
+      padding: const EdgeInsets.all(12),
+      child: Column(
+        children: [
+          _buildHeader(context),
+          const SizedBox(height: 10),
+          _buildCodeSection(context),
+          const SizedBox(height: 8),
+          _buildFooter(context),
+        ],
       ),
     );
   }
@@ -45,52 +32,48 @@ final class CustomerCouponCard extends StatelessWidget {
   Widget _buildHeader(BuildContext context) {
     return Row(
       children: [
-        ImageNetworkComponent(
-          imageUrl: coupon.logo,
-          fit: BoxFit.contain,
-          width: context.dynamicWidth(0.12),
-          height: context.dynamicWidth(0.12),
-          borderRadius: context.borderRadiusLowAll,
-        ),
+        IntegrationBrandLogo(imageUrl: coupon.logo, size: 52),
+        const SizedBox(width: 10),
         Expanded(
-          child: Padding(
-            padding: context.paddingNormalHorizontal,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  coupon.merchantName,
-                  style: context.textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                coupon.merchantName,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: context.textTheme.bodyMedium?.copyWith(
+                  fontWeight: FontWeight.w800,
                 ),
-                context.spacingLowHeight,
-                Text(
-                  coupon.fullName,
-                  style: context.textTheme.bodySmall?.copyWith(
-                    color: context.colorScheme.onSurface.withAlpha(150),
-                  ),
+              ),
+              Text(
+                coupon.fullName,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: context.textTheme.labelSmall?.copyWith(
+                  color: context.colorScheme.onSurfaceVariant,
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
+        const SizedBox(width: 8),
         Column(
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
             Text(
               '${coupon.amount.toStringAsFixed(0)} ₺',
-              style: context.textTheme.titleLarge?.copyWith(
-                fontWeight: FontWeight.bold,
+              style: context.textTheme.displaySmall?.copyWith(
+                fontWeight: FontWeight.w800,
                 color: context.colorScheme.primary,
               ),
             ),
-            context.spacingLowHeight,
+            const SizedBox(height: 4),
             Container(
-              padding: context.paddingLowHorizontal,
+              padding: const EdgeInsets.symmetric(horizontal: 8),
               decoration: BoxDecoration(
-                color: Colors.green.withAlpha(40),
-                borderRadius: context.borderRadiusLowAll,
+                color: Colors.green.withAlpha(28),
+                borderRadius: BorderRadius.circular(8),
               ),
               child: Text(
                 '+${coupon.cashbackAmount.toStringAsFixed(0)} ₺',
@@ -108,10 +91,10 @@ final class CustomerCouponCard extends StatelessWidget {
 
   Widget _buildCodeSection(BuildContext context) {
     return Container(
-      padding: context.paddingLowAll,
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
       decoration: BoxDecoration(
-        color: context.colorScheme.primary.withAlpha(15),
-        borderRadius: context.borderRadiusLowAll,
+        color: context.colorScheme.surfaceContainerHighest,
+        borderRadius: BorderRadius.circular(10),
       ),
       child: Row(
         children: [
@@ -127,9 +110,9 @@ final class CustomerCouponCard extends StatelessWidget {
                 ),
                 Text(
                   coupon.code,
-                  style: context.textTheme.titleSmall?.copyWith(
+                  style: context.textTheme.bodySmall?.copyWith(
                     fontWeight: FontWeight.w600,
-                    letterSpacing: 1.5,
+                    letterSpacing: 1,
                   ),
                 ),
               ],
@@ -137,26 +120,26 @@ final class CustomerCouponCard extends StatelessWidget {
           ),
           Container(
             width: 1,
-            height: context.dynamicHeight(0.04),
-            color: Colors.grey.shade400,
+            height: 32,
+            color: context.colorScheme.outlineVariant,
           ),
           Expanded(
             child: Padding(
-              padding: context.paddingNormalLeft,
+              padding: const EdgeInsets.only(left: 10),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                Text(
-                  LocaleKeys.pin.translate,
+                  Text(
+                    LocaleKeys.pin.translate,
                     style: context.textTheme.labelSmall?.copyWith(
                       color: context.colorScheme.onSurface.withAlpha(150),
                     ),
                   ),
                   Text(
                     coupon.pin,
-                    style: context.textTheme.titleSmall?.copyWith(
+                    style: context.textTheme.bodySmall?.copyWith(
                       fontWeight: FontWeight.w600,
-                      letterSpacing: 2,
+                      letterSpacing: 1,
                     ),
                   ),
                 ],

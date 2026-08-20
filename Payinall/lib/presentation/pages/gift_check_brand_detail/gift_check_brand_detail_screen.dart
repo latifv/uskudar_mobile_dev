@@ -8,7 +8,6 @@ import 'package:payinall/presentation/pages/gift_check_brand_detail/mixin/gift_c
 import 'package:payinall/presentation/pages/gift_check_brand_detail/widgets/brand_detail_header.dart';
 import 'package:payinall/presentation/pages/gift_check_brand_detail/widgets/gift_check_coupon_item.dart';
 import 'package:payinall/presentation/shared/extensions/padding_extension.dart';
-import 'package:payinall/presentation/shared/extensions/spacing_extension.dart';
 import 'package:payinall/presentation/shared/extensions/theme_extension.dart';
 import 'package:payinall/presentation/widgets/custom_app_bar.dart';
 import 'package:payinall/presentation/widgets/custom_dialog.dart';
@@ -45,8 +44,9 @@ final class _GiftCheckBrandDetailScreenState
         builder: (context, state) {
           return switch (state.status) {
             GiftCheckBrandDetailStatus.initial ||
-            GiftCheckBrandDetailStatus.loading =>
-              const Center(child: CustomLoading()),
+            GiftCheckBrandDetailStatus.loading => const Center(
+              child: CustomLoading(),
+            ),
             GiftCheckBrandDetailStatus.error when state.brandDetail == null =>
               Center(
                 child: ErrorTryAgain(
@@ -70,7 +70,7 @@ final class _GiftCheckBrandDetailScreenState
           onRefresh: () async => loadBrandDetail(),
           child: SingleChildScrollView(
             physics: const AlwaysScrollableScrollPhysics(),
-            padding: context.paddingBaseLow,
+            padding: const EdgeInsets.fromLTRB(16, 12, 16, 32),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -98,11 +98,11 @@ final class _GiftCheckBrandDetailScreenState
       children: [
         Text(
           LocaleKeys.coupons.translate,
-          style: context.textTheme.titleMedium?.copyWith(
-            fontWeight: FontWeight.bold,
+          style: context.textTheme.bodyMedium?.copyWith(
+            fontWeight: FontWeight.w800,
           ),
         ),
-        context.spacingLowHeight,
+        const SizedBox(height: 8),
         if (state.coupons?.isEmpty ?? true)
           Padding(
             padding: context.paddingNormalVertical,

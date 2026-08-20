@@ -11,11 +11,15 @@ final class TransactionListSection extends StatelessWidget {
   const TransactionListSection({
     required this.transactions,
     required this.filter,
+    required this.scrollController,
+    required this.isLoadingMore,
     super.key,
   });
 
   final List<Transaction> transactions;
   final TransactionFilter filter;
+  final ScrollController scrollController;
+  final bool isLoadingMore;
 
   @override
   Widget build(BuildContext context) {
@@ -23,9 +27,16 @@ final class TransactionListSection extends StatelessWidget {
       return _buildEmptyState(context);
     }
     return ListView.builder(
-      shrinkWrap: true,
-      itemCount: transactions.length,
+      controller: scrollController,
+      physics: const AlwaysScrollableScrollPhysics(),
+      itemCount: transactions.length + (isLoadingMore ? 1 : 0),
       itemBuilder: (context, index) {
+        if (index == transactions.length) {
+          return const Padding(
+            padding: EdgeInsets.symmetric(vertical: 20),
+            child: Center(child: CircularProgressIndicator()),
+          );
+        }
         return TransactionListTile(transaction: transactions[index]);
       },
     );

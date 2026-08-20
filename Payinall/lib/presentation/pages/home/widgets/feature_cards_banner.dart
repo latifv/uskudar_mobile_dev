@@ -6,8 +6,6 @@ import 'package:payinall/di/di.dart';
 import 'package:payinall/presentation/route/app_router.dart';
 import 'package:payinall/presentation/shared/constants/image_asset_constants.dart';
 import 'package:payinall/presentation/shared/extensions/border_radius_extension.dart';
-import 'package:payinall/presentation/shared/extensions/media_query_extension.dart';
-import 'package:payinall/presentation/shared/extensions/padding_extension.dart';
 import 'package:payinall/presentation/shared/extensions/spacing_extension.dart';
 import 'package:payinall/presentation/shared/extensions/string_extension.dart';
 import 'package:payinall/presentation/shared/extensions/theme_extension.dart';
@@ -23,7 +21,7 @@ final class FeatureCardsBanner extends StatelessWidget {
     }
 
     return SizedBox(
-      height: context.dynamicHeight(0.22),
+      height: 136,
       child: ListView.separated(
         scrollDirection: Axis.horizontal,
         padding: EdgeInsets.zero,
@@ -33,21 +31,20 @@ final class FeatureCardsBanner extends StatelessWidget {
         itemBuilder: (context, index) {
           return switch (index) {
             0 => _FeatureCard(
-                  label: LocaleKeys.gift_checks.translate,
-                  imagePath: ImageAssetsConstants.gift,
-                  onTap: () =>
-                      context.router.push(const GiftChecksRoute()),
-                ),
+              label: LocaleKeys.gift_checks.translate,
+              imagePath: ImageAssetsConstants.gift,
+              onTap: () => context.router.push(const GiftChecksRoute()),
+            ),
             1 => _FeatureCard(
-                  label: LocaleKeys.metropol.translate,
-                  imagePath: ImageAssetsConstants.metropol,
-                  onTap: () => context.router.push(const MetropolRoute()),
-                ),
+              label: LocaleKeys.metropol.translate,
+              imagePath: ImageAssetsConstants.metropol,
+              onTap: () => context.router.push(const MetropolRoute()),
+            ),
             2 => _FeatureCard(
-                  label: LocaleKeys.fuel_cards.translate,
-                  imagePath: ImageAssetsConstants.fuel,
-                  onTap: () => context.router.push(const FuelCardsRoute()),
-                ),
+              label: LocaleKeys.fuel_cards.translate,
+              imagePath: ImageAssetsConstants.fuel,
+              onTap: () => context.router.push(const FuelCardsRoute()),
+            ),
             _ => const SizedBox.shrink(),
           };
         },
@@ -69,51 +66,49 @@ final class _FeatureCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final cardWidth = context.dynamicWidth(0.52);
+    final cardWidth = (MediaQuery.sizeOf(context).width - 56) / 2;
 
     return GestureDetector(
       onTap: onTap,
-      child: Container(
+      child: SizedBox(
         width: cardWidth,
-        decoration: BoxDecoration(
-          borderRadius: context.borderRadiusNormalAll,
-          border: Border.all(
-            color: Colors.grey.shade400,
+        child: Material(
+          color: context.colorScheme.surface,
+          shape: RoundedRectangleBorder(
+            borderRadius: context.borderRadiusNormalAll,
+            side: BorderSide(
+              color: context.colorScheme.outlineVariant.withAlpha(120),
+            ),
           ),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Expanded(
-              flex: 3,
-              child: Container(
+          clipBehavior: Clip.antiAlias,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SizedBox(
+                height: 88,
                 width: double.infinity,
-                padding: context.paddingLowAll + context.paddingLowHorizontal,
-                child: ClipRRect(
-                  borderRadius: context.borderRadiusNormalAll,
-                  child: Image.asset(
-                    imagePath,
-                    fit: BoxFit.cover,
-                  ),
+                child: Image.asset(
+                  imagePath,
+                  fit: BoxFit.cover,
                 ),
               ),
-            ),
-            Expanded(
-              flex: 2,
-              child: Padding(
-                padding: context.paddingBaseLow,
+              Expanded(
                 child: Center(
-                  child: Text(
-                    label,
-                    style: context.textTheme.titleSmall?.copyWith(),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    textAlign: TextAlign.center,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 8),
+                    child: Text(
+                      label,
+                      style: context.textTheme.bodySmall?.copyWith(
+                        fontWeight: FontWeight.w700,
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
                   ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

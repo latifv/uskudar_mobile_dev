@@ -8,6 +8,10 @@ final class TransactionHistoryLoadData extends TransactionHistoryEvent {
   const TransactionHistoryLoadData();
 }
 
+final class TransactionHistoryLoadMore extends TransactionHistoryEvent {
+  const TransactionHistoryLoadMore();
+}
+
 final class TransactionHistoryFilterChange extends TransactionHistoryEvent {
   const TransactionHistoryFilterChange(this.filter);
 

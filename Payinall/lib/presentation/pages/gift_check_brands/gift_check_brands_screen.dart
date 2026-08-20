@@ -6,8 +6,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:payinall/presentation/pages/gift_check_brands/bloc/gift_check_brands_bloc.dart';
 import 'package:payinall/presentation/pages/gift_check_brands/mixin/gift_check_brands_mixin.dart';
 import 'package:payinall/presentation/pages/gift_check_brands/widgets/gift_check_brand_card.dart';
-import 'package:payinall/presentation/shared/extensions/media_query_extension.dart';
-import 'package:payinall/presentation/shared/extensions/padding_extension.dart';
 import 'package:payinall/presentation/widgets/custom_app_bar.dart';
 import 'package:payinall/presentation/widgets/custom_empty_list.dart';
 import 'package:payinall/presentation/widgets/custom_loading.dart';
@@ -41,8 +39,7 @@ final class _GiftCheckBrandsScreenState extends State<GiftCheckBrandsScreen>
         bloc: bloc,
         builder: (context, state) {
           return switch (state.status) {
-            GiftCheckBrandsStatus.initial ||
-            GiftCheckBrandsStatus.loading =>
+            GiftCheckBrandsStatus.initial || GiftCheckBrandsStatus.loading =>
               const Center(child: CustomLoading()),
             GiftCheckBrandsStatus.error => Center(
               child: ErrorTryAgain(
@@ -71,12 +68,12 @@ final class _GiftCheckBrandsScreenState extends State<GiftCheckBrandsScreen>
     return RefreshIndicator(
       onRefresh: () async => loadBrands(),
       child: GridView.builder(
-        padding: context.paddingBaseLow,
-        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+        padding: const EdgeInsets.fromLTRB(16, 12, 16, 24),
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 2,
-          childAspectRatio: 0.85,
-          crossAxisSpacing: context.lowWidth,
-          mainAxisSpacing: context.lowHeight,
+          childAspectRatio: 1.08,
+          crossAxisSpacing: 10,
+          mainAxisSpacing: 10,
         ),
         itemCount: state.brands!.length,
         itemBuilder: (context, index) {

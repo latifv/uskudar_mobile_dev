@@ -6,7 +6,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:payinall/presentation/pages/metropol_transfer/bloc/metropol_transfer_bloc.dart';
 import 'package:payinall/presentation/pages/metropol_transfer/mixin/metropol_transfer_mixin.dart';
 import 'package:payinall/presentation/pages/metropol_transfer/widgets/transfer_result_card.dart';
-import 'package:payinall/presentation/shared/extensions/padding_extension.dart';
 import 'package:payinall/presentation/shared/extensions/spacing_extension.dart';
 import 'package:payinall/presentation/shared/extensions/theme_extension.dart';
 import 'package:payinall/presentation/widgets/custom_app_bar.dart';
@@ -36,20 +35,20 @@ final class _MetropolTransferScreenState extends State<MetropolTransferScreen>
         listener: blocListener,
         builder: (context, state) {
           return SingleChildScrollView(
-            padding: context.paddingBaseLow,
+            padding: const EdgeInsets.fromLTRB(16, 12, 16, 24),
             child: Form(
               key: formKey,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   _buildCodeTypeSelector(context),
-                  context.spacingNormalHeight,
+                  const SizedBox(height: 12),
                   _buildCodeInput(context),
-                  context.spacingNormalHeight,
+                  const SizedBox(height: 16),
                   _buildSubmitButton(state),
                   if (state.status == MetropolTransferStatus.transferReady &&
                       state.transferResult != null) ...[
-                    context.spacingNormalHeight,
+                    const SizedBox(height: 12),
                     TransferResultCard(
                       result: state.transferResult!,
                       onConfirm: () => onConfirmTransfer(
@@ -62,7 +61,7 @@ final class _MetropolTransferScreenState extends State<MetropolTransferScreen>
                     context.spacingNormalHeight,
                     const Center(child: CustomLoading()),
                   ],
-                  context.spacingMediumHeight,
+                  const SizedBox(height: 20),
                   SurfaceElevatedButton(
                     onPressed: onDrawBack,
                     text: LocaleKeys.transfer_to_wallet.translate,
@@ -84,11 +83,11 @@ final class _MetropolTransferScreenState extends State<MetropolTransferScreen>
       children: [
         Text(
           LocaleKeys.code_type.translate,
-          style: context.textTheme.titleMedium?.copyWith(
-            fontWeight: FontWeight.w600,
+          style: context.textTheme.bodyMedium?.copyWith(
+            fontWeight: FontWeight.w700,
           ),
         ),
-        context.spacingLowHeight,
+        const SizedBox(height: 8),
         SizedBox(
           width: double.infinity,
           child: SegmentedButton<int>(
@@ -118,7 +117,9 @@ final class _MetropolTransferScreenState extends State<MetropolTransferScreen>
       hintText: selectedCodeType == 0
           ? LocaleKeys.enter_qr_or_scan.translate
           : LocaleKeys.enter_short_code.translate,
-      labelText: selectedCodeType == 0 ? LocaleKeys.qr_code.translate : LocaleKeys.short_code.translate,
+      labelText: selectedCodeType == 0
+          ? LocaleKeys.qr_code.translate
+          : LocaleKeys.short_code.translate,
       prefixIcon: Icon(
         selectedCodeType == 0
             ? Icons.qr_code_scanner_rounded

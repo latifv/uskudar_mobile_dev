@@ -6,8 +6,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:payinall/presentation/pages/customer_coupons/bloc/customer_coupons_bloc.dart';
 import 'package:payinall/presentation/pages/customer_coupons/mixin/customer_coupons_mixin.dart';
 import 'package:payinall/presentation/pages/customer_coupons/widgets/customer_coupon_card.dart';
-import 'package:payinall/presentation/shared/extensions/padding_extension.dart';
-import 'package:payinall/presentation/shared/extensions/spacing_extension.dart';
 import 'package:payinall/presentation/widgets/custom_app_bar.dart';
 import 'package:payinall/presentation/widgets/custom_empty_list.dart';
 import 'package:payinall/presentation/widgets/custom_loading.dart';
@@ -31,8 +29,7 @@ final class _CustomerCouponsScreenState extends State<CustomerCouponsScreen>
         bloc: bloc,
         builder: (context, state) {
           return switch (state.status) {
-            CustomerCouponsStatus.initial ||
-            CustomerCouponsStatus.loading =>
+            CustomerCouponsStatus.initial || CustomerCouponsStatus.loading =>
               const Center(child: CustomLoading()),
             CustomerCouponsStatus.error => Center(
               child: ErrorTryAgain(
@@ -61,9 +58,9 @@ final class _CustomerCouponsScreenState extends State<CustomerCouponsScreen>
     return RefreshIndicator(
       onRefresh: () async => loadCustomerCoupons(),
       child: ListView.separated(
-        padding: context.paddingBaseLow,
+        padding: const EdgeInsets.fromLTRB(16, 12, 16, 24),
         itemCount: state.coupons!.length,
-        separatorBuilder: (_, __) => context.spacingLowHeight,
+        separatorBuilder: (_, __) => const SizedBox(height: 10),
         itemBuilder: (context, index) {
           return CustomerCouponCard(coupon: state.coupons![index]);
         },

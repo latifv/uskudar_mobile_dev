@@ -117,9 +117,9 @@ final class _MetropolTransactionsScreenState
     return RefreshIndicator(
       onRefresh: () async => loadTransactions(),
       child: ListView.separated(
-        padding: context.paddingBaseLow,
+        padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
         itemCount: state.transactions!.length,
-        separatorBuilder: (_, __) => context.spacingLowHeight,
+        separatorBuilder: (_, __) => const SizedBox(height: 8),
         itemBuilder: (context, index) {
           return MetropolTransactionCard(
             transaction: state.transactions![index],

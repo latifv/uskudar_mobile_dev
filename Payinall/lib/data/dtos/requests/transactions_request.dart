@@ -9,6 +9,8 @@ final class TransactionsRequest extends TransactionsParams {
     required super.startDate,
     required super.endDate,
     required super.transferOperationType,
+    required super.pageNumber,
+    required super.pageSize,
   });
 
   factory TransactionsRequest.fromParams(TransactionsParams params) {
@@ -16,6 +18,8 @@ final class TransactionsRequest extends TransactionsParams {
       startDate: params.startDate,
       endDate: params.endDate,
       transferOperationType: params.transferOperationType,
+      pageNumber: params.pageNumber,
+      pageSize: params.pageSize,
     );
   }
 

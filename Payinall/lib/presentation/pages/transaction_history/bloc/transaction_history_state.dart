@@ -11,6 +11,9 @@ final class TransactionHistoryState extends Equatable {
     this.message,
     this.startDate,
     this.endDate,
+    this.pageNumber = 1,
+    this.hasMore = true,
+    this.isLoadingMore = false,
   });
 
   final TransactionHistoryStatus status;
@@ -20,6 +23,9 @@ final class TransactionHistoryState extends Equatable {
   final String? message;
   final DateTime? startDate;
   final DateTime? endDate;
+  final int pageNumber;
+  final bool hasMore;
+  final bool isLoadingMore;
 
   TransactionHistoryState copyWith({
     TransactionHistoryStatus? status,
@@ -29,6 +35,9 @@ final class TransactionHistoryState extends Equatable {
     String? message,
     DateTime? startDate,
     DateTime? endDate,
+    int? pageNumber,
+    bool? hasMore,
+    bool? isLoadingMore,
   }) {
     return TransactionHistoryState(
       status: status ?? this.status,
@@ -38,6 +47,9 @@ final class TransactionHistoryState extends Equatable {
       message: message,
       startDate: startDate ?? this.startDate,
       endDate: endDate ?? this.endDate,
+      pageNumber: pageNumber ?? this.pageNumber,
+      hasMore: hasMore ?? this.hasMore,
+      isLoadingMore: isLoadingMore ?? this.isLoadingMore,
     );
   }
 
@@ -50,5 +62,8 @@ final class TransactionHistoryState extends Equatable {
     message,
     startDate,
     endDate,
+    pageNumber,
+    hasMore,
+    isLoadingMore,
   ];
 }

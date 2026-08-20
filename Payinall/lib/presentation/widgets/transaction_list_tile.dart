@@ -11,9 +11,14 @@ import 'package:payinall/presentation/shared/extensions/padding_extension.dart';
 import 'package:payinall/presentation/shared/extensions/theme_extension.dart';
 
 final class TransactionListTile extends StatelessWidget {
-  const TransactionListTile({required this.transaction, super.key});
+  const TransactionListTile({
+    required this.transaction,
+    this.compact = false,
+    super.key,
+  });
 
   final Transaction transaction;
+  final bool compact;
 
   Color get _circleColor =>
       transaction.isIncoming ? Colors.green.shade100 : Colors.red.shade100;
@@ -42,6 +47,7 @@ final class TransactionListTile extends StatelessWidget {
                 ? transaction.fromFullName[0]
                 : transaction.toFullName?[0] ?? AppConstants.appName[0],
             style: context.textTheme.titleMedium?.copyWith(
+              fontSize: compact ? 13 : null,
               fontWeight: FontWeight.bold,
               color: _iconColor,
             ),
@@ -52,6 +58,8 @@ final class TransactionListTile extends StatelessWidget {
               ? transaction.fromFullName
               : transaction.toFullName ?? AppConstants.appName,
           style: context.textTheme.bodyLarge?.copyWith(
+            fontSize: compact ? 13 : null,
+            height: compact ? 1.2 : null,
             fontWeight: FontWeight.bold,
           ),
           maxLines: 1,
@@ -60,6 +68,8 @@ final class TransactionListTile extends StatelessWidget {
         subtitle: Text(
           _subtitle,
           style: context.textTheme.bodySmall?.copyWith(
+            fontSize: compact ? 11 : null,
+            height: compact ? 1.25 : null,
             color: context.colorScheme.onSurface.withAlpha(
               _titleColorOpacityAlpha,
             ),
@@ -72,12 +82,15 @@ final class TransactionListTile extends StatelessWidget {
             Text(
               '${transaction.isIncoming ? '+' : '-'}${_getDisplayAmount().toFormattedCurrency()}',
               style: context.textTheme.bodyLarge?.copyWith(
+                fontSize: compact ? 12 : null,
                 color: transaction.isIncoming ? Colors.green : Colors.red,
+                fontWeight: compact ? FontWeight.w700 : null,
               ),
             ),
             Text(
               transaction.date.toFormattedDateTime(),
               style: context.textTheme.bodySmall?.copyWith(
+                fontSize: compact ? 10 : null,
                 color: context.colorScheme.onSurface.withAlpha(
                   _titleColorOpacityAlpha,
                 ),

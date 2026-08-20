@@ -102,7 +102,7 @@ final class HomeBloc extends Bloc<HomeEvent, HomeState> {
           emit(
             state.copyWith(
               status: HomeStatus.loaded,
-              transactions: r,
+              transactions: _sortTransactions(r),
             ),
           );
         },
@@ -150,7 +150,12 @@ final class HomeBloc extends Bloc<HomeEvent, HomeState> {
         (l) =>
             emit(state.copyWith(status: HomeStatus.error, message: l.message)),
         (r) {
-          emit(state.copyWith(status: HomeStatus.loading, transactions: r));
+          emit(
+            state.copyWith(
+              status: HomeStatus.loading,
+              transactions: _sortTransactions(r),
+            ),
+          );
         },
       );
 
@@ -203,7 +208,12 @@ final class HomeBloc extends Bloc<HomeEvent, HomeState> {
       transactions.fold(
         (l) =>
             emit(state.copyWith(status: HomeStatus.error, message: l.message)),
-        (r) => emit(state.copyWith(status: HomeStatus.loaded, transactions: r)),
+        (r) => emit(
+          state.copyWith(
+            status: HomeStatus.loaded,
+            transactions: _sortTransactions(r),
+          ),
+        ),
       );
 
       final frequentIbans = await _getFrequentIbansUsecase();
@@ -216,7 +226,12 @@ final class HomeBloc extends Bloc<HomeEvent, HomeState> {
       transactions.fold(
         (l) =>
             emit(state.copyWith(status: HomeStatus.error, message: l.message)),
-        (r) => emit(state.copyWith(status: HomeStatus.loaded, transactions: r)),
+        (r) => emit(
+          state.copyWith(
+            status: HomeStatus.loaded,
+            transactions: _sortTransactions(r),
+          ),
+        ),
       );
 
       final frequentlySents = await _getFrequentlySentsUsecase();
@@ -225,6 +240,10 @@ final class HomeBloc extends Bloc<HomeEvent, HomeState> {
         (sents) => emit(state.copyWith(frequentlySents: sents)),
       );
     }
+  }
+
+  List<Transaction> _sortTransactions(List<Transaction> transactions) {
+    return [...transactions]..sort((a, b) => b.date.compareTo(a.date));
   }
 
   Future<void> _onRefreshBalanceHomeData(

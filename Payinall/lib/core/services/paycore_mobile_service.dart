@@ -97,9 +97,8 @@ final class PaycoreMobileService extends BaseRemoteDataSource {
         'message': response.message,
         'data': securityPayload,
       },
-      fromJsonT: (json) => PaycoreVirtualCardSecurity.fromJson(
-        json as Map<String, dynamic>,
-      ),
+      fromJsonT: (json) =>
+          PaycoreVirtualCardSecurity.fromJson(json as Map<String, dynamic>),
     );
   }
 
@@ -166,13 +165,11 @@ final class PaycoreMobileService extends BaseRemoteDataSource {
     required String fallbackMessage,
   }) {
     if (responseJson is! Map<String, dynamic>) {
-      return NetworkResponse.fromJson<PaycoreCustomerInfo>(
-        <String, dynamic>{
-          'isSuccess': false,
-          'message': fallbackMessage,
-          'data': null,
-        },
-      );
+      return NetworkResponse.fromJson<PaycoreCustomerInfo>(<String, dynamic>{
+        'isSuccess': false,
+        'message': fallbackMessage,
+        'data': null,
+      });
     }
 
     final response = NetworkResponse.fromJson<Map<String, dynamic>>(
@@ -188,13 +185,11 @@ final class PaycoreMobileService extends BaseRemoteDataSource {
     try {
       return response.map(PaycoreCustomerInfo.fromJson);
     } on Object {
-      return NetworkResponse.fromJson<PaycoreCustomerInfo>(
-        <String, dynamic>{
-          'isSuccess': false,
-          'message': response.message ?? fallbackMessage,
-          'data': null,
-        },
-      );
+      return NetworkResponse.fromJson<PaycoreCustomerInfo>(<String, dynamic>{
+        'isSuccess': false,
+        'message': response.message ?? fallbackMessage,
+        'data': null,
+      });
     }
   }
 
@@ -220,15 +215,23 @@ final class PaycoreMobileService extends BaseRemoteDataSource {
   }
 
   Future<NetworkResponse<PaycoreCardTransactionsResponse>> getCardTransactions(
-    int cardId, {
-    int topRows = 100,
+    PaycoreCardSummary card, {
+    int pageNumber = 1,
+    int pageSize = 20,
     DateTime? startDate,
     DateTime? endDate,
   }) async {
     final responseJson = await get(
-      endpoint: Endpoints.getPayCoreCardTransactions(cardId),
+      endpoint: Endpoints.getPayCoreCardTransactions(card.id),
       queryParameters: <String, dynamic>{
-        'topRows': topRows,
+        'pageNumber': pageNumber,
+        'pageSize': pageSize,
+        if (card.cardReference.trim().isNotEmpty)
+          'cardReference': card.cardReference.trim(),
+        if ((card.fullCardNo ?? '').trim().isNotEmpty)
+          'cardNo': card.fullCardNo!.trim(),
+        if (card.maskedCardNo.trim().isNotEmpty)
+          'maskedCardNo': card.maskedCardNo.trim(),
         if (startDate != null) 'startDate': startDate.toIso8601String(),
         if (endDate != null) 'endDate': endDate.toIso8601String(),
       },
@@ -383,13 +386,11 @@ final class PaycoreMobileService extends BaseRemoteDataSource {
     );
 
     if (responseJson is! Map<String, dynamic>) {
-      return NetworkResponse.fromJson<PaycorePinStatus>(
-        <String, dynamic>{
-          'isSuccess': false,
-          'message': 'PIN durumu alınamadı.',
-          'data': null,
-        },
-      );
+      return NetworkResponse.fromJson<PaycorePinStatus>(<String, dynamic>{
+        'isSuccess': false,
+        'message': 'PIN durumu alınamadı.',
+        'data': null,
+      });
     }
 
     final rootPayload = _extractPaycorePinStatusPayload(responseJson);
@@ -403,9 +404,8 @@ final class PaycoreMobileService extends BaseRemoteDataSource {
           'message': responseJson['message'] ?? responseJson['Message'],
           'data': rootPayload,
         },
-        fromJsonT: (json) => PaycorePinStatus.fromJson(
-          json as Map<String, dynamic>,
-        ),
+        fromJsonT: (json) =>
+            PaycorePinStatus.fromJson(json as Map<String, dynamic>),
       );
     }
 
@@ -456,10 +456,7 @@ final class PaycoreMobileService extends BaseRemoteDataSource {
     String? cardNo,
     String? currentPin,
   }) async {
-    final payload = <String, dynamic>{
-      'cardId': cardId,
-      'newPin': newPin,
-    };
+    final payload = <String, dynamic>{'cardId': cardId, 'newPin': newPin};
 
     final normalizedCardNo = cardNo?.trim();
     if (normalizedCardNo?.isNotEmpty ?? false) {
@@ -529,10 +526,7 @@ final class PaycoreMobileService extends BaseRemoteDataSource {
     return NetworkResponse.fromJson<void>(responseJson as Map<String, dynamic>);
   }
 
-  Future<NetworkResponse<void>> cancelCard(
-    int cardId, {
-    String? note,
-  }) async {
+  Future<NetworkResponse<void>> cancelCard(int cardId, {String? note}) async {
     final payload = <String, dynamic>{'cardId': cardId};
 
     final normalizedNote = note?.trim();
@@ -707,14 +701,10 @@ final class PaycoreMobileService extends BaseRemoteDataSource {
     return NetworkResponse.fromJson<void>(responseJson as Map<String, dynamic>);
   }
 
-  Future<NetworkResponse<PaycoreAtmQrInfo>> getAtmQrInfo(
-    String kkfData,
-  ) async {
+  Future<NetworkResponse<PaycoreAtmQrInfo>> getAtmQrInfo(String kkfData) async {
     final responseJson = await post(
       endpoint: Endpoints.getPayCoreAtmQrInfo,
-      data: <String, dynamic>{
-        'kkfData': kkfData.trim(),
-      },
+      data: <String, dynamic>{'kkfData': kkfData.trim()},
     );
 
     final response = NetworkResponse.fromJson<Map<String, dynamic>>(
@@ -799,10 +789,7 @@ final class PaycoreMobileService extends BaseRemoteDataSource {
     return parsedUri
         .replace(port: nextPort)
         .toString()
-        .replaceAll(
-          RegExp(r'/+$'),
-          '',
-        );
+        .replaceAll(RegExp(r'/+$'), '');
   }
 
   String _normalizePaycoreCityCode(String value) {

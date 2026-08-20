@@ -5,7 +5,6 @@ import 'package:payinall/presentation/shared/extensions/string_extension.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:payinall/presentation/pages/metropol_gift_transfer/bloc/metropol_gift_transfer_bloc.dart';
 import 'package:payinall/presentation/pages/metropol_gift_transfer/mixin/metropol_gift_transfer_mixin.dart';
-import 'package:payinall/presentation/shared/extensions/padding_extension.dart';
 import 'package:payinall/presentation/shared/extensions/spacing_extension.dart';
 import 'package:payinall/presentation/shared/extensions/theme_extension.dart';
 import 'package:payinall/presentation/widgets/custom_app_bar.dart';
@@ -37,7 +36,7 @@ final class _MetropolGiftTransferScreenState
         listener: blocListener,
         builder: (context, state) {
           return SingleChildScrollView(
-            padding: context.paddingBaseLow,
+            padding: const EdgeInsets.fromLTRB(16, 12, 16, 24),
             child: Form(
               key: formKey,
               child: Column(
@@ -49,11 +48,11 @@ final class _MetropolGiftTransferScreenState
                       color: context.colorScheme.onSurfaceVariant,
                     ),
                   ),
-                  context.spacingNormalHeight,
+                  const SizedBox(height: 12),
                   PriceTextFormField(
                     priceController: amountController,
                   ),
-                  context.spacingNormalHeight,
+                  const SizedBox(height: 16),
                   PrimaryElevatedButton(
                     onPressed:
                         state.status == MetropolGiftTransferStatus.loading
@@ -65,7 +64,7 @@ final class _MetropolGiftTransferScreenState
                     context.spacingNormalHeight,
                     const Center(child: CustomLoading()),
                   ],
-                  context.spacingMediumHeight,
+                  const SizedBox(height: 20),
                   SurfaceElevatedButton(
                     onPressed: onDrawBack,
                     text: LocaleKeys.transfer_to_wallet.translate,

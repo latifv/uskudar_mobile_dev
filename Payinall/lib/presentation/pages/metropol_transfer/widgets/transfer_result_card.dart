@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:payinall/domain/entities/metropol_transfer_result.dart';
-import 'package:payinall/presentation/shared/extensions/border_radius_extension.dart';
-import 'package:payinall/presentation/shared/extensions/padding_extension.dart';
-import 'package:payinall/presentation/shared/extensions/spacing_extension.dart';
 import 'package:payinall/presentation/shared/extensions/theme_extension.dart';
 import 'package:payinall/presentation/widgets/primary_elevated_button.dart';
+import 'package:payinall/presentation/widgets/integration_components.dart';
 
 final class TransferResultCard extends StatelessWidget {
   const TransferResultCard({
@@ -18,41 +16,35 @@ final class TransferResultCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      elevation: 0,
-      shape: RoundedRectangleBorder(
-        borderRadius: context.borderRadiusNormalAll,
-        side: BorderSide(color: context.colorScheme.outlineVariant),
-      ),
-      child: Padding(
-        padding: context.paddingNormalAll,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _buildRow(context, 'Mağaza', result.merchantName),
-            context.spacingLowHeight,
-            _buildRow(
-              context,
-              'Konum',
-              '${result.districtName}/${result.cityName}',
-            ),
-            context.spacingLowHeight,
-            _buildRow(context, 'Tutar', '${result.requestAmount} ₺'),
-            if (result.productName.isNotEmpty) ...[
-              context.spacingLowHeight,
-              _buildRow(context, 'Ürün', result.productName),
-            ],
-            if (result.kdv.isNotEmpty) ...[
-              context.spacingLowHeight,
-              _buildRow(context, 'KDV', '${result.kdv} ₺'),
-            ],
-            context.spacingNormalHeight,
-            PrimaryElevatedButton(
-              onPressed: onConfirm,
-              text: 'Onayla',
-            ),
+    return IntegrationSurface(
+      padding: const EdgeInsets.all(12),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _buildRow(context, 'Mağaza', result.merchantName),
+          const SizedBox(height: 8),
+          _buildRow(
+            context,
+            'Konum',
+            '${result.districtName}/${result.cityName}',
+          ),
+          const SizedBox(height: 8),
+          _buildRow(context, 'Tutar', '${result.requestAmount} ₺'),
+          if (result.productName.isNotEmpty) ...[
+            const SizedBox(height: 8),
+            _buildRow(context, 'Ürün', result.productName),
           ],
-        ),
+          if (result.kdv.isNotEmpty) ...[
+            const SizedBox(height: 8),
+            _buildRow(context, 'KDV', '${result.kdv} ₺'),
+          ],
+          const SizedBox(height: 14),
+          PrimaryElevatedButton(
+            onPressed: onConfirm,
+            text: 'Onayla',
+            height: 48,
+          ),
+        ],
       ),
     );
   }

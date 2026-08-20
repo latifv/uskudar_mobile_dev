@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:payinall/domain/entities/gift_check_category.dart';
-import 'package:payinall/presentation/shared/extensions/border_radius_extension.dart';
-import 'package:payinall/presentation/shared/extensions/padding_extension.dart';
 import 'package:payinall/presentation/shared/extensions/theme_extension.dart';
+import 'package:payinall/presentation/widgets/integration_components.dart';
 
 final class GiftCheckCategoryItem extends StatelessWidget {
   const GiftCheckCategoryItem({
@@ -36,43 +35,31 @@ final class GiftCheckCategoryItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      elevation: 0,
-      shape: RoundedRectangleBorder(
-        borderRadius: context.borderRadiusNormalAll,
-        side: BorderSide(color: Colors.grey.shade400),
-      ),
-      child: InkWell(
+    return SizedBox(
+      height: 68,
+      child: IntegrationSurface(
         onTap: onTap,
-        borderRadius: context.borderRadiusNormalAll,
-        child: Padding(
-          padding: context.paddingNormalAll,
-          child: Row(
-            children: [
-              CircleAvatar(
-                backgroundColor: context.colorScheme.primary.withAlpha(40),
-                child: Icon(
-                  _categoryIcon,
-                  color: context.colorScheme.primary,
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+        child: Row(
+          children: [
+            IntegrationIconBox(icon: _categoryIcon, size: 40),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Text(
+                category.name,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: context.textTheme.bodyMedium?.copyWith(
+                  fontWeight: FontWeight.w700,
                 ),
               ),
-              Expanded(
-                child: Padding(
-                  padding: context.paddingNormalHorizontal,
-                  child: Text(
-                    category.name,
-                    style: context.textTheme.titleMedium?.copyWith(
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ),
-              ),
-              Icon(
-                Icons.chevron_right_rounded,
-                color: context.colorScheme.onSurface.withAlpha(150),
-              ),
-            ],
-          ),
+            ),
+            Icon(
+              Icons.chevron_right_rounded,
+              size: 20,
+              color: context.colorScheme.onSurfaceVariant,
+            ),
+          ],
         ),
       ),
     );

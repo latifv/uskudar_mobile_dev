@@ -9,21 +9,35 @@ import 'package:payinall/presentation/shared/extensions/string_extension.dart';
 
 mixin TransactionHistoryMixin<T extends StatefulWidget> on State<T> {
   late final TransactionHistoryBloc bloc;
+  late final ScrollController transactionScrollController;
 
   @override
   void initState() {
     super.initState();
     bloc = getIt<TransactionHistoryBloc>();
+    transactionScrollController = ScrollController()
+      ..addListener(_onTransactionScroll);
   }
 
   @override
   void dispose() {
+    transactionScrollController
+      ..removeListener(_onTransactionScroll)
+      ..dispose();
     unawaited(bloc.close());
     super.dispose();
   }
 
   void onTransactionHistoryLoadData() {
     bloc.add(const TransactionHistoryLoadData());
+  }
+
+  void _onTransactionScroll() {
+    if (!transactionScrollController.hasClients) return;
+    final position = transactionScrollController.position;
+    if (position.pixels >= position.maxScrollExtent - 240) {
+      bloc.add(const TransactionHistoryLoadMore());
+    }
   }
 
   void onTransactionHistoryFilterChange(TransactionFilter filter) {
