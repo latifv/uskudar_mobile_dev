@@ -3935,7 +3935,7 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
               Text(
-                _formatMoney(item.amount),
+                '${isCredit ? '+' : '-'}${_formatMoney(item.amount)}',
                 style: context.textTheme.bodyMedium?.copyWith(
                   color: amountColor,
                   fontSize: 13,
