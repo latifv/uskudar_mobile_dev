@@ -11,4 +11,6 @@ Map<String, dynamic> _$CreateFuelCardRequestToJson(
 ) => <String, dynamic>{
   'cardNo': instance.cardNo,
   'cardType': instance.cardType,
+  'plate': instance.plate,
+  'fuelType': instance.fuelType,
 };

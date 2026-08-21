@@ -32,8 +32,7 @@ final class FuelCardsRepositoryImpl implements FuelCardsRepository {
 
   @override
   Future<Either<Failure, List<FuelCard>>> getFuelCards() async {
-    return _dataSourceHandler
-        .handle<List<FuelCard>, List<FuelCardModel>>(
+    return _dataSourceHandler.handle<List<FuelCard>, List<FuelCardModel>>(
       remoteFunction: () async {
         return remoteDataSource.getFuelCards();
       },

@@ -1,13 +1,15 @@
+import 'dart:async';
+
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
-import 'package:payinall/core/generated/locale_keys.g.dart';
-import 'package:payinall/presentation/shared/extensions/string_extension.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:payinall/core/generated/locale_keys.g.dart';
 import 'package:payinall/presentation/pages/gift_check_brand_detail/bloc/gift_check_brand_detail_bloc.dart';
 import 'package:payinall/presentation/pages/gift_check_brand_detail/mixin/gift_check_brand_detail_mixin.dart';
 import 'package:payinall/presentation/pages/gift_check_brand_detail/widgets/brand_detail_header.dart';
 import 'package:payinall/presentation/pages/gift_check_brand_detail/widgets/gift_check_coupon_item.dart';
 import 'package:payinall/presentation/shared/extensions/padding_extension.dart';
+import 'package:payinall/presentation/shared/extensions/string_extension.dart';
 import 'package:payinall/presentation/shared/extensions/theme_extension.dart';
 import 'package:payinall/presentation/widgets/custom_app_bar.dart';
 import 'package:payinall/presentation/widgets/custom_dialog.dart';
@@ -81,9 +83,9 @@ final class _GiftCheckBrandDetailScreenState
           ),
         ),
         if (state.status == GiftCheckBrandDetailStatus.takingCoupon)
-          Container(
+          const ColoredBox(
             color: Colors.black26,
-            child: const Center(child: CustomLoading()),
+            child: Center(child: CustomLoading()),
           ),
       ],
     );
@@ -93,17 +95,20 @@ final class _GiftCheckBrandDetailScreenState
     BuildContext context,
     GiftCheckBrandDetailState state,
   ) {
+    final coupons = [...?state.coupons]
+      ..sort((first, second) => first.amount.compareTo(second.amount));
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          LocaleKeys.coupons.translate,
-          style: context.textTheme.bodyMedium?.copyWith(
+          LocaleKeys.gift_check_choose_buy.translate,
+          style: context.textTheme.titleMedium?.copyWith(
             fontWeight: FontWeight.w800,
           ),
         ),
-        const SizedBox(height: 8),
-        if (state.coupons?.isEmpty ?? true)
+        const SizedBox(height: 12),
+        if (coupons.isEmpty)
           Padding(
             padding: context.paddingNormalVertical,
             child: Center(
@@ -116,17 +121,27 @@ final class _GiftCheckBrandDetailScreenState
             ),
           )
         else
-          ...state.coupons!.map(
-            (coupon) => Padding(
-              padding: context.paddingLowBottom,
-              child: GiftCheckCouponItem(
+          GridView.builder(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 2,
+              crossAxisSpacing: 10,
+              mainAxisSpacing: 10,
+              childAspectRatio: 1.03,
+            ),
+            itemCount: coupons.length,
+            itemBuilder: (context, index) {
+              final coupon = coupons[index];
+              return GiftCheckCouponItem(
                 coupon: coupon,
+                cashbackRate: state.brandDetail!.cashbackRate,
                 onTakeCoupon: () => _showTakeCouponDialog(
                   couponId: coupon.id,
                   amount: coupon.amount,
                 ),
-              ),
-            ),
+              );
+            },
           ),
       ],
     );
@@ -136,17 +151,19 @@ final class _GiftCheckBrandDetailScreenState
     required String couponId,
     required double amount,
   }) {
-    CustomDialog.show(
-      context: context,
-      title: LocaleKeys.buy_coupon.translate,
-      description: LocaleKeys.buy_coupon_confirmation.translateWithNamedArgs({
-        'amount': amount.toStringAsFixed(0),
-      }),
-      icon: Icons.card_giftcard_rounded,
-      primaryButtonText: LocaleKeys.purchase.translate,
-      onPrimaryButtonPressed: () {
-        takeCoupon(couponId: couponId, couponCount: 1);
-      },
+    unawaited(
+      CustomDialog.show(
+        context: context,
+        title: LocaleKeys.buy_coupon.translate,
+        description: LocaleKeys.buy_coupon_confirmation.translateWithNamedArgs({
+          'amount': amount.toStringAsFixed(0),
+        }),
+        icon: Icons.card_giftcard_rounded,
+        primaryButtonText: LocaleKeys.purchase.translate,
+        onPrimaryButtonPressed: () {
+          takeCoupon(couponId: couponId, couponCount: 1);
+        },
+      ),
     );
   }
 }

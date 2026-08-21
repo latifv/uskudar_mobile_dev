@@ -20,6 +20,7 @@ class TransactionReceipt {
     this.toCustomerFullName,
     this.toCustomerNumber,
     this.fromCustomerNumber,
+    this.endingBalance,
   });
 
   final String transferOperationTypeName;
@@ -42,4 +43,5 @@ class TransactionReceipt {
   final double basisAmount;
   final double bsmvAmount;
   final double bsmvRate;
+  final double? endingBalance;
 }

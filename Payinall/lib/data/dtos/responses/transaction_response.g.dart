@@ -24,4 +24,6 @@ TransactionResponse _$TransactionResponseFromJson(Map<String, dynamic> json) =>
       fromAddress: json['fromAddress'] as String?,
       transactionTypes: (json['transactionTypes'] as num?)?.toInt(),
       commissionFromType: (json['commissionFromType'] as num?)?.toInt(),
+      oldBalance: (json['oldBalance'] as num?)?.toDouble(),
+      newBalance: (json['newBalance'] as num?)?.toDouble(),
     );

@@ -1,12 +1,15 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
-import 'package:payinall/core/generated/locale_keys.g.dart';
-import 'package:payinall/presentation/shared/extensions/string_extension.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:payinall/core/generated/locale_keys.g.dart';
+import 'package:payinall/domain/entities/fuel_provider.dart';
 import 'package:payinall/presentation/pages/fuel_cards/bloc/fuel_cards_bloc.dart';
+import 'package:payinall/presentation/pages/fuel_cards/fuel_provider_detail_screen.dart';
 import 'package:payinall/presentation/pages/fuel_cards/mixin/fuel_cards_mixin.dart';
 import 'package:payinall/presentation/pages/fuel_cards/widgets/fuel_card_item.dart';
+import 'package:payinall/presentation/pages/fuel_cards/widgets/fuel_provider_card.dart';
 import 'package:payinall/presentation/shared/extensions/spacing_extension.dart';
+import 'package:payinall/presentation/shared/extensions/string_extension.dart';
 import 'package:payinall/presentation/shared/extensions/theme_extension.dart';
 import 'package:payinall/presentation/widgets/custom_app_bar.dart';
 import 'package:payinall/presentation/widgets/custom_loading.dart';
@@ -27,16 +30,6 @@ final class _FuelCardsScreenState extends State<FuelCardsScreen>
     return Scaffold(
       appBar: CustomAppBar(
         title: Text(LocaleKeys.fuel_cards.translate),
-        actions: [
-          IconButton(
-            onPressed: navigateToAddFuelCard,
-            icon: Icon(
-              Icons.add_circle_outline_rounded,
-              color: context.colorScheme.primary,
-            ),
-            tooltip: LocaleKeys.add_card.translate,
-          ),
-        ],
       ),
       body: BlocConsumer<FuelCardsBloc, FuelCardsState>(
         bloc: bloc,
@@ -59,34 +52,78 @@ final class _FuelCardsScreenState extends State<FuelCardsScreen>
   }
 
   Widget _buildContent(FuelCardsState state) {
-    if (state.cards.isEmpty) {
-      return _buildEmptyState();
-    }
-
     return RefreshIndicator(
       onRefresh: () async => loadCards(),
-      child: ListView.separated(
+      child: ListView(
         padding: const EdgeInsets.fromLTRB(16, 12, 16, 24),
         physics: const AlwaysScrollableScrollPhysics(),
-        itemCount: state.cards.length,
-        separatorBuilder: (_, __) => const SizedBox(height: 10),
-        itemBuilder: (context, index) {
-          final card = state.cards[index];
-          return FuelCardItem(
-            card: card,
-            balance: state.balances[card.id],
-            onTopUp: () => navigateToTopUp(card),
-            onDelete: () => onDeleteCard(card.id),
-          );
-        },
+        children: [
+          Text(
+            LocaleKeys.fuel_choose_provider.translate,
+            style: context.textTheme.titleMedium?.copyWith(
+              fontWeight: FontWeight.w800,
+            ),
+          ),
+          const SizedBox(height: 10),
+          GridView.builder(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            itemCount: FuelProvider.values.length,
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 2,
+              mainAxisExtent: 112,
+              crossAxisSpacing: 10,
+              mainAxisSpacing: 10,
+            ),
+            itemBuilder: (context, index) {
+              final provider = FuelProvider.values[index];
+              return FuelProviderCard(
+                provider: provider,
+                onTap: () => _openProvider(provider),
+              );
+            },
+          ),
+          const SizedBox(height: 22),
+          Text(
+            LocaleKeys.fuel_linked_cards.translate,
+            style: context.textTheme.titleMedium?.copyWith(
+              fontWeight: FontWeight.w800,
+            ),
+          ),
+          const SizedBox(height: 10),
+          if (state.cards.isEmpty)
+            _buildEmptyState()
+          else
+            ...state.cards.map(
+              (card) => Padding(
+                padding: const EdgeInsets.only(bottom: 10),
+                child: FuelCardItem(
+                  card: card,
+                  balance: state.balances[card.id],
+                  onTopUp: () => navigateToTopUp(card),
+                  onDelete: () => onDeleteCard(card.id),
+                ),
+              ),
+            ),
+        ],
       ),
     );
   }
 
+  Future<void> _openProvider(FuelProvider provider) async {
+    await Navigator.of(context).push<void>(
+      MaterialPageRoute(
+        builder: (_) => FuelProviderDetailScreen(provider: provider),
+      ),
+    );
+    loadCards();
+  }
+
   Widget _buildEmptyState() {
-    return Center(
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 18),
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisSize: MainAxisSize.min,
         children: [
           Icon(
             Icons.local_gas_station_outlined,
@@ -99,12 +136,6 @@ final class _FuelCardsScreenState extends State<FuelCardsScreen>
             style: context.textTheme.bodyLarge?.copyWith(
               color: context.colorScheme.onSurfaceVariant,
             ),
-          ),
-          context.spacingNormalHeight,
-          FilledButton.icon(
-            onPressed: navigateToAddFuelCard,
-            icon: const Icon(Icons.add_rounded),
-            label: Text(LocaleKeys.add_card.translate),
           ),
         ],
       ),

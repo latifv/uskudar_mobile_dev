@@ -1,11 +1,13 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
-import 'package:payinall/core/generated/locale_keys.g.dart';
-import 'package:payinall/presentation/shared/extensions/string_extension.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:payinall/core/generated/locale_keys.g.dart';
 import 'package:payinall/presentation/pages/gift_check_brands/bloc/gift_check_brands_bloc.dart';
 import 'package:payinall/presentation/pages/gift_check_brands/mixin/gift_check_brands_mixin.dart';
 import 'package:payinall/presentation/pages/gift_check_brands/widgets/gift_check_brand_card.dart';
+import 'package:payinall/presentation/route/app_router.dart';
+import 'package:payinall/presentation/shared/extensions/string_extension.dart';
+import 'package:payinall/presentation/shared/extensions/theme_extension.dart';
 import 'package:payinall/presentation/widgets/custom_app_bar.dart';
 import 'package:payinall/presentation/widgets/custom_empty_list.dart';
 import 'package:payinall/presentation/widgets/custom_loading.dart';
@@ -65,24 +67,95 @@ final class _GiftCheckBrandsScreenState extends State<GiftCheckBrandsScreen>
       );
     }
 
+    final showsClothingCard = widget.categoryName.toLowerCase().contains(
+      'giyim',
+    );
+
     return RefreshIndicator(
       onRefresh: () async => loadBrands(),
-      child: GridView.builder(
-        padding: const EdgeInsets.fromLTRB(16, 12, 16, 24),
-        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 2,
-          childAspectRatio: 1.08,
-          crossAxisSpacing: 10,
-          mainAxisSpacing: 10,
+      child: CustomScrollView(
+        slivers: [
+          if (showsClothingCard)
+            SliverToBoxAdapter(child: _buildClothingCardEntry(context)),
+          SliverPadding(
+            padding: EdgeInsets.fromLTRB(
+              16,
+              showsClothingCard ? 0 : 12,
+              16,
+              24,
+            ),
+            sliver: SliverGrid(
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+                childAspectRatio: 1.72,
+                crossAxisSpacing: 10,
+                mainAxisSpacing: 10,
+              ),
+              delegate: SliverChildBuilderDelegate((context, index) {
+                final brand = state.brands![index];
+                return GiftCheckBrandCard(
+                  brand: brand,
+                  onTap: () => navigateToBrandDetail(brand.id),
+                );
+              }, childCount: state.brands!.length),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildClothingCardEntry(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
+      child: Material(
+        color: context.colorScheme.primary.withAlpha(18),
+        borderRadius: BorderRadius.circular(16),
+        child: InkWell(
+          borderRadius: BorderRadius.circular(16),
+          onTap: () => context.router.push(const MetropolRoute()),
+          child: Padding(
+            padding: const EdgeInsets.all(14),
+            child: Row(
+              children: [
+                CircleAvatar(
+                  backgroundColor: context.colorScheme.primary.withAlpha(28),
+                  child: Icon(
+                    Icons.credit_card_rounded,
+                    color: context.colorScheme.primary,
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        LocaleKeys.my_clothing_card.translate,
+                        style: context.textTheme.titleSmall?.copyWith(
+                          fontWeight: FontWeight.w800,
+                        ),
+                      ),
+                      const SizedBox(height: 2),
+                      Text(
+                        LocaleKeys.clothing_card_qr_description.translate,
+                        style: context.textTheme.bodySmall?.copyWith(
+                          color: context.colorScheme.onSurfaceVariant,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(width: 8),
+                Icon(
+                  Icons.qr_code_scanner_rounded,
+                  color: context.colorScheme.primary,
+                ),
+                const Icon(Icons.chevron_right_rounded),
+              ],
+            ),
+          ),
         ),
-        itemCount: state.brands!.length,
-        itemBuilder: (context, index) {
-          final brand = state.brands![index];
-          return GiftCheckBrandCard(
-            brand: brand,
-            onTap: () => navigateToBrandDetail(brand.id),
-          );
-        },
       ),
     );
   }

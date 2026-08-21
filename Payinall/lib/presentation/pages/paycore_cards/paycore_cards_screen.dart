@@ -3713,8 +3713,16 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
     PaycoreCardTransactionsResponse? transactions,
   ) {
     final isLoading = _loadingTransactionCards.contains(card.id);
-    final items =
-        transactions?.transactions ?? const <PaycoreCardTransactionItem>[];
+    final items = _sortCardTransactions(
+      transactions?.transactions ?? const <PaycoreCardTransactionItem>[],
+    );
+    final visibleItems = items
+        .where(
+          (item) =>
+              !_isTransactionFee(item) ||
+              _findRelatedAtmTransaction(item, items) == null,
+        )
+        .toList();
 
     return _buildSurfaceCard(
       child: Column(
@@ -3732,7 +3740,7 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
               ),
               if (transactions != null)
                 Text(
-                  '${items.length} kayıt',
+                  '${visibleItems.length} kayıt',
                   style: context.textTheme.bodySmall?.copyWith(
                     color: context.colorScheme.onSurfaceVariant,
                     fontWeight: FontWeight.w700,
@@ -3764,12 +3772,12 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
               ],
             ),
           if (transactions != null) const SizedBox(height: 14),
-          if (isLoading && items.isEmpty)
+          if (isLoading && visibleItems.isEmpty)
             const Padding(
               padding: EdgeInsets.symmetric(vertical: 18),
               child: Center(child: CircularProgressIndicator()),
             )
-          else if (items.isEmpty)
+          else if (visibleItems.isEmpty)
             Text(
               'Bu kart için gösterilecek hareket bulunamadı.',
               style: context.textTheme.bodyMedium?.copyWith(
@@ -3777,7 +3785,16 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
               ),
             )
           else
-            Column(children: items.map(_buildTransactionTile).toList()),
+            Column(
+              children: visibleItems
+                  .map(
+                    (item) => _buildTransactionTile(
+                      item,
+                      relatedItem: _findRelatedAtmTransaction(item, items),
+                    ),
+                  )
+                  .toList(),
+            ),
         ],
       ),
     );
@@ -3836,8 +3853,23 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
     );
   }
 
-  Widget _buildTransactionTile(PaycoreCardTransactionItem item) {
+  Widget _buildTransactionTile(
+    PaycoreCardTransactionItem item, {
+    PaycoreCardTransactionItem? relatedItem,
+  }) {
     final isCredit = (item.effect ?? '').trim().toUpperCase() == 'C';
+    final transactionText = '${item.title} ${item.description ?? ''}'
+        .toUpperCase();
+    final isFee =
+        transactionText.contains('ÜCRET') ||
+        transactionText.contains('KOMİSYON') ||
+        transactionText.contains('FEE') ||
+        transactionText.contains('COMMISSION');
+    final totalTax = item.tax1Amount + item.tax2Amount;
+    final relatedFee = _isTransactionFee(relatedItem ?? item)
+        ? relatedItem
+        : null;
+    final commission = item.commissionAmount ?? relatedFee?.amount;
     final amountColor = isCredit
         ? const Color(0xFF027A48)
         : const Color(0xFFB42318);
@@ -3850,103 +3882,366 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
         item.transactionType!.trim(),
     ];
 
-    return Container(
-      margin: const EdgeInsets.only(bottom: 8),
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
         borderRadius: BorderRadius.circular(14),
-        border: Border.all(
-          color: context.colorScheme.outlineVariant.withValues(alpha: 0.65),
+        onTap: () => unawaited(
+          _showCardTransactionDetail(item, relatedItem: relatedItem),
         ),
-        color: context.colorScheme.surfaceContainerLow,
+        child: Container(
+          margin: const EdgeInsets.only(bottom: 8),
+          padding: const EdgeInsets.all(12),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(14),
+            border: Border.all(
+              color: context.colorScheme.outlineVariant.withValues(alpha: 0.65),
+            ),
+            color: context.colorScheme.surfaceContainerLow,
+          ),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                width: 36,
+                height: 36,
+                decoration: BoxDecoration(
+                  color: amountColor.withValues(alpha: 0.12),
+                  borderRadius: BorderRadius.circular(11),
+                ),
+                child: Icon(
+                  isFee
+                      ? Icons.account_balance_outlined
+                      : isCredit
+                      ? Icons.south_west_rounded
+                      : Icons.shopping_bag_outlined,
+                  color: amountColor,
+                  size: 18,
+                ),
+              ),
+              const SizedBox(width: 10),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      item.title,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: context.textTheme.bodyMedium?.copyWith(
+                        color: context.colorScheme.onSurface,
+                        fontSize: 13,
+                        height: 1.2,
+                        fontWeight: FontWeight.w800,
+                      ),
+                    ),
+                    if (subtitleParts.isNotEmpty) ...[
+                      const SizedBox(height: 4),
+                      Text(
+                        subtitleParts.join(' • '),
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                        style: context.textTheme.bodySmall?.copyWith(
+                          color: context.colorScheme.onSurfaceVariant,
+                          fontSize: 11,
+                          height: 1.25,
+                        ),
+                      ),
+                    ],
+                    if ((item.description ?? '').trim().isNotEmpty) ...[
+                      const SizedBox(height: 4),
+                      Text(
+                        item.description!.trim(),
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                        style: context.textTheme.bodySmall?.copyWith(
+                          color: context.colorScheme.onSurfaceVariant,
+                          fontSize: 11,
+                          height: 1.25,
+                        ),
+                      ),
+                    ],
+                    if (totalTax > 0) ...[
+                      const SizedBox(height: 4),
+                      Text(
+                        'Vergi: ${_formatMoney(totalTax)}',
+                        style: context.textTheme.bodySmall?.copyWith(
+                          color: context.colorScheme.onSurfaceVariant,
+                          fontSize: 11,
+                          height: 1.25,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                    ],
+                    const SizedBox(height: 6),
+                    Text(
+                      _formatTransactionDate(item.date),
+                      style: context.textTheme.labelMedium?.copyWith(
+                        color: context.colorScheme.onSurfaceVariant,
+                        fontSize: 10,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(width: 8),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  Text(
+                    '${isCredit ? '+' : '-'}${_formatMoney(item.amount)}',
+                    style: context.textTheme.bodyMedium?.copyWith(
+                      color: amountColor,
+                      fontSize: 13,
+                      fontWeight: FontWeight.w900,
+                    ),
+                  ),
+                  if (commission != null && commission > 0) ...[
+                    const SizedBox(height: 4),
+                    Text(
+                      'Komisyon: -${_formatMoney(commission)}',
+                      style: context.textTheme.bodySmall?.copyWith(
+                        color: amountColor,
+                        fontSize: 10,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                  ],
+                  if ((item.status ?? '').trim().isNotEmpty) ...[
+                    const SizedBox(height: 6),
+                    _buildTransactionStatusPill(
+                      item.status!.trim(),
+                      amountColor,
+                    ),
+                  ],
+                ],
+              ),
+            ],
+          ),
+        ),
       ),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
-            width: 36,
-            height: 36,
-            decoration: BoxDecoration(
-              color: amountColor.withValues(alpha: 0.12),
-              borderRadius: BorderRadius.circular(11),
-            ),
-            child: Icon(
-              isCredit ? Icons.south_west_rounded : Icons.shopping_bag_outlined,
-              color: amountColor,
-              size: 18,
-            ),
-          ),
-          const SizedBox(width: 10),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  item.title,
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                  style: context.textTheme.bodyMedium?.copyWith(
-                    color: context.colorScheme.onSurface,
-                    fontSize: 13,
-                    height: 1.2,
-                    fontWeight: FontWeight.w800,
-                  ),
-                ),
-                if (subtitleParts.isNotEmpty) ...[
-                  const SizedBox(height: 4),
-                  Text(
-                    subtitleParts.join(' • '),
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                    style: context.textTheme.bodySmall?.copyWith(
-                      color: context.colorScheme.onSurfaceVariant,
-                      fontSize: 11,
-                      height: 1.25,
-                    ),
-                  ),
-                ],
-                if ((item.description ?? '').trim().isNotEmpty) ...[
-                  const SizedBox(height: 4),
-                  Text(
-                    item.description!.trim(),
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                    style: context.textTheme.bodySmall?.copyWith(
-                      color: context.colorScheme.onSurfaceVariant,
-                      fontSize: 11,
-                      height: 1.25,
-                    ),
-                  ),
-                ],
-                const SizedBox(height: 6),
-                Text(
-                  _formatTransactionDate(item.date),
-                  style: context.textTheme.labelMedium?.copyWith(
-                    color: context.colorScheme.onSurfaceVariant,
-                    fontSize: 10,
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(width: 8),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
+    );
+  }
+
+  List<PaycoreCardTransactionItem> _sortCardTransactions(
+    List<PaycoreCardTransactionItem> items,
+  ) {
+    final indexed = items.indexed.toList()
+      ..sort((left, right) {
+        final leftDate = _parseTransactionDate(left.$2.date);
+        final rightDate = _parseTransactionDate(right.$2.date);
+        final leftMinute = leftDate == null
+            ? null
+            : DateTime(
+                leftDate.year,
+                leftDate.month,
+                leftDate.day,
+                leftDate.hour,
+                leftDate.minute,
+              );
+        final rightMinute = rightDate == null
+            ? null
+            : DateTime(
+                rightDate.year,
+                rightDate.month,
+                rightDate.day,
+                rightDate.hour,
+                rightDate.minute,
+              );
+        final minuteComparison = (rightMinute ?? DateTime(1970)).compareTo(
+          leftMinute ?? DateTime(1970),
+        );
+        if (minuteComparison != 0) {
+          return minuteComparison;
+        }
+
+        final leftPriority = _atmTransactionPriority(left.$2);
+        final rightPriority = _atmTransactionPriority(right.$2);
+        if (leftPriority != rightPriority) {
+          return _atmTransactionPriority(
+            left.$2,
+          ).compareTo(_atmTransactionPriority(right.$2));
+        }
+        final dateComparison = (rightDate ?? DateTime(1970)).compareTo(
+          leftDate ?? DateTime(1970),
+        );
+        if (dateComparison != 0) {
+          return dateComparison;
+        }
+
+        return left.$1.compareTo(right.$1);
+      });
+    return indexed.map((entry) => entry.$2).toList();
+  }
+
+  int _atmTransactionPriority(PaycoreCardTransactionItem item) {
+    if (_isAtmWithdrawal(item)) {
+      return 0;
+    }
+    if (_isTransactionFee(item)) {
+      return 1;
+    }
+    return 0;
+  }
+
+  bool _isTransactionFee(PaycoreCardTransactionItem item) {
+    final text = '${item.title} ${item.description ?? ''}'.toUpperCase();
+    return text.contains('ÜCRET') ||
+        text.contains('KOMİSYON') ||
+        text.contains('FEE') ||
+        text.contains('COMMISSION');
+  }
+
+  bool _isAtmWithdrawal(PaycoreCardTransactionItem item) {
+    final text =
+        '${item.title} ${item.description ?? ''} '
+                '${item.transactionType ?? ''} ${item.terminalType ?? ''}'
+            .toUpperCase();
+    return (text.contains('ATM') || text.contains('CASH')) &&
+        (text.contains('ÇEK') || text.contains('WITHDRAW')) &&
+        !_isTransactionFee(item);
+  }
+
+  PaycoreCardTransactionItem? _findRelatedAtmTransaction(
+    PaycoreCardTransactionItem item,
+    List<PaycoreCardTransactionItem> items,
+  ) {
+    final lookingForFee = _isAtmWithdrawal(item);
+    final lookingForWithdrawal = _isTransactionFee(item);
+    if (!lookingForFee && !lookingForWithdrawal) {
+      return null;
+    }
+
+    final itemDate = _parseTransactionDate(item.date);
+    if (itemDate == null) {
+      return null;
+    }
+    PaycoreCardTransactionItem? closest;
+    var closestDifference = const Duration(days: 365);
+    for (final candidate in items) {
+      if (identical(candidate, item) ||
+          (lookingForFee && !_isTransactionFee(candidate)) ||
+          (lookingForWithdrawal && !_isAtmWithdrawal(candidate))) {
+        continue;
+      }
+      final candidateDate = _parseTransactionDate(candidate.date);
+      if (candidateDate == null) {
+        continue;
+      }
+      final difference = itemDate.difference(candidateDate).abs();
+      if (difference <= const Duration(minutes: 2) &&
+          difference < closestDifference) {
+        closest = candidate;
+        closestDifference = difference;
+      }
+    }
+    return closest;
+  }
+
+  Future<void> _showCardTransactionDetail(
+    PaycoreCardTransactionItem item, {
+    PaycoreCardTransactionItem? relatedItem,
+  }) async {
+    final withdrawal = _isAtmWithdrawal(item)
+        ? item
+        : _isAtmWithdrawal(relatedItem ?? item)
+        ? relatedItem
+        : null;
+    final fee = _isTransactionFee(item)
+        ? item
+        : _isTransactionFee(relatedItem ?? item)
+        ? relatedItem
+        : null;
+    final isCredit = (item.effect ?? '').trim().toUpperCase() == 'C';
+    final endingBalance =
+        fee?.endingBalance ?? item.endingBalance ?? relatedItem?.endingBalance;
+    final commission =
+        item.commissionAmount ?? relatedItem?.commissionAmount ?? fee?.amount;
+
+    await showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      showDragHandle: true,
+      builder: (sheetContext) => SafeArea(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.fromLTRB(20, 0, 20, 24),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
             children: [
               Text(
-                '${isCredit ? '+' : '-'}${_formatMoney(item.amount)}',
-                style: context.textTheme.bodyMedium?.copyWith(
-                  color: amountColor,
-                  fontSize: 13,
+                'İşlem Detayı',
+                style: context.textTheme.headlineSmall?.copyWith(
                   fontWeight: FontWeight.w900,
                 ),
               ),
-              if ((item.status ?? '').trim().isNotEmpty) ...[
-                const SizedBox(height: 6),
-                _buildTransactionStatusPill(item.status!.trim(), amountColor),
-              ],
+              const SizedBox(height: 8),
+              Text(
+                item.title,
+                style: context.textTheme.titleMedium?.copyWith(
+                  fontWeight: FontWeight.w800,
+                ),
+              ),
+              const SizedBox(height: 4),
+              Text(
+                _formatTransactionDate(item.date),
+                style: context.textTheme.bodySmall?.copyWith(
+                  color: context.colorScheme.onSurfaceVariant,
+                ),
+              ),
+              const SizedBox(height: 20),
+              _buildTransactionDetailRow(
+                withdrawal != null ? 'Para Çekme Tutarı' : 'İşlem Tutarı',
+                '${isCredit ? '+' : '-'}${_formatMoney(withdrawal?.amount ?? item.amount)}',
+              ),
+              if (commission != null && commission > 0)
+                _buildTransactionDetailRow(
+                  'Kesilen Komisyon',
+                  '-${_formatMoney(commission)}',
+                ),
+              _buildTransactionDetailRow(
+                'İşlem Sonu Bakiye',
+                endingBalance == null ? '-' : _formatMoney(endingBalance),
+                isLast: true,
+              ),
             ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildTransactionDetailRow(
+    String label,
+    String value, {
+    bool isLast = false,
+  }) {
+    return Container(
+      padding: const EdgeInsets.symmetric(vertical: 14),
+      decoration: BoxDecoration(
+        border: isLast
+            ? null
+            : Border(
+                bottom: BorderSide(color: context.colorScheme.outlineVariant),
+              ),
+      ),
+      child: Row(
+        children: [
+          Expanded(
+            child: Text(
+              label,
+              style: context.textTheme.bodyMedium?.copyWith(
+                color: context.colorScheme.onSurfaceVariant,
+              ),
+            ),
+          ),
+          const SizedBox(width: 16),
+          Text(
+            value,
+            style: context.textTheme.bodyMedium?.copyWith(
+              fontWeight: FontWeight.w800,
+            ),
           ),
         ],
       ),

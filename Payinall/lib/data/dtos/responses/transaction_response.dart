@@ -19,6 +19,8 @@ final class TransactionResponse {
     this.fromAddress,
     this.transactionTypes,
     this.commissionFromType,
+    this.oldBalance,
+    this.newBalance,
   });
 
   factory TransactionResponse.fromJson(Map<String, dynamic> json) =>
@@ -38,4 +40,6 @@ final class TransactionResponse {
   final String? fromAddress;
   final int? transactionTypes;
   final int? commissionFromType;
+  final double? oldBalance;
+  final double? newBalance;
 }

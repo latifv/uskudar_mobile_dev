@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:payinall/core/generated/locale_keys.g.dart';
-import 'package:payinall/presentation/shared/extensions/string_extension.dart';
 import 'package:payinall/domain/entities/fuel_card.dart';
+import 'package:payinall/domain/entities/fuel_provider.dart';
 import 'package:payinall/presentation/shared/extensions/double_extension.dart';
+import 'package:payinall/presentation/shared/extensions/string_extension.dart';
 import 'package:payinall/presentation/shared/extensions/theme_extension.dart';
 import 'package:payinall/presentation/widgets/integration_components.dart';
 
@@ -50,7 +51,7 @@ final class FuelCardItem extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                card.cardTypeName,
+                FuelProvider.fromCardType(card.cardType).name,
                 style: context.textTheme.bodyMedium?.copyWith(
                   fontWeight: FontWeight.w800,
                 ),

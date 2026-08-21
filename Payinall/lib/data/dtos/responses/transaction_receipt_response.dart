@@ -25,6 +25,7 @@ final class TransactionReceiptResponse {
     this.basisAmount,
     this.bsmvAmount,
     this.bsmvRate,
+    this.endingBalance,
   });
 
   factory TransactionReceiptResponse.fromJson(Map<String, dynamic> json) =>
@@ -50,4 +51,5 @@ final class TransactionReceiptResponse {
   final double? basisAmount;
   final double? bsmvAmount;
   final double? bsmvRate;
+  final double? endingBalance;
 }

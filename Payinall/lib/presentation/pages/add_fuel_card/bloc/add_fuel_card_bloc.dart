@@ -26,6 +26,8 @@ final class AddFuelCardBloc extends Bloc<AddFuelCardEvent, AddFuelCardState> {
       CreateFuelCardParams(
         cardNo: event.cardNo,
         cardType: event.cardType,
+        plate: event.plate,
+        fuelType: event.fuelType,
       ),
     );
 

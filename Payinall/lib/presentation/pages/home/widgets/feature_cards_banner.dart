@@ -31,14 +31,14 @@ final class FeatureCardsBanner extends StatelessWidget {
         itemBuilder: (context, index) {
           return switch (index) {
             0 => _FeatureCard(
+              label: LocaleKeys.payinall_discount_points.translate,
+              imagePath: ImageAssetsConstants.metropol,
+              onTap: () => context.router.push(const MetropolLocationsRoute()),
+            ),
+            1 => _FeatureCard(
               label: LocaleKeys.gift_checks.translate,
               imagePath: ImageAssetsConstants.gift,
               onTap: () => context.router.push(const GiftChecksRoute()),
-            ),
-            1 => _FeatureCard(
-              label: LocaleKeys.metropol.translate,
-              imagePath: ImageAssetsConstants.metropol,
-              onTap: () => context.router.push(const MetropolRoute()),
             ),
             2 => _FeatureCard(
               label: LocaleKeys.fuel_cards.translate,

@@ -1,20 +1,23 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
-import 'package:payinall/core/generated/locale_keys.g.dart';
-import 'package:payinall/presentation/shared/extensions/string_extension.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:payinall/core/generated/locale_keys.g.dart';
+import 'package:payinall/domain/entities/fuel_provider.dart';
 import 'package:payinall/presentation/pages/add_fuel_card/bloc/add_fuel_card_bloc.dart';
 import 'package:payinall/presentation/pages/add_fuel_card/mixin/add_fuel_card_mixin.dart';
+import 'package:payinall/presentation/shared/extensions/string_extension.dart';
 import 'package:payinall/presentation/shared/extensions/theme_extension.dart';
 import 'package:payinall/presentation/widgets/custom_app_bar.dart';
 import 'package:payinall/presentation/widgets/custom_loading.dart';
 import 'package:payinall/presentation/widgets/custom_text_form_field.dart';
-import 'package:payinall/presentation/widgets/primary_elevated_button.dart';
 import 'package:payinall/presentation/widgets/integration_components.dart';
+import 'package:payinall/presentation/widgets/primary_elevated_button.dart';
 
 @RoutePage()
 final class AddFuelCardScreen extends StatefulWidget {
-  const AddFuelCardScreen({super.key});
+  const AddFuelCardScreen({this.provider = FuelProvider.shell, super.key});
+
+  final FuelProvider provider;
 
   @override
   State<AddFuelCardScreen> createState() => _AddFuelCardScreenState();
@@ -55,6 +58,12 @@ final class _AddFuelCardScreenState extends State<AddFuelCardScreen>
           _buildCardTypeInfo(context),
           const SizedBox(height: 12),
           _buildCardNoField(context),
+          if (widget.provider.requiresVehicleDetails) ...[
+            const SizedBox(height: 12),
+            _buildPlateField(context),
+            const SizedBox(height: 12),
+            _buildFuelTypeField(context),
+          ],
           const SizedBox(height: 20),
           _buildSubmitButton(),
         ],
@@ -104,7 +113,7 @@ final class _AddFuelCardScreenState extends State<AddFuelCardScreen>
                   ),
                 ),
                 Text(
-                  LocaleKeys.shell.translate,
+                  widget.provider.name,
                   style: context.textTheme.bodySmall?.copyWith(
                     fontWeight: FontWeight.w700,
                   ),
@@ -117,10 +126,49 @@ final class _AddFuelCardScreenState extends State<AddFuelCardScreen>
     );
   }
 
+  Widget _buildPlateField(BuildContext context) {
+    return CustomTextFormField(
+      controller: plateController,
+      hintText: LocaleKeys.fuel_plate_hint.translate,
+      labelText: LocaleKeys.fuel_plate.translate,
+      prefixIcon: const Icon(Icons.directions_car_outlined),
+      textCapitalization: TextCapitalization.characters,
+      validator: (value) {
+        if (value == null || value.trim().isEmpty) {
+          return LocaleKeys.fuel_plate_required.translate;
+        }
+        return null;
+      },
+    );
+  }
+
+  Widget _buildFuelTypeField(BuildContext context) {
+    return DropdownButtonFormField<FuelType>(
+      initialValue: selectedFuelType,
+      decoration: InputDecoration(
+        labelText: LocaleKeys.fuel_type.translate,
+        prefixIcon: const Icon(Icons.local_gas_station_outlined),
+      ),
+      items: FuelType.values
+          .map(
+            (fuelType) => DropdownMenuItem(
+              value: fuelType,
+              child: Text(
+                fuelType == FuelType.gasoline
+                    ? LocaleKeys.fuel_gasoline.translate
+                    : LocaleKeys.fuel_diesel.translate,
+              ),
+            ),
+          )
+          .toList(),
+      onChanged: onFuelTypeChanged,
+    );
+  }
+
   Widget _buildCardNoField(BuildContext context) {
     return CustomTextFormField(
       controller: cardNoController,
-      hintText: LocaleKeys.enter_card_number.translate,
+      hintText: widget.provider.cardNumberHint,
       labelText: LocaleKeys.card_number.translate,
       prefixIcon: const Icon(Icons.credit_card_rounded),
       keyboardType: TextInputType.number,

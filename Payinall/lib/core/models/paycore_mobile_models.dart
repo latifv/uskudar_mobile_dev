@@ -323,6 +323,11 @@ final class PaycoreCardTransactionItem {
     required this.transactionId,
     required this.title,
     required this.amount,
+    this.tax1Amount = 0,
+    this.tax2Amount = 0,
+    this.commissionAmount,
+    this.endingBalance,
+    this.isFinancial,
     this.description,
     this.merchantName,
     this.merchantCity,
@@ -407,6 +412,29 @@ final class PaycoreCardTransactionItem {
           ]) ??
           0,
       title: title,
+      tax1Amount: _readDecimal(json, const ['tax1Amount', 'Tax1Amount']) ?? 0,
+      tax2Amount: _readDecimal(json, const ['tax2Amount', 'Tax2Amount']) ?? 0,
+      commissionAmount: _readDecimal(json, const [
+        'commissionAmount',
+        'CommissionAmount',
+        'feeAmount',
+        'FeeAmount',
+      ]),
+      endingBalance: _readDecimal(json, const [
+        'endingBalance',
+        'EndingBalance',
+        'balanceAfterTransaction',
+        'BalanceAfterTransaction',
+        'transactionBalance',
+        'TransactionBalance',
+        'remainingBalance',
+        'RemainingBalance',
+        'availableBalance',
+        'AvailableBalance',
+        'balance',
+        'Balance',
+      ]),
+      isFinancial: _readBool(json, const ['isFinancial', 'IsFinancial']),
       description: description,
       merchantName: _readString(json, const ['merchantName', 'MerchantName']),
       merchantCity: _readString(json, const ['merchantCity', 'MerchantCity']),
@@ -459,6 +487,11 @@ final class PaycoreCardTransactionItem {
   final String? merchantCity;
   final String? merchantCountry;
   final double amount;
+  final double tax1Amount;
+  final double tax2Amount;
+  final double? commissionAmount;
+  final double? endingBalance;
+  final bool? isFinancial;
   final String? effect;
   final String? date;
   final String? processingCode;

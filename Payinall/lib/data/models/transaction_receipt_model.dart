@@ -24,6 +24,7 @@ final class TransactionReceiptModel extends TransactionReceipt {
     super.fromCustomerNumber,
     super.toCustomerFullName,
     super.toCustomerNumber,
+    super.endingBalance,
   });
 
   factory TransactionReceiptModel.fromResponse(
@@ -69,6 +70,7 @@ final class TransactionReceiptModel extends TransactionReceipt {
       basisAmount: response.basisAmount!,
       bsmvAmount: response.bsmvAmount!,
       bsmvRate: response.bsmvRate!,
+      endingBalance: response.endingBalance,
     );
   }
 }

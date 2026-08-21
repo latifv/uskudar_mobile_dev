@@ -5,7 +5,7 @@ publish_to: "none"
 #! Uygulama adı , api gibi bilgiler assets/env içerisinde bulunmaktadır.
 
 #! ENV dosyasında APP_VERSION'da değiştirin hepsinden.
-version: 2.4.1+76
+version: 2.4.1+77
 
 environment:
   sdk: ^3.8.1
@@ -32,6 +32,8 @@ dependencies:
   flutter_dotenv: ^6.0.0
   flutter_html: ^3.0.0
   flutter_local_notifications: ^19.5.0
+  flutter_map: ^8.2.2
+  flutter_map_marker_cluster: ^8.2.2
   flutter_styled_toast: ^2.3.0
   flutter_svg: ^2.2.3
   flutter_switch: ^0.3.2
@@ -39,6 +41,7 @@ dependencies:
   fpdart: ^1.2.0
   get_it: ^9.2.0
   google_fonts: ^6.3.3
+  geolocator: ^14.0.2
   hive_ce: ^2.15.1
   hive_ce_flutter: ^2.3.3
   image_picker: ^1.2.1
@@ -48,6 +51,7 @@ dependencies:
   json_annotation: ^4.9.0
   loading_indicator: ^3.1.1
   lottie: ^3.3.2
+  latlong2: ^0.9.1
   mask_text_input_formatter: ^2.9.0
   mobile_device_identifier: ^0.0.3
   mobile_scanner: ^7.1.3

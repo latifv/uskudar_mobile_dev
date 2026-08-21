@@ -31,4 +31,5 @@ TransactionReceiptResponse _$TransactionReceiptResponseFromJson(
   basisAmount: (json['basisAmount'] as num?)?.toDouble(),
   bsmvAmount: (json['bsmvAmount'] as num?)?.toDouble(),
   bsmvRate: (json['bsmvRate'] as num?)?.toDouble(),
+  endingBalance: (json['endingBalance'] as num?)?.toDouble(),
 );

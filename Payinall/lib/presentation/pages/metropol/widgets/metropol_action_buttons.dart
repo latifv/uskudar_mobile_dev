@@ -30,7 +30,7 @@ final class MetropolActionButtons extends StatelessWidget {
       children: [
         IntegrationActionCard(
           icon: Icons.qr_code_scanner_rounded,
-          label: LocaleKeys.market_balance_top_up.translate,
+          label: LocaleKeys.qr_pay.translate,
           color: context.colorScheme.primary,
           onTap: onMarketTransferPressed,
         ),

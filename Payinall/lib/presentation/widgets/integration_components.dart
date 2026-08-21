@@ -3,12 +3,17 @@ import 'package:payinall/presentation/shared/components/image_network_component.
 import 'package:payinall/presentation/shared/extensions/border_radius_extension.dart';
 import 'package:payinall/presentation/shared/extensions/theme_extension.dart';
 
+String integrationBrandDisplayName(String name) {
+  return name.replaceFirst(RegExp(r'\s+ER$', caseSensitive: false), '').trim();
+}
+
 final class IntegrationSurface extends StatelessWidget {
   const IntegrationSurface({
     required this.child,
     this.onTap,
     this.padding = const EdgeInsets.all(16),
     this.backgroundColor,
+    this.showBorder = true,
     super.key,
   });
 
@@ -16,6 +21,7 @@ final class IntegrationSurface extends StatelessWidget {
   final VoidCallback? onTap;
   final EdgeInsetsGeometry padding;
   final Color? backgroundColor;
+  final bool showBorder;
 
   @override
   Widget build(BuildContext context) {
@@ -24,9 +30,11 @@ final class IntegrationSurface extends StatelessWidget {
       color: backgroundColor ?? context.colorScheme.surface,
       shape: RoundedRectangleBorder(
         borderRadius: context.borderRadiusLowAll,
-        side: BorderSide(
-          color: context.colorScheme.outlineVariant.withAlpha(120),
-        ),
+        side: showBorder
+            ? BorderSide(
+                color: context.colorScheme.outlineVariant.withAlpha(120),
+              )
+            : BorderSide.none,
       ),
       clipBehavior: Clip.antiAlias,
       child: onTap == null ? content : InkWell(onTap: onTap, child: content),
@@ -91,14 +99,21 @@ final class IntegrationBrandLogo extends StatelessWidget {
 }
 
 final class CashbackBadge extends StatelessWidget {
-  const CashbackBadge({required this.rate, super.key});
+  const CashbackBadge({
+    required this.rate,
+    this.roundToWhole = false,
+    super.key,
+  });
 
   final double rate;
+  final bool roundToWhole;
 
   @override
   Widget build(BuildContext context) {
     final percentage = rate * 100;
-    final value = percentage == percentage.roundToDouble()
+    final value = roundToWhole
+        ? percentage.round().toString()
+        : percentage == percentage.roundToDouble()
         ? percentage.toStringAsFixed(0)
         : percentage.toStringAsFixed(1);
     return Container(

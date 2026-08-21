@@ -3,25 +3,31 @@ import 'dart:async';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:payinall/di/di.dart';
+import 'package:payinall/domain/entities/fuel_provider.dart';
+import 'package:payinall/presentation/pages/add_fuel_card/add_fuel_card_screen.dart';
 import 'package:payinall/presentation/pages/add_fuel_card/bloc/add_fuel_card_bloc.dart';
 import 'package:payinall/presentation/shared/components/toast_component.dart';
 
-mixin AddFuelCardMixin<T extends StatefulWidget> on State<T> {
+mixin AddFuelCardMixin on State<AddFuelCardScreen> {
   late final AddFuelCardBloc bloc;
   late final TextEditingController cardNoController;
+  late final TextEditingController plateController;
   late final GlobalKey<FormState> formKey;
+  FuelType selectedFuelType = FuelType.gasoline;
 
   @override
   void initState() {
     super.initState();
     bloc = getIt<AddFuelCardBloc>();
     cardNoController = TextEditingController();
+    plateController = TextEditingController();
     formKey = GlobalKey<FormState>();
   }
 
   @override
   void dispose() {
     cardNoController.dispose();
+    plateController.dispose();
     formKey.currentState?.dispose();
     unawaited(bloc.close());
     super.dispose();
@@ -33,9 +39,20 @@ mixin AddFuelCardMixin<T extends StatefulWidget> on State<T> {
     bloc.add(
       AddFuelCardSubmit(
         cardNo: cardNoController.text.trim(),
-        cardType: 3,
+        cardType: widget.provider.cardType,
+        plate: widget.provider.requiresVehicleDetails
+            ? plateController.text.trim().toUpperCase()
+            : null,
+        fuelType: widget.provider.requiresVehicleDetails
+            ? selectedFuelType.apiValue
+            : null,
       ),
     );
+  }
+
+  void onFuelTypeChanged(FuelType? value) {
+    if (value == null) return;
+    setState(() => selectedFuelType = value);
   }
 
   void blocListener(BuildContext context, AddFuelCardState state) {
@@ -50,7 +67,7 @@ mixin AddFuelCardMixin<T extends StatefulWidget> on State<T> {
         context: context,
         message: state.message ?? '',
       );
-      context.router.maybePop();
+      unawaited(context.router.maybePop());
     }
   }
 }

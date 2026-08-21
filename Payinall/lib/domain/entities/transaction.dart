@@ -14,6 +14,8 @@ class Transaction {
     this.toCustomerNumber,
     this.transactionTypes,
     this.commissionFromType,
+    this.oldBalance,
+    this.newBalance,
   });
   final String id;
   final double amount;
@@ -29,6 +31,8 @@ class Transaction {
   final String? fromAddress;
   final int? transactionTypes;
   final int? commissionFromType;
+  final double? oldBalance;
+  final double? newBalance;
   bool get isIncoming {
     return transactionTypes == 1;
   }

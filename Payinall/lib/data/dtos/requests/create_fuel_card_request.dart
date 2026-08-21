@@ -8,12 +8,16 @@ final class CreateFuelCardRequest extends CreateFuelCardParams {
   const CreateFuelCardRequest({
     required super.cardNo,
     required super.cardType,
+    super.plate,
+    super.fuelType,
   });
 
   factory CreateFuelCardRequest.fromParams(CreateFuelCardParams params) {
     return CreateFuelCardRequest(
       cardNo: params.cardNo,
       cardType: params.cardType,
+      plate: params.plate,
+      fuelType: params.fuelType,
     );
   }
 

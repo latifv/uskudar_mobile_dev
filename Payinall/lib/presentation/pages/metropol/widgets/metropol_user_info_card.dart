@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:payinall/core/generated/locale_keys.g.dart';
 import 'package:payinall/domain/entities/metropol_user_detail.dart';
+import 'package:payinall/presentation/shared/extensions/string_extension.dart';
 import 'package:payinall/presentation/shared/extensions/theme_extension.dart';
 import 'package:payinall/presentation/widgets/integration_components.dart';
 
@@ -25,7 +28,7 @@ final class MetropolUserInfoCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Kart No',
+                  LocaleKeys.clothing_card.translate,
                   style: context.textTheme.labelSmall?.copyWith(
                     color: context.colorScheme.onSurfaceVariant,
                   ),
@@ -42,6 +45,19 @@ final class MetropolUserInfoCard extends StatelessWidget {
                 ),
               ],
             ),
+          ),
+          IconButton(
+            tooltip: LocaleKeys.copy_card_number.translate,
+            onPressed: () async {
+              await Clipboard.setData(ClipboardData(text: userDetail.cardNo));
+              if (!context.mounted) return;
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(LocaleKeys.card_number_copied.translate),
+                ),
+              );
+            },
+            icon: const Icon(Icons.copy_rounded, size: 20),
           ),
         ],
       ),

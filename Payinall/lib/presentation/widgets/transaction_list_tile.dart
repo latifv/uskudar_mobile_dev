@@ -2,7 +2,6 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:payinall/core/constants/app_constants.dart';
 import 'package:payinall/domain/entities/transaction.dart';
-import 'package:payinall/domain/enums/commission_from_type.dart';
 import 'package:payinall/presentation/route/app_router.dart';
 import 'package:payinall/presentation/shared/extensions/border_radius_extension.dart';
 import 'package:payinall/presentation/shared/extensions/datetime_extension.dart';
@@ -80,7 +79,7 @@ final class TransactionListTile extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
             Text(
-              '${transaction.isIncoming ? '+' : '-'}${_getDisplayAmount().toFormattedCurrency()}',
+              '${transaction.isIncoming ? '+' : '-'}${transaction.amount.toFormattedCurrency()}',
               style: context.textTheme.bodyLarge?.copyWith(
                 fontSize: compact ? 12 : null,
                 color: transaction.isIncoming ? Colors.green : Colors.red,
@@ -105,19 +104,6 @@ final class TransactionListTile extends StatelessWidget {
   String get _subtitle {
     if (transaction.commissionAmount <= 0) return transaction.transferType;
 
-    return '${transaction.transferType} • Komisyon: ${transaction.commissionAmount.toFormattedCurrency()}';
-  }
-
-  double _getDisplayAmount() {
-    if (transaction.isIncoming &&
-        transaction.commissionFromType != CommissionFromType.sender.value) {
-      return transaction.amount - transaction.commissionAmount;
-    }
-
-    if (!transaction.isIncoming &&
-        transaction.commissionFromType == CommissionFromType.sender.value) {
-      return transaction.amount + transaction.commissionAmount;
-    }
-    return transaction.amount;
+    return '${transaction.transferType} • Komisyon: -${transaction.commissionAmount.toFormattedCurrency()}';
   }
 }

@@ -49,7 +49,7 @@ void main() {
           child: GiftCheckBrandCard(
             brand: const GiftCheckBrand(
               id: '1',
-              name: 'Çok Uzun Marka İsmi Örneği',
+              name: 'Çok Uzun Marka İsmi Örneği ER',
               cashbackRate: 0.075,
               logo: '',
             ),
@@ -59,7 +59,15 @@ void main() {
       ),
     );
 
-    expect(find.text('%7.5 Nakit İade'), findsOneWidget);
+    expect(
+      find.byWidgetPredicate(
+        (widget) =>
+            widget is Semantics &&
+            widget.properties.label == 'Çok Uzun Marka İsmi Örneği',
+      ),
+      findsOneWidget,
+    );
+    expect(find.text('%7.5'), findsOneWidget);
     expect(tester.takeException(), isNull);
   });
 

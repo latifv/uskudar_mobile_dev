@@ -18,6 +18,8 @@ final class TransactionModel extends Transaction {
     super.toFullName,
     super.transactionTypes,
     super.commissionFromType,
+    super.oldBalance,
+    super.newBalance,
   });
 
   factory TransactionModel.fromResponse(TransactionResponse response) {
@@ -48,6 +50,8 @@ final class TransactionModel extends Transaction {
       fromAddress: response.fromAddress,
       transactionTypes: response.transactionTypes,
       commissionFromType: response.commissionFromType,
+      oldBalance: response.oldBalance,
+      newBalance: response.newBalance,
     );
   }
 }

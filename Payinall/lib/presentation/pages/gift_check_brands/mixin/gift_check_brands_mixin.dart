@@ -29,6 +29,8 @@ mixin GiftCheckBrandsMixin<T extends StatefulWidget> on State<T> {
   }
 
   void navigateToBrandDetail(String brandId) {
-    context.router.push(GiftCheckBrandDetailRoute(brandId: brandId));
+    unawaited(
+      context.router.push(GiftCheckBrandDetailRoute(brandId: brandId)),
+    );
   }
 }

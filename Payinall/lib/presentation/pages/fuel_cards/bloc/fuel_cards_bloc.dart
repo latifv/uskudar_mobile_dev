@@ -39,8 +39,7 @@ final class FuelCardsBloc extends Bloc<FuelCardsEvent, FuelCardsState> {
         ),
       ),
       (cards) async {
-        final activeCards =
-            cards.where((card) => card.isActive).toList();
+        final activeCards = cards.where((card) => card.isActive).toList();
 
         final balances = <int, double>{};
         for (final card in activeCards) {

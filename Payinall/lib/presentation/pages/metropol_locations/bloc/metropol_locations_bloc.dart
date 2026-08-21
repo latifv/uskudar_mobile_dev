@@ -4,8 +4,10 @@ import 'package:payinall/core/error/failures.dart';
 import 'package:payinall/domain/entities/metropol_city.dart';
 import 'package:payinall/domain/entities/point_of_sale_location.dart';
 import 'package:payinall/domain/params/point_of_sale_location_filter_params.dart';
+import 'package:payinall/domain/params/point_of_sale_location_params.dart';
 import 'package:payinall/domain/usecases/get_metropol_cities_usecase.dart';
 import 'package:payinall/domain/usecases/get_point_of_sale_location_filter_list_usecase.dart';
+import 'package:payinall/domain/usecases/get_point_of_sale_location_list_usecase.dart';
 
 part 'metropol_locations_event.dart';
 part 'metropol_locations_state.dart';
@@ -14,15 +16,18 @@ final class MetropolLocationsBloc
     extends Bloc<MetropolLocationsEvent, MetropolLocationsState> {
   MetropolLocationsBloc({
     required this.getMetropolCitiesUsecase,
+    required this.getPointOfSaleLocationListUsecase,
     required this.getPointOfSaleLocationFilterListUsecase,
   }) : super(const MetropolLocationsState()) {
     on<MetropolLocationsLoadCities>(_onLoadCities);
     on<MetropolLocationsSearch>(_onSearch);
+    on<MetropolLocationsLoadMapBounds>(_onLoadMapBounds);
   }
 
   final GetMetropolCitiesUsecase getMetropolCitiesUsecase;
+  final GetPointOfSaleLocationListUsecase getPointOfSaleLocationListUsecase;
   final GetPointOfSaleLocationFilterListUsecase
-      getPointOfSaleLocationFilterListUsecase;
+  getPointOfSaleLocationFilterListUsecase;
 
   Future<void> _onLoadCities(
     MetropolLocationsLoadCities event,
@@ -60,6 +65,37 @@ final class MetropolLocationsBloc
         city: event.city,
         county: event.county,
         metropolTypes: event.metropolTypes,
+      ),
+    );
+
+    result.fold(
+      (failure) => emit(
+        state.copyWith(
+          status: MetropolLocationsStatus.error,
+          message: failure.message,
+        ),
+      ),
+      (locations) => emit(
+        state.copyWith(
+          status: MetropolLocationsStatus.locationsLoaded,
+          locations: locations,
+        ),
+      ),
+    );
+  }
+
+  Future<void> _onLoadMapBounds(
+    MetropolLocationsLoadMapBounds event,
+    Emitter<MetropolLocationsState> emit,
+  ) async {
+    emit(state.copyWith(status: MetropolLocationsStatus.searching));
+
+    final result = await getPointOfSaleLocationListUsecase(
+      PointOfSaleLocationParams(
+        lat1: event.lat1,
+        lat2: event.lat2,
+        lng1: event.lng1,
+        lng2: event.lng2,
       ),
     );
 

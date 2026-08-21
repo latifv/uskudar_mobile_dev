@@ -1,12 +1,12 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
-import 'package:payinall/core/generated/locale_keys.g.dart';
-import 'package:payinall/presentation/shared/extensions/string_extension.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:payinall/core/generated/locale_keys.g.dart';
 import 'package:payinall/presentation/pages/metropol_transfer/bloc/metropol_transfer_bloc.dart';
 import 'package:payinall/presentation/pages/metropol_transfer/mixin/metropol_transfer_mixin.dart';
 import 'package:payinall/presentation/pages/metropol_transfer/widgets/transfer_result_card.dart';
 import 'package:payinall/presentation/shared/extensions/spacing_extension.dart';
+import 'package:payinall/presentation/shared/extensions/string_extension.dart';
 import 'package:payinall/presentation/shared/extensions/theme_extension.dart';
 import 'package:payinall/presentation/widgets/custom_app_bar.dart';
 import 'package:payinall/presentation/widgets/custom_loading.dart';
@@ -28,7 +28,7 @@ final class _MetropolTransferScreenState extends State<MetropolTransferScreen>
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: CustomAppBar(
-        title: Text(LocaleKeys.market_balance_top_up.translate),
+        title: Text(LocaleKeys.qr_pay.translate),
       ),
       body: BlocConsumer<MetropolTransferBloc, MetropolTransferState>(
         bloc: bloc,

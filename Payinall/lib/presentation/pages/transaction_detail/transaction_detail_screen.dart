@@ -112,6 +112,13 @@ final class _TransactionDetailScreenState extends State<TransactionDetailScreen>
                       LocaleKeys.commission_from.translate,
                       receipt.commissionFromTypeName,
                     ),
+                  if (receipt.endingBalance != null)
+                    _buildDetailRow(
+                      context,
+                      'İşlem Sonu Bakiye',
+                      receipt.endingBalance!.toFormattedCurrency(),
+                      isHighlighted: true,
+                    ),
                   _buildDetailRow(
                     context,
                     LocaleKeys.date.translate,

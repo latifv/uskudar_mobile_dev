@@ -461,6 +461,7 @@ final class BlocModule extends DIModule {
       ..registerFactory<MetropolLocationsBloc>(
         () => MetropolLocationsBloc(
           getMetropolCitiesUsecase: getIt(),
+          getPointOfSaleLocationListUsecase: getIt(),
           getPointOfSaleLocationFilterListUsecase: getIt(),
         ),
       )

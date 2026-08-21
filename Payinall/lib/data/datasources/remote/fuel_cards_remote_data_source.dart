@@ -53,8 +53,7 @@ final class FuelCardsRemoteDataSourceImpl extends BaseRemoteDataSource
       },
     );
     return response.map(
-      (responseList) =>
-          responseList.map(FuelCardModel.fromResponse).toList(),
+      (responseList) => responseList.map(FuelCardModel.fromResponse).toList(),
     );
   }
 
