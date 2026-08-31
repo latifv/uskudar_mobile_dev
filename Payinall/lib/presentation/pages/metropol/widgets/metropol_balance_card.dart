@@ -15,6 +15,7 @@ final class MetropolBalanceCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return IntegrationSurface(
+      showBorder: false,
       padding: const EdgeInsets.all(12),
       child: Row(
         children: [
@@ -24,13 +25,13 @@ final class MetropolBalanceCard extends StatelessWidget {
               icon: Icons.restaurant_rounded,
               label: 'Resto Bakiye',
               amount: balance.restoBalance,
-              color: context.colorScheme.primary,
+              color: AlisverislioColors.primary,
             ),
           ),
           Container(
             width: 1,
             height: 54,
-            color: context.colorScheme.outlineVariant,
+            color: AlisverislioColors.divider,
           ),
           Expanded(
             child: _buildBalanceItem(
@@ -38,7 +39,7 @@ final class MetropolBalanceCard extends StatelessWidget {
               icon: Icons.card_giftcard_rounded,
               label: 'Gift Bakiye',
               amount: balance.giftBalance,
-              color: context.colorScheme.tertiary,
+              color: AlisverislioColors.cashback,
             ),
           ),
         ],
@@ -68,7 +69,7 @@ final class MetropolBalanceCard extends StatelessWidget {
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: context.textTheme.labelSmall?.copyWith(
-                    color: context.colorScheme.onSurfaceVariant,
+                    color: AlisverislioColors.textSecondary,
                   ),
                 ),
               ),

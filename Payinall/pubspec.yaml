@@ -5,7 +5,7 @@ publish_to: "none"
 #! Uygulama adı , api gibi bilgiler assets/env içerisinde bulunmaktadır.
 
 #! ENV dosyasında APP_VERSION'da değiştirin hepsinden.
-version: 2.4.1+77
+version: 2.4.2+79
 
 environment:
   sdk: ^3.8.1

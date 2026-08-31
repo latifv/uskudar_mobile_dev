@@ -9,6 +9,12 @@ final class GiftCheckBrandDetailLoad extends GiftCheckBrandDetailEvent {
   final String brandId;
 }
 
+final class GiftCheckBrandDetailSelectCoupon extends GiftCheckBrandDetailEvent {
+  const GiftCheckBrandDetailSelectCoupon({required this.couponId});
+
+  final String couponId;
+}
+
 final class GiftCheckBrandDetailTakeCoupon extends GiftCheckBrandDetailEvent {
   const GiftCheckBrandDetailTakeCoupon({
     required this.brandId,

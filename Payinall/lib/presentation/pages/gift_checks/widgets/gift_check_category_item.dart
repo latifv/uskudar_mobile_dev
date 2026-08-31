@@ -36,30 +36,37 @@ final class GiftCheckCategoryItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 68,
-      child: IntegrationSurface(
-        onTap: onTap,
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-        child: Row(
-          children: [
-            IntegrationIconBox(icon: _categoryIcon, size: 40),
-            const SizedBox(width: 12),
-            Expanded(
-              child: Text(
-                category.name,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: context.textTheme.bodyMedium?.copyWith(
-                  fontWeight: FontWeight.w700,
+      height: 60,
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: onTap,
+          borderRadius: BorderRadius.circular(14),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 4),
+            child: Row(
+              children: [
+                IntegrationIconBox(icon: _categoryIcon, size: 38),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Text(
+                    category.name,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: context.textTheme.bodyMedium?.copyWith(
+                      color: AlisverislioColors.textPrimary,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
                 ),
-              ),
+                const Icon(
+                  Icons.chevron_right_rounded,
+                  size: 20,
+                  color: AlisverislioColors.textSecondary,
+                ),
+              ],
             ),
-            Icon(
-              Icons.chevron_right_rounded,
-              size: 20,
-              color: context.colorScheme.onSurfaceVariant,
-            ),
-          ],
+          ),
         ),
       ),
     );

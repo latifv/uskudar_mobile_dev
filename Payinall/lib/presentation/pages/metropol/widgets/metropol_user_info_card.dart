@@ -17,7 +17,8 @@ final class MetropolUserInfoCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return IntegrationSurface(
-      backgroundColor: context.colorScheme.primary.withAlpha(12),
+      backgroundColor: AlisverislioColors.lilac,
+      showBorder: false,
       padding: const EdgeInsets.all(12),
       child: Row(
         children: [
@@ -30,7 +31,7 @@ final class MetropolUserInfoCard extends StatelessWidget {
                 Text(
                   LocaleKeys.clothing_card.translate,
                   style: context.textTheme.labelSmall?.copyWith(
-                    color: context.colorScheme.onSurfaceVariant,
+                    color: AlisverislioColors.textSecondary,
                   ),
                 ),
                 const SizedBox(height: 2),
@@ -39,6 +40,7 @@ final class MetropolUserInfoCard extends StatelessWidget {
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: context.textTheme.bodyMedium?.copyWith(
+                    color: AlisverislioColors.textPrimary,
                     fontWeight: FontWeight.w700,
                     letterSpacing: 0.4,
                   ),
@@ -57,7 +59,11 @@ final class MetropolUserInfoCard extends StatelessWidget {
                 ),
               );
             },
-            icon: const Icon(Icons.copy_rounded, size: 20),
+            icon: const Icon(
+              Icons.copy_rounded,
+              size: 20,
+              color: AlisverislioColors.primary,
+            ),
           ),
         ],
       ),

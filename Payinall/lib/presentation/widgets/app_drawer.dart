@@ -144,9 +144,7 @@ final class _AppDrawerState extends State<AppDrawer> {
             final tabsRouter = context.tabsRouter;
             final isMerchant = getIt<UserInfoManager>().isMerchant;
             tabsRouter.setActiveIndex(
-              isMerchant
-                  ? BottomPageEnum.payments.index
-                  : BottomPageEnum.international.index,
+              isMerchant ? 2 : BottomPageEnum.international.index,
             );
           },
         ),
@@ -193,7 +191,7 @@ final class _AppDrawerState extends State<AppDrawer> {
         if (!_userInfoManager.isMerchant)
           _buildNavigationItem(
             context,
-            title: 'Kartlarım',
+            title: LocaleKeys.paycore_my_cards_title.translate,
             icon: Icons.credit_card_rounded,
             onTap: () {
               context.router.pop();
@@ -209,7 +207,7 @@ final class _AppDrawerState extends State<AppDrawer> {
         if (!_userInfoManager.isMerchant)
           _buildNavigationItem(
             context,
-            title: 'Kart Aktive Et',
+            title: LocaleKeys.paycore_activate_card_title.translate,
             icon: Icons.add_card_rounded,
             onTap: () {
               context.router.pop();

@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:payinall/di/di.dart';
+import 'package:payinall/domain/entities/gift_check_category.dart';
 import 'package:payinall/presentation/pages/gift_checks/bloc/gift_checks_bloc.dart';
 import 'package:payinall/presentation/route/app_router.dart';
 
@@ -26,13 +27,23 @@ mixin GiftChecksMixin<T extends StatefulWidget> on State<T> {
     bloc.add(const GiftChecksLoadCategories());
   }
 
-  void navigateToBrands(String categoryId, String categoryName) {
-    context.router.push(
-      GiftCheckBrandsRoute(categoryId: categoryId, categoryName: categoryName),
+  void navigateToCategory(GiftCheckCategory category) {
+    if (category.isLioCard) {
+      unawaited(context.router.push(const MetropolRoute()));
+      return;
+    }
+
+    unawaited(
+      context.router.push(
+        GiftCheckBrandsRoute(
+          categoryId: category.id,
+          categoryName: category.name,
+        ),
+      ),
     );
   }
 
   void navigateToCustomerCoupons() {
-    context.router.push(const CustomerCouponsRoute());
+    unawaited(context.router.push(const CustomerCouponsRoute()));
   }
 }

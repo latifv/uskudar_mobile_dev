@@ -1,8 +1,10 @@
 import 'dart:async';
 
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:payinall/di/di.dart';
 import 'package:payinall/presentation/pages/gift_check_brand_detail/bloc/gift_check_brand_detail_bloc.dart';
+import 'package:payinall/presentation/route/app_router.dart';
 import 'package:payinall/presentation/shared/components/toast_component.dart';
 
 mixin GiftCheckBrandDetailMixin<T extends StatefulWidget> on State<T> {
@@ -37,6 +39,10 @@ mixin GiftCheckBrandDetailMixin<T extends StatefulWidget> on State<T> {
     );
   }
 
+  void selectCoupon(String couponId) {
+    bloc.add(GiftCheckBrandDetailSelectCoupon(couponId: couponId));
+  }
+
   void blocListener(
     BuildContext context,
     GiftCheckBrandDetailState state,
@@ -52,7 +58,14 @@ mixin GiftCheckBrandDetailMixin<T extends StatefulWidget> on State<T> {
         context: context,
         message: state.message ?? '',
       );
-      loadBrandDetail();
+      unawaited(_showPurchasedCoupon());
     }
+  }
+
+  Future<void> _showPurchasedCoupon() async {
+    await Future<void>.delayed(const Duration(milliseconds: 500));
+    if (!mounted) return;
+    await context.router.push(const CustomerCouponsRoute());
+    if (mounted) loadBrandDetail();
   }
 }

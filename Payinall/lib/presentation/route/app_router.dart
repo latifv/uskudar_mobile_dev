@@ -4,16 +4,19 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:payinall/domain/entities/app_bank.dart';
 import 'package:payinall/domain/entities/campaign_merchant.dart';
+import 'package:payinall/domain/entities/fuel_provider.dart';
 import 'package:payinall/domain/entities/international_transfer_result.dart';
 import 'package:payinall/domain/entities/wallet_transfer.dart';
 import 'package:payinall/domain/entities/withdraw_transfer.dart';
 import 'package:payinall/domain/enums/transfer_method.dart';
 import 'package:payinall/presentation/pages/account_limits/account_limits_screen.dart';
 import 'package:payinall/presentation/pages/add_bank_account/add_bank_account_screen.dart';
+import 'package:payinall/presentation/pages/add_fuel_card/add_fuel_card_screen.dart';
 import 'package:payinall/presentation/pages/address_preview/address_preview_screen.dart';
 import 'package:payinall/presentation/pages/admin/admin_screen.dart';
 import 'package:payinall/presentation/pages/agreement/agreement_screen.dart';
 import 'package:payinall/presentation/pages/agreements/screen/agreements_screen.dart';
+import 'package:payinall/presentation/pages/alisverislio/alisverislio_screen.dart';
 import 'package:payinall/presentation/pages/auth/account_verification/account_verification_screen.dart';
 import 'package:payinall/presentation/pages/auth/forgot_password/forgot_password_screen.dart';
 import 'package:payinall/presentation/pages/auth/login/login_screen.dart';
@@ -34,6 +37,7 @@ import 'package:payinall/presentation/pages/change_password/change_password_scre
 import 'package:payinall/presentation/pages/change_phone/change_phone_screen.dart';
 import 'package:payinall/presentation/pages/commission_rates/commission_rates_screen.dart';
 import 'package:payinall/presentation/pages/contact_info/contact_info_screen.dart';
+import 'package:payinall/presentation/pages/customer_coupons/customer_coupons_screen.dart';
 import 'package:payinall/presentation/pages/customer_demand/customer_demand_screen.dart';
 import 'package:payinall/presentation/pages/dasboard/dasboard_screen.dart';
 import 'package:payinall/presentation/pages/deposit/bank_detail/screen/bank_detail_screen.dart';
@@ -41,19 +45,12 @@ import 'package:payinall/presentation/pages/deposit/bank_list/screen/bank_list_s
 import 'package:payinall/presentation/pages/email_verification/email_verification_screen.dart';
 import 'package:payinall/presentation/pages/face_scan/screen/face_scan_screen.dart';
 import 'package:payinall/presentation/pages/faq/faq_screen.dart';
-import 'package:payinall/presentation/pages/customer_coupons/customer_coupons_screen.dart';
+import 'package:payinall/presentation/pages/front_id_scan/screen/front_id_scan_screen.dart';
+import 'package:payinall/presentation/pages/fuel_card_top_up/fuel_card_top_up_screen.dart';
+import 'package:payinall/presentation/pages/fuel_cards/fuel_cards_screen.dart';
 import 'package:payinall/presentation/pages/gift_check_brand_detail/gift_check_brand_detail_screen.dart';
 import 'package:payinall/presentation/pages/gift_check_brands/gift_check_brands_screen.dart';
 import 'package:payinall/presentation/pages/gift_checks/gift_checks_screen.dart';
-import 'package:payinall/presentation/pages/front_id_scan/screen/front_id_scan_screen.dart';
-import 'package:payinall/presentation/pages/metropol/metropol_screen.dart';
-import 'package:payinall/presentation/pages/metropol_locations/metropol_locations_screen.dart';
-import 'package:payinall/presentation/pages/metropol_transactions/metropol_transactions_screen.dart';
-import 'package:payinall/presentation/pages/metropol_transfer/metropol_transfer_screen.dart';
-import 'package:payinall/presentation/pages/metropol_gift_transfer/metropol_gift_transfer_screen.dart';
-import 'package:payinall/presentation/pages/fuel_cards/fuel_cards_screen.dart';
-import 'package:payinall/presentation/pages/add_fuel_card/add_fuel_card_screen.dart';
-import 'package:payinall/presentation/pages/fuel_card_top_up/fuel_card_top_up_screen.dart';
 import 'package:payinall/presentation/pages/home/home_screen.dart';
 import 'package:payinall/presentation/pages/international_money_transfer/screen/country_selection_screen.dart';
 import 'package:payinall/presentation/pages/international_money_transfer/screen/international_money_transfer_screen.dart';
@@ -64,6 +61,11 @@ import 'package:payinall/presentation/pages/international_transfer_selection/scr
 import 'package:payinall/presentation/pages/iwallet_agreements/iwallet_agreements_screen.dart';
 import 'package:payinall/presentation/pages/language_selection/language_selection_screen.dart';
 import 'package:payinall/presentation/pages/merchant_detail/merchant_detail_screen.dart';
+import 'package:payinall/presentation/pages/metropol/metropol_screen.dart';
+import 'package:payinall/presentation/pages/metropol_gift_transfer/metropol_gift_transfer_screen.dart';
+import 'package:payinall/presentation/pages/metropol_locations/metropol_locations_screen.dart';
+import 'package:payinall/presentation/pages/metropol_transactions/metropol_transactions_screen.dart';
+import 'package:payinall/presentation/pages/metropol_transfer/metropol_transfer_screen.dart';
 import 'package:payinall/presentation/pages/nfc_scan/screen/nfc_scan_screen.dart';
 import 'package:payinall/presentation/pages/notification/notification_screen.dart';
 import 'package:payinall/presentation/pages/notification_settings/notification_settings_screen.dart';
@@ -152,6 +154,10 @@ final class AppRouter extends RootStackRouter {
         AutoRoute(
           page: TransactionHistoryRoute.page,
           path: RoutePaths.transactionHistory,
+        ),
+        AutoRoute(
+          page: AlisverislioRoute.page,
+          path: RoutePaths.alisverislio,
         ),
         AutoRoute(page: BillPaymentRoute.page, path: RoutePaths.billPayment),
         AutoRoute(

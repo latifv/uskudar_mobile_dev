@@ -12,6 +12,7 @@ import 'package:payinall/presentation/widgets/custom_app_bar.dart';
 import 'package:payinall/presentation/widgets/custom_empty_list.dart';
 import 'package:payinall/presentation/widgets/custom_loading.dart';
 import 'package:payinall/presentation/widgets/error_try_again.dart';
+import 'package:payinall/presentation/widgets/integration_components.dart';
 
 @RoutePage()
 final class GiftCheckBrandsScreen extends StatefulWidget {
@@ -36,6 +37,7 @@ final class _GiftCheckBrandsScreenState extends State<GiftCheckBrandsScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: AlisverislioColors.background,
       appBar: CustomAppBar(title: Text(widget.categoryName)),
       body: BlocBuilder<GiftCheckBrandsBloc, GiftCheckBrandsState>(
         bloc: bloc,
@@ -109,7 +111,7 @@ final class _GiftCheckBrandsScreenState extends State<GiftCheckBrandsScreen>
     return Padding(
       padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
       child: Material(
-        color: context.colorScheme.primary.withAlpha(18),
+        color: AlisverislioColors.lilac,
         borderRadius: BorderRadius.circular(16),
         child: InkWell(
           borderRadius: BorderRadius.circular(16),
@@ -118,11 +120,11 @@ final class _GiftCheckBrandsScreenState extends State<GiftCheckBrandsScreen>
             padding: const EdgeInsets.all(14),
             child: Row(
               children: [
-                CircleAvatar(
-                  backgroundColor: context.colorScheme.primary.withAlpha(28),
+                const CircleAvatar(
+                  backgroundColor: Colors.white,
                   child: Icon(
                     Icons.credit_card_rounded,
-                    color: context.colorScheme.primary,
+                    color: AlisverislioColors.primary,
                   ),
                 ),
                 const SizedBox(width: 12),
@@ -140,16 +142,16 @@ final class _GiftCheckBrandsScreenState extends State<GiftCheckBrandsScreen>
                       Text(
                         LocaleKeys.clothing_card_qr_description.translate,
                         style: context.textTheme.bodySmall?.copyWith(
-                          color: context.colorScheme.onSurfaceVariant,
+                          color: AlisverislioColors.textSecondary,
                         ),
                       ),
                     ],
                   ),
                 ),
                 const SizedBox(width: 8),
-                Icon(
+                const Icon(
                   Icons.qr_code_scanner_rounded,
-                  color: context.colorScheme.primary,
+                  color: AlisverislioColors.primary,
                 ),
                 const Icon(Icons.chevron_right_rounded),
               ],

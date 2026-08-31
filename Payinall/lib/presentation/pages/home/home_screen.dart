@@ -5,9 +5,10 @@ import 'package:payinall/core/generated/locale_keys.g.dart';
 import 'package:payinall/presentation/pages/home/bloc/home_bloc.dart';
 import 'package:payinall/presentation/pages/home/mixin/home_mixin.dart';
 import 'package:payinall/presentation/pages/home/widgets/campaign_banner.dart';
-import 'package:payinall/presentation/pages/home/widgets/feature_cards_banner.dart';
+import 'package:payinall/presentation/pages/home/widgets/home_advantage_sections.dart';
 import 'package:payinall/presentation/pages/home/widgets/home_app_bar.dart';
 import 'package:payinall/presentation/pages/home/widgets/home_balance_section.dart';
+import 'package:payinall/presentation/pages/home/widgets/home_discount_points_preview.dart';
 import 'package:payinall/presentation/pages/home/widgets/home_paycore_cards_carousel.dart';
 import 'package:payinall/presentation/pages/home/widgets/home_tab_section.dart';
 import 'package:payinall/presentation/pages/home/widgets/user_info_card.dart';
@@ -130,9 +131,13 @@ final class _HomeScreenState extends State<HomeScreen> with HomeMixin {
         ],
         if (!userInfoManager.isMerchant) ...[
           context.spacingLowHeight,
+          const HomeBrandsSection(),
+          context.spacingNormalHeight,
           const CampaignBanner(),
-          context.spacingLowHeight,
-          const FeatureCardsBanner(),
+          context.spacingNormalHeight,
+          const HomeFuelDiscountsSection(),
+          context.spacingNormalHeight,
+          const HomeDiscountPointsPreview(),
         ],
         context.spacingLowHeight,
         HomeTabSection(

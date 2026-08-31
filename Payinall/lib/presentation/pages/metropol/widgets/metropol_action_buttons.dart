@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:payinall/core/generated/locale_keys.g.dart';
 import 'package:payinall/presentation/shared/extensions/string_extension.dart';
-import 'package:payinall/presentation/shared/extensions/theme_extension.dart';
 import 'package:payinall/presentation/widgets/integration_components.dart';
 
 final class MetropolActionButtons extends StatelessWidget {
@@ -26,30 +25,30 @@ final class MetropolActionButtons extends StatelessWidget {
       physics: const NeverScrollableScrollPhysics(),
       crossAxisSpacing: 10,
       mainAxisSpacing: 10,
-      childAspectRatio: 2.25,
+      childAspectRatio: 2.5,
       children: [
         IntegrationActionCard(
           icon: Icons.qr_code_scanner_rounded,
           label: LocaleKeys.qr_pay.translate,
-          color: context.colorScheme.primary,
+          color: AlisverislioColors.primary,
           onTap: onMarketTransferPressed,
         ),
         IntegrationActionCard(
           icon: Icons.checkroom_rounded,
           label: LocaleKeys.clothing_balance_top_up.translate,
-          color: context.colorScheme.tertiary,
+          color: AlisverislioColors.primary,
           onTap: onGiftTransferPressed,
         ),
         IntegrationActionCard(
           icon: Icons.location_on_rounded,
           label: LocaleKeys.point_of_sale_locations.translate,
-          color: context.colorScheme.secondary,
+          color: AlisverislioColors.primary,
           onTap: onLocationsPressed,
         ),
         IntegrationActionCard(
           icon: Icons.receipt_long_rounded,
           label: LocaleKeys.transaction_history.translate,
-          color: context.colorScheme.error,
+          color: AlisverislioColors.primary,
           onTap: onTransactionsPressed,
         ),
       ],

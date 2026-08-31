@@ -14,6 +14,7 @@ import 'package:payinall/presentation/shared/extensions/theme_extension.dart';
 import 'package:payinall/presentation/widgets/custom_app_bar.dart';
 import 'package:payinall/presentation/widgets/custom_loading.dart';
 import 'package:payinall/presentation/widgets/error_try_again.dart';
+import 'package:payinall/presentation/widgets/integration_components.dart';
 
 @RoutePage()
 final class FuelCardsScreen extends StatefulWidget {
@@ -28,8 +29,9 @@ final class _FuelCardsScreenState extends State<FuelCardsScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: AlisverislioColors.background,
       appBar: CustomAppBar(
-        title: Text(LocaleKeys.fuel_cards.translate),
+        title: Text(LocaleKeys.fuel.translate),
       ),
       body: BlocConsumer<FuelCardsBloc, FuelCardsState>(
         bloc: bloc,
@@ -58,6 +60,30 @@ final class _FuelCardsScreenState extends State<FuelCardsScreen>
         padding: const EdgeInsets.fromLTRB(16, 12, 16, 24),
         physics: const AlwaysScrollableScrollPhysics(),
         children: [
+          const _FuelHero(),
+          const SizedBox(height: 22),
+          Text(
+            LocaleKeys.fuel_linked_cards.translate,
+            style: context.textTheme.titleMedium?.copyWith(
+              fontWeight: FontWeight.w800,
+            ),
+          ),
+          const SizedBox(height: 10),
+          if (state.cards.isEmpty)
+            _buildEmptyState()
+          else
+            ...state.cards.map(
+              (card) => Padding(
+                padding: const EdgeInsets.only(bottom: 10),
+                child: FuelCardItem(
+                  card: card,
+                  balance: state.balances[card.id],
+                  onTopUp: () => navigateToTopUp(card),
+                  onDelete: () => onDeleteCard(card.id),
+                ),
+              ),
+            ),
+          const SizedBox(height: 22),
           Text(
             LocaleKeys.fuel_choose_provider.translate,
             style: context.textTheme.titleMedium?.copyWith(
@@ -83,28 +109,6 @@ final class _FuelCardsScreenState extends State<FuelCardsScreen>
               );
             },
           ),
-          const SizedBox(height: 22),
-          Text(
-            LocaleKeys.fuel_linked_cards.translate,
-            style: context.textTheme.titleMedium?.copyWith(
-              fontWeight: FontWeight.w800,
-            ),
-          ),
-          const SizedBox(height: 10),
-          if (state.cards.isEmpty)
-            _buildEmptyState()
-          else
-            ...state.cards.map(
-              (card) => Padding(
-                padding: const EdgeInsets.only(bottom: 10),
-                child: FuelCardItem(
-                  card: card,
-                  balance: state.balances[card.id],
-                  onTopUp: () => navigateToTopUp(card),
-                  onDelete: () => onDeleteCard(card.id),
-                ),
-              ),
-            ),
         ],
       ),
     );
@@ -138,6 +142,67 @@ final class _FuelCardsScreenState extends State<FuelCardsScreen>
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+final class _FuelHero extends StatelessWidget {
+  const _FuelHero();
+
+  @override
+  Widget build(BuildContext context) {
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(22),
+      child: SizedBox(
+        height: 150,
+        child: Stack(
+          fit: StackFit.expand,
+          children: [
+            Image.asset('assets/images/img_fuel.jpg', fit: BoxFit.cover),
+            const DecoratedBox(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [Color(0xFFFDE7C3), Color(0x20FDE7C3)],
+                  stops: [0, 0.72],
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(18),
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: SizedBox(
+                  width: MediaQuery.sizeOf(context).width * 0.48,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        LocaleKeys.fuel.translate,
+                        style: context.textTheme.titleLarge?.copyWith(
+                          color: AlisverislioColors.textPrimary,
+                          fontWeight: FontWeight.w900,
+                        ),
+                      ),
+                      const SizedBox(height: 7),
+                      Text(
+                        LocaleKeys.fuel_cards_description.translate,
+                        maxLines: 3,
+                        overflow: TextOverflow.ellipsis,
+                        style: context.textTheme.bodySmall?.copyWith(
+                          color: AlisverislioColors.textPrimary,
+                          height: 1.3,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

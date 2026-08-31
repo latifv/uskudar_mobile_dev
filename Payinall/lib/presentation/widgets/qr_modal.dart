@@ -26,7 +26,7 @@ final class QrModal extends StatelessWidget {
       color: Colors.transparent,
       child: Container(
         width: double.infinity,
-        height: context.dynamicHeight(0.2),
+        height: context.dynamicHeight(0.18),
         margin: context.paddingNormalAll,
         padding: context.paddingNormalAll,
         decoration: BoxDecoration(
@@ -55,7 +55,22 @@ final class QrModal extends StatelessWidget {
                     },
                   ),
                   VerticalDivider(
-                    color: context.colorScheme.surface.withValues(alpha: 0.3),
+                    color: context.colorScheme.outlineVariant,
+                    thickness: 1,
+                  ),
+                  _buildQrOption(
+                    context: context,
+                    icon: Icons.credit_card_rounded,
+                    title: LocaleKeys.metropol.translate,
+                    onTap: () {
+                      onClose();
+                      unawaited(
+                        context.router.push(const MetropolTransferRoute()),
+                      );
+                    },
+                  ),
+                  VerticalDivider(
+                    color: context.colorScheme.outlineVariant,
                     thickness: 1,
                   ),
                   _buildQrOption(

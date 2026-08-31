@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:latlong2/latlong.dart';
 import 'package:payinall/core/generated/locale_keys.g.dart';
 import 'package:payinall/domain/entities/metropol_city.dart';
 import 'package:payinall/domain/entities/point_of_sale_location.dart';
@@ -11,6 +12,7 @@ import 'package:payinall/presentation/pages/metropol_locations/mixin/metropol_lo
 import 'package:payinall/presentation/pages/metropol_locations/widgets/location_card.dart';
 import 'package:payinall/presentation/pages/metropol_locations/widgets/metropol_locations_map.dart';
 import 'package:payinall/presentation/shared/extensions/border_radius_extension.dart';
+import 'package:payinall/presentation/shared/extensions/launch_url_extension.dart';
 import 'package:payinall/presentation/shared/extensions/spacing_extension.dart';
 import 'package:payinall/presentation/shared/extensions/string_extension.dart';
 import 'package:payinall/presentation/shared/extensions/theme_extension.dart';
@@ -18,7 +20,7 @@ import 'package:payinall/presentation/widgets/custom_app_bar.dart';
 import 'package:payinall/presentation/widgets/custom_empty_list.dart';
 import 'package:payinall/presentation/widgets/custom_loading.dart';
 import 'package:payinall/presentation/widgets/custom_text_form_field.dart';
-import 'package:payinall/presentation/widgets/error_try_again.dart';
+import 'package:payinall/presentation/widgets/integration_components.dart';
 import 'package:payinall/presentation/widgets/primary_elevated_button.dart';
 
 @RoutePage()
@@ -35,8 +37,9 @@ final class _MetropolLocationsScreenState extends State<MetropolLocationsScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: AlisverislioColors.background,
       appBar: CustomAppBar(
-        title: Text(LocaleKeys.payinall_discount_points.translate),
+        title: Text(LocaleKeys.shopping.translate),
       ),
       body: BlocConsumer<MetropolLocationsBloc, MetropolLocationsState>(
         bloc: bloc,
@@ -48,9 +51,14 @@ final class _MetropolLocationsScreenState extends State<MetropolLocationsScreen>
               child: CustomLoading(),
             ),
             MetropolLocationsStatus.error when state.cities == null => Center(
-              child: ErrorTryAgain(
-                message: state.message,
-                onTryAgain: loadCities,
+              child: AlisverislioStateView(
+                icon: Icons.cloud_off_rounded,
+                title: LocaleKeys.error.translate,
+                description:
+                    state.message ?? LocaleKeys.general_error.translate,
+                actionLabel: LocaleKeys.try_again.translate,
+                onAction: loadCities,
+                isError: true,
               ),
             ),
             _ => _buildContent(context, state),
@@ -68,9 +76,9 @@ final class _MetropolLocationsScreenState extends State<MetropolLocationsScreen>
         _buildCategoryFilters(context),
         if (showFilters) _buildFilterSection(context, state),
         Expanded(
-          flex: 6,
+          flex: 48,
           child: Padding(
-            padding: const EdgeInsets.fromLTRB(12, 8, 12, 8),
+            padding: const EdgeInsets.fromLTRB(12, 8, 12, 6),
             child: MetropolLocationsMap(
               mapController: mapController,
               locations: visibleLocations,
@@ -80,13 +88,13 @@ final class _MetropolLocationsScreenState extends State<MetropolLocationsScreen>
               onLocationPressed: (location) =>
                   _showLocationDetails(context, location),
               onCurrentLocationPressed: moveToCurrentLocation,
+              onOpenMapPressed: _openCurrentMap,
             ),
           ),
         ),
-        _buildResultsHeader(context, state, visibleLocations.length),
         Expanded(
-          flex: 4,
-          child: _buildLocationsList(state, visibleLocations),
+          flex: 52,
+          child: _buildLocationsPanel(context, state, visibleLocations),
         ),
       ],
     );
@@ -94,37 +102,44 @@ final class _MetropolLocationsScreenState extends State<MetropolLocationsScreen>
 
   Widget _buildSearchBar(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.fromLTRB(12, 10, 12, 10),
+      padding: const EdgeInsets.fromLTRB(12, 8, 12, 8),
       child: Row(
         children: [
           Expanded(
-            child: CustomTextFormField(
-              controller: searchController,
-              hintText: LocaleKeys.search_store.translate,
-              prefixIcon: const Icon(Icons.search_rounded),
-              suffixIcon: Padding(
-                padding: const EdgeInsets.all(4),
-                child: FilledButton(
-                  onPressed: () => FocusScope.of(context).unfocus(),
-                  style: FilledButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(horizontal: 18),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
+            child: SizedBox(
+              height: 48,
+              child: CustomTextFormField(
+                controller: searchController,
+                hintText: LocaleKeys.search_store.translate,
+                prefixIcon: const Icon(Icons.search_rounded, size: 22),
+                suffixIcon: Padding(
+                  padding: const EdgeInsets.all(4),
+                  child: FilledButton(
+                    onPressed: () => FocusScope.of(context).unfocus(),
+                    style: FilledButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(horizontal: 18),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(14),
+                      ),
                     ),
+                    child: Text(LocaleKeys.search.translate),
                   ),
-                  child: Text(LocaleKeys.search.translate),
                 ),
+                textInputAction: TextInputAction.search,
+                onFieldSubmitted: (_) => FocusScope.of(context).unfocus(),
               ),
-              textInputAction: TextInputAction.search,
-              onFieldSubmitted: (_) => FocusScope.of(context).unfocus(),
             ),
           ),
           const SizedBox(width: 8),
-          IconButton.filledTonal(
-            onPressed: toggleFilters,
-            tooltip: LocaleKeys.filter.translate,
-            icon: Icon(
-              showFilters ? Icons.close_rounded : Icons.tune_rounded,
+          SizedBox.square(
+            dimension: 44,
+            child: IconButton.filledTonal(
+              onPressed: toggleFilters,
+              tooltip: LocaleKeys.filter.translate,
+              icon: Icon(
+                showFilters ? Icons.close_rounded : Icons.tune_rounded,
+                size: 21,
+              ),
             ),
           ),
         ],
@@ -141,7 +156,7 @@ final class _MetropolLocationsScreenState extends State<MetropolLocationsScreen>
     ];
 
     return SizedBox(
-      height: 42,
+      height: 40,
       child: ListView.separated(
         scrollDirection: Axis.horizontal,
         padding: const EdgeInsets.symmetric(horizontal: 12),
@@ -156,13 +171,11 @@ final class _MetropolLocationsScreenState extends State<MetropolLocationsScreen>
             label: Text(label),
             onSelected: (_) => selectCategory(value),
             labelStyle: context.textTheme.labelMedium?.copyWith(
-              color: selected
-                  ? context.colorScheme.onPrimary
-                  : context.colorScheme.onSurface,
+              color: selected ? Colors.white : AlisverislioColors.textPrimary,
               fontWeight: FontWeight.w600,
             ),
-            selectedColor: context.colorScheme.primary,
-            backgroundColor: context.colorScheme.surfaceContainerHighest,
+            selectedColor: AlisverislioColors.primary,
+            backgroundColor: AlisverislioColors.lilac,
             side: BorderSide.none,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(12),
@@ -221,7 +234,7 @@ final class _MetropolLocationsScreenState extends State<MetropolLocationsScreen>
     int visibleCount,
   ) {
     return Padding(
-      padding: const EdgeInsets.fromLTRB(16, 2, 16, 2),
+      padding: const EdgeInsets.fromLTRB(14, 12, 14, 6),
       child: Row(
         children: [
           Text(
@@ -240,9 +253,28 @@ final class _MetropolLocationsScreenState extends State<MetropolLocationsScreen>
             Text(
               '$visibleCount',
               style: context.textTheme.labelMedium?.copyWith(
-                color: context.colorScheme.onSurfaceVariant,
+                color: AlisverislioColors.textSecondary,
               ),
             ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildLocationsPanel(
+    BuildContext context,
+    MetropolLocationsState state,
+    List<PointOfSaleLocation> visibleLocations,
+  ) {
+    return DecoratedBox(
+      decoration: const BoxDecoration(
+        color: AlisverislioColors.surface,
+        borderRadius: BorderRadius.vertical(top: Radius.circular(22)),
+      ),
+      child: Column(
+        children: [
+          _buildResultsHeader(context, state, visibleLocations.length),
+          Expanded(child: _buildLocationsList(state, visibleLocations)),
         ],
       ),
     );
@@ -261,25 +293,25 @@ final class _MetropolLocationsScreenState extends State<MetropolLocationsScreen>
       decoration: InputDecoration(
         hintText: LocaleKeys.city.translate,
         hintStyle: context.textTheme.bodySmall?.copyWith(
-          color: context.colorScheme.onSurface.withAlpha(128),
+          color: AlisverislioColors.textSecondary,
         ),
         filled: true,
-        fillColor: context.colorScheme.surface,
+        fillColor: AlisverislioColors.surface,
         border: OutlineInputBorder(
           borderRadius: context.borderRadiusLowAll,
           borderSide: BorderSide.none,
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: context.borderRadiusLowAll,
-          borderSide: BorderSide(
-            color: context.colorScheme.onSurface.withAlpha(128),
+          borderSide: const BorderSide(
+            color: AlisverislioColors.divider,
             width: 1.5,
           ),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: context.borderRadiusLowAll,
-          borderSide: BorderSide(
-            color: context.colorScheme.primary,
+          borderSide: const BorderSide(
+            color: AlisverislioColors.primary,
             width: 1.5,
           ),
         ),
@@ -315,25 +347,25 @@ final class _MetropolLocationsScreenState extends State<MetropolLocationsScreen>
       decoration: InputDecoration(
         hintText: LocaleKeys.county.translate,
         hintStyle: context.textTheme.bodySmall?.copyWith(
-          color: context.colorScheme.onSurface.withAlpha(128),
+          color: AlisverislioColors.textSecondary,
         ),
         filled: true,
-        fillColor: context.colorScheme.surface,
+        fillColor: AlisverislioColors.surface,
         border: OutlineInputBorder(
           borderRadius: context.borderRadiusLowAll,
           borderSide: BorderSide.none,
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: context.borderRadiusLowAll,
-          borderSide: BorderSide(
-            color: context.colorScheme.onSurface.withAlpha(128),
+          borderSide: const BorderSide(
+            color: AlisverislioColors.divider,
             width: 1.5,
           ),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: context.borderRadiusLowAll,
-          borderSide: BorderSide(
-            color: context.colorScheme.primary,
+          borderSide: const BorderSide(
+            color: AlisverislioColors.primary,
             width: 1.5,
           ),
         ),
@@ -386,15 +418,21 @@ final class _MetropolLocationsScreenState extends State<MetropolLocationsScreen>
     }
 
     return ListView.separated(
-      padding: const EdgeInsets.fromLTRB(12, 6, 12, 16),
+      padding: const EdgeInsets.fromLTRB(8, 0, 8, 16),
       itemCount: visibleLocations.length,
-      separatorBuilder: (_, _) => context.spacingLowHeight,
+      separatorBuilder: (_, _) => const Divider(
+        height: 1,
+        indent: 70,
+        endIndent: 10,
+        color: AlisverislioColors.divider,
+      ),
       itemBuilder: (context, index) {
         final location = visibleLocations[index];
         return LocationCard(
           location: location,
           currentLocation: currentLocation,
           onTap: () => _showLocationDetails(context, location),
+          embedded: true,
         );
       },
     );
@@ -436,13 +474,148 @@ final class _MetropolLocationsScreenState extends State<MetropolLocationsScreen>
       showModalBottomSheet<void>(
         context: context,
         showDragHandle: true,
+        backgroundColor: AlisverislioColors.surface,
+        constraints: BoxConstraints(
+          maxWidth: MediaQuery.sizeOf(context).width,
+          maxHeight: MediaQuery.sizeOf(context).height * .58,
+        ),
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+        ),
         builder: (context) => SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(12, 0, 12, 16),
-            child: LocationCard(
-              location: location,
-              currentLocation: currentLocation,
+          top: false,
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.fromLTRB(16, 0, 16, 18),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                LocationCard(
+                  location: location,
+                  currentLocation: currentLocation,
+                  expanded: true,
+                  embedded: true,
+                ),
+                const SizedBox(height: 10),
+                _LocationActionTile(
+                  icon: Icons.center_focus_strong_rounded,
+                  title: 'Odaklan',
+                  onTap: () => _focusLocation(context, location),
+                ),
+                const SizedBox(height: 8),
+                _LocationActionTile(
+                  icon: Icons.navigation_rounded,
+                  title: 'Navigasyon',
+                  subtitle:
+                      '${location.district}/${location.city} • ${location.saleAddress}',
+                  onTap: () => _openNavigation(location),
+                ),
+                if (location.telNo.trim().isNotEmpty) ...[
+                  const SizedBox(height: 8),
+                  _LocationActionTile(
+                    icon: Icons.call_rounded,
+                    title: 'Ara',
+                    subtitle: location.telNo,
+                    onTap: () => _callLocation(location),
+                  ),
+                ],
+              ],
             ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  void _focusLocation(
+    BuildContext sheetContext,
+    PointOfSaleLocation location,
+  ) {
+    final lat = double.tryParse(location.lat);
+    final lng = double.tryParse(location.lng);
+    if (lat == null || lng == null) return;
+    Navigator.of(sheetContext).pop();
+    mapController.move(LatLng(lat, lng), 16);
+  }
+
+  Future<void> _openNavigation(PointOfSaleLocation location) async {
+    final lat = double.tryParse(location.lat);
+    final lng = double.tryParse(location.lng);
+    if (lat == null || lng == null) return;
+    await 'https://www.google.com/maps/dir/?api=1&destination=$lat,$lng'
+        .launchAsUrl();
+  }
+
+  Future<void> _callLocation(PointOfSaleLocation location) async {
+    final phone = location.telNo.replaceAll(RegExp('[^0-9+]'), '');
+    if (phone.isEmpty) return;
+    await 'tel:$phone'.launchAsUrl();
+  }
+
+  Future<void> _openCurrentMap() async {
+    final center = mapController.camera.center;
+    await 'https://www.google.com/maps/search/?api=1&query='
+            '${center.latitude},${center.longitude}'
+        .launchAsUrl();
+  }
+}
+
+final class _LocationActionTile extends StatelessWidget {
+  const _LocationActionTile({
+    required this.icon,
+    required this.title,
+    required this.onTap,
+    this.subtitle,
+  });
+
+  final IconData icon;
+  final String title;
+  final String? subtitle;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: AlisverislioColors.background,
+      borderRadius: BorderRadius.circular(16),
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(16),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+          child: Row(
+            children: [
+              Icon(icon, color: AlisverislioColors.textPrimary, size: 23),
+              const SizedBox(width: 14),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      title,
+                      style: context.textTheme.bodyMedium?.copyWith(
+                        color: AlisverislioColors.textPrimary,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    if (subtitle case final value?) ...[
+                      const SizedBox(height: 2),
+                      Text(
+                        value,
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                        style: context.textTheme.bodySmall?.copyWith(
+                          color: AlisverislioColors.textSecondary,
+                        ),
+                      ),
+                    ],
+                  ],
+                ),
+              ),
+              const Icon(
+                Icons.chevron_right_rounded,
+                color: AlisverislioColors.textSecondary,
+              ),
+            ],
           ),
         ),
       ),

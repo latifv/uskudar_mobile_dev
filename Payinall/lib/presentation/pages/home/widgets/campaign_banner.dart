@@ -12,7 +12,6 @@ import 'package:payinall/presentation/route/app_router.dart';
 import 'package:payinall/presentation/shared/components/image_network_component.dart';
 import 'package:payinall/presentation/shared/constants/icon_size_constants.dart';
 import 'package:payinall/presentation/shared/extensions/border_radius_extension.dart';
-import 'package:payinall/presentation/shared/extensions/media_query_extension.dart';
 import 'package:payinall/presentation/shared/extensions/padding_extension.dart';
 import 'package:payinall/presentation/shared/extensions/spacing_extension.dart';
 import 'package:payinall/presentation/shared/extensions/string_extension.dart';
@@ -36,7 +35,7 @@ final class _CampaignBannerState extends State<CampaignBanner> {
   void initState() {
     super.initState();
     _pageController = PageController(
-      viewportFraction: 0.85,
+      viewportFraction: 0.62,
     );
     _userInfoManager = getIt<UserInfoManager>();
     _campaignsBloc = getIt<CampaignsBloc>();
@@ -89,14 +88,16 @@ final class _CampaignBannerState extends State<CampaignBanner> {
       bloc: _campaignsBloc,
       builder: (context, state) {
         final campaigns = state.campaigns ?? [];
-        final hasCampaigns = campaigns.isNotEmpty &&
-            campaigns.expand((campaign) => campaign.campaignMerchants).isNotEmpty;
+        final hasCampaigns =
+            campaigns.isNotEmpty &&
+            campaigns
+                .expand((campaign) => campaign.campaignMerchants)
+                .isNotEmpty;
 
-        if (state.status == CampaignsStatus.error) {
-          return const SizedBox.shrink();
-        }
-
-        if (state.status == CampaignsStatus.loaded && !hasCampaigns) {
+        // Kampanya yoksa boş durum alanı ve başlık göstermeyelim. Aksi halde
+        // ana sayfadaki içerik gereksiz yere uzayıp alt tarafta taşabiliyor.
+        if (state.status == CampaignsStatus.error ||
+            (state.status == CampaignsStatus.loaded && !hasCampaigns)) {
           return const SizedBox.shrink();
         }
 
@@ -109,16 +110,20 @@ final class _CampaignBannerState extends State<CampaignBanner> {
               children: [
                 Text(
                   LocaleKeys.campaigns.translate,
-                  style: context.textTheme.titleSmall?.copyWith(),
+                  style: context.textTheme.titleSmall?.copyWith(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w700,
+                  ),
                 ),
-                if (state.status == CampaignsStatus.loaded &&
-                    hasCampaigns)
+                if (state.status == CampaignsStatus.loaded && hasCampaigns)
                   TextButton(
                     onPressed: _navigateToCampaigns,
                     child: Text(
                       LocaleKeys.view_all.translate,
-                      style: context.textTheme.bodyMedium?.copyWith(
+                      style: context.textTheme.labelMedium?.copyWith(
                         color: context.colorScheme.primary,
+                        fontSize: 13,
+                        fontWeight: FontWeight.w600,
                       ),
                     ),
                   ),
@@ -160,7 +165,7 @@ final class _CampaignBannerState extends State<CampaignBanner> {
         return Column(
           children: [
             SizedBox(
-              height: context.dynamicHeight(0.3),
+              height: 176,
               child: PageView.builder(
                 controller: _pageController,
                 padEnds: false,
@@ -189,9 +194,9 @@ final class _CampaignBannerState extends State<CampaignBanner> {
   }
 
   Widget _buildLoadingState() {
-    return SizedBox(
-      height: context.dynamicHeight(0.3),
-      child: const Center(
+    return const SizedBox(
+      height: 128,
+      child: Center(
         child: CircularProgressIndicator(),
       ),
     );
@@ -199,7 +204,7 @@ final class _CampaignBannerState extends State<CampaignBanner> {
 
   Widget _buildErrorState() {
     return SizedBox(
-      height: context.dynamicHeight(0.3),
+      height: 128,
       child: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -239,47 +244,75 @@ final class _CampaignBannerState extends State<CampaignBanner> {
       child: Container(
         margin: margin,
         decoration: BoxDecoration(
+          color: context.colorScheme.surface,
           borderRadius: context.borderRadiusNormalAll,
-          border: Border.all(
-            color: Colors.grey.shade400,
-          ),
+          boxShadow: [
+            BoxShadow(
+              color: context.colorScheme.shadow.withValues(alpha: 0.08),
+              blurRadius: 12,
+              offset: const Offset(0, 4),
+            ),
+          ],
         ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Expanded(
-              flex: 3,
-              child: Container(
-                padding: context.paddingLowAll + context.paddingLowHorizontal,
-                width: double.infinity,
-                child: ClipRRect(
-                  borderRadius: context.borderRadiusNormalAll,
-                  child: ImageNetworkComponent(
-                    imageUrl: campaignMerchant.imageUrl,
-                    fit: BoxFit.cover,
+        child: ClipRRect(
+          borderRadius: context.borderRadiusNormalAll,
+          child: Stack(
+            fit: StackFit.expand,
+            children: [
+              ImageNetworkComponent(
+                imageUrl: campaignMerchant.imageUrl,
+                fit: BoxFit.cover,
+              ),
+              DecoratedBox(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [
+                      Colors.transparent,
+                      context.colorScheme.primary.withValues(alpha: 0.92),
+                    ],
                   ),
                 ),
               ),
-            ),
-            Expanded(
-              flex: 2,
-              child: Padding(
-                padding: context.paddingBaseLow,
+              Padding(
+                padding: context.paddingNormalAll,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.end,
                   children: [
+                    if (campaignMerchant.cbAmount > 0)
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 8,
+                          vertical: 4,
+                        ),
+                        decoration: BoxDecoration(
+                          color: context.colorScheme.surface,
+                          borderRadius: context.borderRadiusLowAll,
+                        ),
+                        child: Text(
+                          '%${campaignMerchant.cbAmount.toStringAsFixed(campaignMerchant.cbAmount % 1 == 0 ? 0 : 1)}',
+                          style: context.textTheme.labelMedium?.copyWith(
+                            color: context.colorScheme.primary,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    context.spacingLowHeight,
                     Text(
                       campaignMerchant.merchant.name,
-                      style: context.textTheme.titleSmall?.copyWith(),
+                      style: context.textTheme.titleSmall?.copyWith(
+                        color: context.colorScheme.onPrimary,
+                        fontWeight: FontWeight.bold,
+                      ),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
-                    context.spacingLowHeight,
                     Text(
                       _getSubtitle(campaignMerchant.content),
-                      style: context.textTheme.bodyMedium?.copyWith(
-                        color: Colors.grey,
+                      style: context.textTheme.bodySmall?.copyWith(
+                        color: context.colorScheme.onPrimary,
                       ),
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
@@ -287,8 +320,8 @@ final class _CampaignBannerState extends State<CampaignBanner> {
                   ],
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -371,7 +404,7 @@ final class _CampaignBannerState extends State<CampaignBanner> {
 
   Widget _buildEmptyState(BuildContext context) {
     return SizedBox(
-      height: context.dynamicHeight(0.3),
+      height: 128,
       child: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,

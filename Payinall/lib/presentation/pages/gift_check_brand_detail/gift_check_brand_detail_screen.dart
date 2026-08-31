@@ -8,13 +8,14 @@ import 'package:payinall/presentation/pages/gift_check_brand_detail/bloc/gift_ch
 import 'package:payinall/presentation/pages/gift_check_brand_detail/mixin/gift_check_brand_detail_mixin.dart';
 import 'package:payinall/presentation/pages/gift_check_brand_detail/widgets/brand_detail_header.dart';
 import 'package:payinall/presentation/pages/gift_check_brand_detail/widgets/gift_check_coupon_item.dart';
+import 'package:payinall/presentation/shared/components/toast_component.dart';
 import 'package:payinall/presentation/shared/extensions/padding_extension.dart';
 import 'package:payinall/presentation/shared/extensions/string_extension.dart';
 import 'package:payinall/presentation/shared/extensions/theme_extension.dart';
-import 'package:payinall/presentation/widgets/custom_app_bar.dart';
 import 'package:payinall/presentation/widgets/custom_dialog.dart';
 import 'package:payinall/presentation/widgets/custom_loading.dart';
 import 'package:payinall/presentation/widgets/error_try_again.dart';
+import 'package:payinall/presentation/widgets/integration_components.dart';
 
 @RoutePage()
 final class GiftCheckBrandDetailScreen extends StatefulWidget {
@@ -38,13 +39,20 @@ final class _GiftCheckBrandDetailScreenState
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: CustomAppBar(title: Text(LocaleKeys.brand_detail.translate)),
-      body: BlocConsumer<GiftCheckBrandDetailBloc, GiftCheckBrandDetailState>(
-        bloc: bloc,
-        listener: blocListener,
-        builder: (context, state) {
-          return switch (state.status) {
+    return BlocConsumer<GiftCheckBrandDetailBloc, GiftCheckBrandDetailState>(
+      bloc: bloc,
+      listener: blocListener,
+      builder: (context, state) {
+        return Scaffold(
+          backgroundColor: AlisverislioColors.background,
+          appBar: AppBar(
+            backgroundColor: AlisverislioColors.background,
+            foregroundColor: AlisverislioColors.textPrimary,
+            surfaceTintColor: Colors.transparent,
+            elevation: 0,
+            title: Text(LocaleKeys.brand_detail.translate),
+          ),
+          body: switch (state.status) {
             GiftCheckBrandDetailStatus.initial ||
             GiftCheckBrandDetailStatus.loading => const Center(
               child: CustomLoading(),
@@ -57,9 +65,12 @@ final class _GiftCheckBrandDetailScreenState
                 ),
               ),
             _ => _buildContent(context, state),
-          };
-        },
-      ),
+          },
+          bottomNavigationBar: state.brandDetail == null
+              ? null
+              : _buildStickyCta(state),
+        );
+      },
     );
   }
 
@@ -72,7 +83,7 @@ final class _GiftCheckBrandDetailScreenState
           onRefresh: () async => loadBrandDetail(),
           child: SingleChildScrollView(
             physics: const AlwaysScrollableScrollPhysics(),
-            padding: const EdgeInsets.fromLTRB(16, 12, 16, 32),
+            padding: const EdgeInsets.fromLTRB(16, 12, 16, 36),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -82,12 +93,59 @@ final class _GiftCheckBrandDetailScreenState
             ),
           ),
         ),
-        if (state.status == GiftCheckBrandDetailStatus.takingCoupon)
-          const ColoredBox(
-            color: Colors.black26,
-            child: Center(child: CustomLoading()),
-          ),
       ],
+    );
+  }
+
+  Widget _buildStickyCta(GiftCheckBrandDetailState state) {
+    final isProcessing =
+        state.status == GiftCheckBrandDetailStatus.takingCoupon;
+    final isSuccess = state.status == GiftCheckBrandDetailStatus.couponTaken;
+    final hasSelection = state.selectedCouponId != null;
+    final isRetry =
+        state.status == GiftCheckBrandDetailStatus.error && hasSelection;
+
+    final title = switch ((isProcessing, isSuccess, isRetry, hasSelection)) {
+      (true, _, _, _) => LocaleKeys.gift_check_processing.translate,
+      (_, true, _, _) => LocaleKeys.gift_check_ready.translate,
+      (_, _, true, _) => LocaleKeys.try_again.translate,
+      (_, _, _, true) => LocaleKeys.gift_check_purchase_cta.translate,
+      _ => LocaleKeys.gift_check_select_coupon.translate,
+    };
+
+    return ColoredBox(
+      color: AlisverislioColors.background,
+      child: AlisverislioStickyCta(
+        title: title,
+        subtitle: hasSelection
+            ? LocaleKeys.gift_check_purchase_subtitle.translate
+            : LocaleKeys.gift_check_select_coupon_subtitle.translate,
+        isLoading: isProcessing,
+        onPressed: isSuccess ? null : () => _handleCtaPressed(state),
+      ),
+    );
+  }
+
+  void _handleCtaPressed(GiftCheckBrandDetailState state) {
+    final selectedId = state.selectedCouponId;
+    if (selectedId == null) {
+      ToastComponent.showBottomToastMessage(
+        context: context,
+        message: LocaleKeys.gift_check_select_coupon_first.translate,
+      );
+      return;
+    }
+
+    final selectedCoupon = state.coupons
+        ?.where(
+          (coupon) => coupon.id == selectedId,
+        )
+        .firstOrNull;
+    if (selectedCoupon == null) return;
+
+    _showTakeCouponDialog(
+      couponId: selectedCoupon.id,
+      amount: selectedCoupon.amount,
     );
   }
 
@@ -136,10 +194,8 @@ final class _GiftCheckBrandDetailScreenState
               return GiftCheckCouponItem(
                 coupon: coupon,
                 cashbackRate: state.brandDetail!.cashbackRate,
-                onTakeCoupon: () => _showTakeCouponDialog(
-                  couponId: coupon.id,
-                  amount: coupon.amount,
-                ),
+                isSelected: state.selectedCouponId == coupon.id,
+                onSelect: () => selectCoupon(coupon.id),
               );
             },
           ),

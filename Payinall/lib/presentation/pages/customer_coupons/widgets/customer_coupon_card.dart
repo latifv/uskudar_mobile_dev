@@ -1,10 +1,12 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
-import 'package:payinall/core/generated/locale_keys.g.dart';
-import 'package:payinall/presentation/shared/extensions/string_extension.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
+import 'package:payinall/core/generated/locale_keys.g.dart';
 import 'package:payinall/domain/entities/customer_coupon.dart';
 import 'package:payinall/presentation/shared/components/toast_component.dart';
+import 'package:payinall/presentation/shared/extensions/string_extension.dart';
 import 'package:payinall/presentation/shared/extensions/theme_extension.dart';
 import 'package:payinall/presentation/widgets/integration_components.dart';
 
@@ -43,6 +45,7 @@ final class CustomerCouponCard extends StatelessWidget {
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
                 style: context.textTheme.bodyMedium?.copyWith(
+                  color: AlisverislioColors.textPrimary,
                   fontWeight: FontWeight.w800,
                 ),
               ),
@@ -51,7 +54,7 @@ final class CustomerCouponCard extends StatelessWidget {
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
                 style: context.textTheme.labelSmall?.copyWith(
-                  color: context.colorScheme.onSurfaceVariant,
+                  color: AlisverislioColors.textSecondary,
                 ),
               ),
             ],
@@ -65,20 +68,20 @@ final class CustomerCouponCard extends StatelessWidget {
               '${coupon.amount.toStringAsFixed(0)} ₺',
               style: context.textTheme.displaySmall?.copyWith(
                 fontWeight: FontWeight.w800,
-                color: context.colorScheme.primary,
+                color: AlisverislioColors.primary,
               ),
             ),
             const SizedBox(height: 4),
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 8),
               decoration: BoxDecoration(
-                color: Colors.green.withAlpha(28),
+                color: AlisverislioColors.cashbackBackground,
                 borderRadius: BorderRadius.circular(8),
               ),
               child: Text(
                 '+${coupon.cashbackAmount.toStringAsFixed(0)} ₺',
                 style: context.textTheme.labelSmall?.copyWith(
-                  color: Colors.green.shade700,
+                  color: AlisverislioColors.cashback,
                   fontWeight: FontWeight.bold,
                 ),
               ),
@@ -93,7 +96,7 @@ final class CustomerCouponCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
       decoration: BoxDecoration(
-        color: context.colorScheme.surfaceContainerHighest,
+        color: AlisverislioColors.lilac,
         borderRadius: BorderRadius.circular(10),
       ),
       child: Row(
@@ -121,7 +124,7 @@ final class CustomerCouponCard extends StatelessWidget {
           Container(
             width: 1,
             height: 32,
-            color: context.colorScheme.outlineVariant,
+            color: AlisverislioColors.divider,
           ),
           Expanded(
             child: Padding(
@@ -148,10 +151,10 @@ final class CustomerCouponCard extends StatelessWidget {
           ),
           IconButton(
             onPressed: () => _copyToClipboard(context),
-            icon: Icon(
+            icon: const Icon(
               Icons.copy_rounded,
               size: 20,
-              color: context.colorScheme.primary,
+              color: AlisverislioColors.primary,
             ),
             tooltip: LocaleKeys.copy_code.translate,
           ),
@@ -185,7 +188,9 @@ final class CustomerCouponCard extends StatelessWidget {
   }
 
   void _copyToClipboard(BuildContext context) {
-    Clipboard.setData(ClipboardData(text: '${coupon.code} - ${coupon.pin}'));
+    unawaited(
+      Clipboard.setData(ClipboardData(text: '${coupon.code} - ${coupon.pin}')),
+    );
     ToastComponent.showSuccessToast(
       context: context,
       message: LocaleKeys.code_copied.translate,

@@ -1,16 +1,16 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
-import 'package:payinall/core/generated/locale_keys.g.dart';
-import 'package:payinall/presentation/shared/extensions/string_extension.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:payinall/core/generated/locale_keys.g.dart';
 import 'package:payinall/presentation/pages/metropol/bloc/metropol_bloc.dart';
 import 'package:payinall/presentation/pages/metropol/mixin/metropol_mixin.dart';
 import 'package:payinall/presentation/pages/metropol/widgets/metropol_action_buttons.dart';
 import 'package:payinall/presentation/pages/metropol/widgets/metropol_balance_card.dart';
 import 'package:payinall/presentation/pages/metropol/widgets/metropol_user_info_card.dart';
+import 'package:payinall/presentation/shared/extensions/string_extension.dart';
 import 'package:payinall/presentation/widgets/custom_app_bar.dart';
 import 'package:payinall/presentation/widgets/custom_loading.dart';
-import 'package:payinall/presentation/widgets/error_try_again.dart';
+import 'package:payinall/presentation/widgets/integration_components.dart';
 
 @RoutePage()
 final class MetropolScreen extends StatefulWidget {
@@ -25,6 +25,7 @@ final class _MetropolScreenState extends State<MetropolScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: AlisverislioColors.background,
       appBar: CustomAppBar(title: Text(LocaleKeys.metropol.translate)),
       body: BlocConsumer<MetropolBloc, MetropolState>(
         bloc: bloc,
@@ -34,9 +35,14 @@ final class _MetropolScreenState extends State<MetropolScreen>
             MetropolStatus.initial ||
             MetropolStatus.loading => const Center(child: CustomLoading()),
             MetropolStatus.error when state.userDetail == null => Center(
-              child: ErrorTryAgain(
-                message: state.message,
-                onTryAgain: loadMetropol,
+              child: AlisverislioStateView(
+                icon: Icons.cloud_off_rounded,
+                title: LocaleKeys.error.translate,
+                description:
+                    state.message ?? LocaleKeys.general_error.translate,
+                actionLabel: LocaleKeys.try_again.translate,
+                onAction: loadMetropol,
+                isError: true,
               ),
             ),
             _ => _buildContent(state),

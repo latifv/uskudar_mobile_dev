@@ -67,8 +67,10 @@ final class TransactionHistoryBloc
           sortedTransactions,
           state.filter,
         );
-        final hasMore = transactions.length >= _pageSize;
-
+        // API, istenen pageSize'dan daha az kayıt döndürebilir. Bu durumda
+        // yine de sonraki sayfayı denemek gerekir; sayfalamanın bittiğini
+        // boş yanıt geldiğinde anlarız.
+        final hasMore = transactions.isNotEmpty;
         emit(
           state.copyWith(
             status: TransactionHistoryStatus.loaded,
@@ -141,8 +143,7 @@ final class TransactionHistoryBloc
           sortedTransactions,
           state.filter,
         );
-        final hasMore = transactions.length >= _pageSize;
-
+        final hasMore = transactions.isNotEmpty;
         emit(
           state.copyWith(
             status: TransactionHistoryStatus.loaded,
@@ -213,8 +214,7 @@ final class TransactionHistoryBloc
           mergedTransactions,
           state.filter,
         );
-        final hasMore =
-            nextTransactions.length >= _pageSize && addedItemCount > 0;
+        final hasMore = nextTransactions.isNotEmpty && addedItemCount > 0;
 
         emit(
           state.copyWith(

@@ -9,22 +9,25 @@ final class LocationCard extends StatelessWidget {
     required this.location,
     this.currentLocation,
     this.onTap,
+    this.expanded = false,
+    this.embedded = false,
     super.key,
   });
 
   final PointOfSaleLocation location;
   final LatLng? currentLocation;
   final VoidCallback? onTap;
+  final bool expanded;
+  final bool embedded;
 
   @override
   Widget build(BuildContext context) {
-    return IntegrationSurface(
-      onTap: onTap,
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+    final content = Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 11),
       child: Row(
         children: [
-          IntegrationIconBox(icon: _categoryIcon, size: 44),
-          const SizedBox(width: 10),
+          IntegrationIconBox(icon: _categoryIcon, size: 46),
+          const SizedBox(width: 12),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -32,12 +35,13 @@ final class LocationCard extends StatelessWidget {
                 Text(
                   location.signboardName,
                   style: context.textTheme.bodyMedium?.copyWith(
+                    color: AlisverislioColors.textPrimary,
                     fontWeight: FontWeight.w700,
                   ),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                 ),
-                const SizedBox(height: 5),
+                const SizedBox(height: 4),
                 Wrap(
                   spacing: 6,
                   runSpacing: 4,
@@ -50,19 +54,19 @@ final class LocationCard extends StatelessWidget {
                       ),
                   ],
                 ),
-                const SizedBox(height: 5),
+                const SizedBox(height: 4),
                 Text(
                   '${location.district}/${location.city} • ${location.saleAddress}',
                   style: context.textTheme.labelSmall?.copyWith(
-                    color: context.colorScheme.onSurfaceVariant,
+                    color: AlisverislioColors.textSecondary,
                   ),
-                  maxLines: 1,
+                  maxLines: expanded ? 2 : 1,
                   overflow: TextOverflow.ellipsis,
                 ),
               ],
             ),
           ),
-          const SizedBox(width: 8),
+          const SizedBox(width: 6),
           Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -70,32 +74,43 @@ final class LocationCard extends StatelessWidget {
                 Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Icon(
+                    const Icon(
                       Icons.location_on_outlined,
                       size: 16,
-                      color: context.colorScheme.onSurfaceVariant,
+                      color: AlisverislioColors.textSecondary,
                     ),
                     const SizedBox(width: 2),
                     Text(
                       distance,
                       style: context.textTheme.labelSmall?.copyWith(
-                        color: context.colorScheme.onSurfaceVariant,
+                        color: AlisverislioColors.textSecondary,
                         fontWeight: FontWeight.w600,
                       ),
                     ),
                   ],
                 ),
               if (onTap != null) ...[
-                const SizedBox(height: 6),
-                Icon(
+                const SizedBox(height: 4),
+                const Icon(
                   Icons.chevron_right_rounded,
-                  color: context.colorScheme.onSurfaceVariant,
+                  color: AlisverislioColors.textSecondary,
                 ),
               ],
             ],
           ),
         ],
       ),
+    );
+
+    if (embedded) {
+      return InkWell(onTap: onTap, child: content);
+    }
+
+    return IntegrationSurface(
+      onTap: onTap,
+      showBorder: false,
+      padding: EdgeInsets.zero,
+      child: content,
     );
   }
 
@@ -137,9 +152,7 @@ final class _CategoryBadge extends StatelessWidget {
   Widget build(BuildContext context) {
     return DecoratedBox(
       decoration: BoxDecoration(
-        color: secondary
-            ? context.colorScheme.surfaceContainerHighest
-            : context.colorScheme.primary.withAlpha(22),
+        color: secondary ? const Color(0xFFF1F0F4) : AlisverislioColors.lilac,
         borderRadius: BorderRadius.circular(8),
       ),
       child: Padding(
@@ -148,8 +161,8 @@ final class _CategoryBadge extends StatelessWidget {
           label,
           style: context.textTheme.labelSmall?.copyWith(
             color: secondary
-                ? context.colorScheme.onSurfaceVariant
-                : context.colorScheme.primary,
+                ? AlisverislioColors.textSecondary
+                : AlisverislioColors.primary,
             fontWeight: FontWeight.w600,
             fontSize: 10,
           ),

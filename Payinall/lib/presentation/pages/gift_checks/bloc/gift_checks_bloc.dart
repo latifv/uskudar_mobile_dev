@@ -25,7 +25,10 @@ final class GiftChecksBloc extends Bloc<GiftChecksEvent, GiftChecksState> {
 
     result.fold(
       (failure) => emit(
-        state.copyWith(status: GiftChecksStatus.error, message: failure.message),
+        state.copyWith(
+          status: GiftChecksStatus.error,
+          message: failure.message,
+        ),
       ),
       (categories) => emit(
         state.copyWith(

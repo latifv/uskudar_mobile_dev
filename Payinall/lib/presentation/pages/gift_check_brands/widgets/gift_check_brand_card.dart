@@ -28,7 +28,7 @@ final class GiftCheckBrandCard extends StatelessWidget {
     return IntegrationSurface(
       onTap: onTap,
       showBorder: false,
-      backgroundColor: context.colorScheme.surfaceContainerLow,
+      backgroundColor: const Color(0xFFF1F0F3),
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
       child: Row(
         children: [
@@ -60,7 +60,7 @@ final class GiftCheckBrandCard extends StatelessWidget {
                     maxLines: 1,
                     style: context.textTheme.headlineMedium?.copyWith(
                       fontWeight: FontWeight.w900,
-                      color: context.colorScheme.onSurface,
+                      color: AlisverislioColors.textPrimary,
                     ),
                   ),
                 ),
@@ -69,7 +69,7 @@ final class GiftCheckBrandCard extends StatelessWidget {
                   LocaleKeys.gift_check_cashback_short.translate,
                   maxLines: 1,
                   style: context.textTheme.labelSmall?.copyWith(
-                    color: context.colorScheme.onSurfaceVariant,
+                    color: AlisverislioColors.textPrimary,
                     fontWeight: FontWeight.w600,
                   ),
                 ),

@@ -19,6 +19,8 @@ final class BrandDetailHeader extends StatelessWidget {
       children: [
         _BrandHero(brandDetail: brandDetail, displayName: displayName),
         const SizedBox(height: 14),
+        const _BrandInfoCard(),
+        const SizedBox(height: 14),
         const _HowItWorks(),
         const SizedBox(height: 14),
         _CashierPrompt(displayName: displayName),
@@ -40,11 +42,14 @@ final class _BrandHero extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final percentage = (brandDetail.cashbackRate * 100).round();
+    final percentage = brandDetail.cashbackRate * 100;
+    final percentageText = percentage == percentage.roundToDouble()
+        ? percentage.toStringAsFixed(0)
+        : percentage.toStringAsFixed(1).replaceAll('.', ',');
     return IntegrationSurface(
       padding: EdgeInsets.zero,
       child: SizedBox(
-        height: 132,
+        height: 148,
         child: Row(
           children: [
             Expanded(
@@ -66,15 +71,20 @@ final class _BrandHero extends StatelessWidget {
                             displayName,
                             maxLines: 2,
                             overflow: TextOverflow.ellipsis,
-                            style: context.textTheme.titleLarge?.copyWith(
+                            style: context.textTheme.headlineSmall?.copyWith(
+                              color: AlisverislioColors.textPrimary,
                               fontWeight: FontWeight.w800,
                             ),
                           ),
                           const SizedBox(height: 5),
                           Text(
-                            LocaleKeys.gift_check_digital_code.translate,
+                            LocaleKeys.gift_check_hero_description
+                                .translateWithNamedArgs({'brand': displayName}),
+                            maxLines: 3,
+                            overflow: TextOverflow.ellipsis,
                             style: context.textTheme.bodySmall?.copyWith(
-                              color: context.colorScheme.onSurfaceVariant,
+                              color: AlisverislioColors.textSecondary,
+                              height: 1.25,
                             ),
                           ),
                         ],
@@ -91,7 +101,7 @@ final class _BrandHero extends StatelessWidget {
                 children: [
                   Expanded(
                     child: ColoredBox(
-                      color: context.colorScheme.primaryContainer,
+                      color: AlisverislioColors.cashbackBackground,
                       child: Padding(
                         padding: const EdgeInsets.symmetric(
                           horizontal: 8,
@@ -101,9 +111,9 @@ final class _BrandHero extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Text(
-                              '%$percentage',
+                              '%$percentageText',
                               style: context.textTheme.headlineMedium?.copyWith(
-                                color: context.colorScheme.onPrimaryContainer,
+                                color: AlisverislioColors.cashback,
                                 fontWeight: FontWeight.w900,
                               ),
                             ),
@@ -111,7 +121,7 @@ final class _BrandHero extends StatelessWidget {
                               LocaleKeys.gift_check_cashback_short.translate,
                               textAlign: TextAlign.center,
                               style: context.textTheme.labelSmall?.copyWith(
-                                color: context.colorScheme.onPrimaryContainer,
+                                color: AlisverislioColors.cashback,
                                 fontWeight: FontWeight.w700,
                               ),
                             ),
@@ -121,14 +131,14 @@ final class _BrandHero extends StatelessWidget {
                     ),
                   ),
                   ColoredBox(
-                    color: context.colorScheme.secondaryContainer,
+                    color: AlisverislioColors.typeBackground,
                     child: Padding(
                       padding: const EdgeInsets.symmetric(vertical: 8),
                       child: Text(
                         LocaleKeys.gift_check_digital_code.translate,
                         textAlign: TextAlign.center,
                         style: context.textTheme.labelSmall?.copyWith(
-                          color: context.colorScheme.onSecondaryContainer,
+                          color: AlisverislioColors.type,
                           fontWeight: FontWeight.w800,
                         ),
                       ),
@@ -139,6 +149,122 @@ final class _BrandHero extends StatelessWidget {
             ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+final class _BrandInfoCard extends StatelessWidget {
+  const _BrandInfoCard();
+
+  @override
+  Widget build(BuildContext context) {
+    return IntegrationSurface(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 18),
+      child: IntrinsicHeight(
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Expanded(
+              child: _InfoItem(
+                icon: Icons.card_giftcard_rounded,
+                label: LocaleKeys.gift_check_payment_method.translate,
+                value: LocaleKeys.gift_check_payment_method_value.translate,
+              ),
+            ),
+            const _InfoDivider(),
+            Expanded(
+              child: _InfoItem(
+                icon: Icons.money_off_csred_rounded,
+                iconColor: AlisverislioColors.type,
+                label: LocaleKeys.gift_check_minimum_spend.translate,
+                value: LocaleKeys.none.translate,
+              ),
+            ),
+            const _InfoDivider(),
+            Expanded(
+              child: _InfoItem(
+                icon: Icons.schedule_rounded,
+                label: LocaleKeys.gift_check_refund_time.translate,
+                value: LocaleKeys.gift_check_refund_time_value.translate,
+              ),
+            ),
+            const _InfoDivider(),
+            Expanded(
+              child: _InfoItem(
+                icon: Icons.verified_user_outlined,
+                iconColor: AlisverislioColors.cashback,
+                label: LocaleKeys.gift_check_validity.translate,
+                value: LocaleKeys.gift_check_validity_value.translate,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+final class _InfoItem extends StatelessWidget {
+  const _InfoItem({
+    required this.icon,
+    required this.label,
+    required this.value,
+    this.iconColor,
+  });
+
+  final IconData icon;
+  final String label;
+  final String value;
+  final Color? iconColor;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 3),
+      child: Column(
+        children: [
+          IntegrationIconBox(icon: icon, color: iconColor, size: 42),
+          const SizedBox(height: 9),
+          Text(
+            label,
+            maxLines: 2,
+            textAlign: TextAlign.center,
+            overflow: TextOverflow.ellipsis,
+            style: context.textTheme.labelSmall?.copyWith(
+              color: AlisverislioColors.textSecondary,
+              height: 1.15,
+            ),
+          ),
+          const SizedBox(height: 6),
+          Text(
+            value,
+            maxLines: 2,
+            textAlign: TextAlign.center,
+            overflow: TextOverflow.ellipsis,
+            style: context.textTheme.titleSmall?.copyWith(
+              color: AlisverislioColors.textPrimary,
+              fontWeight: FontWeight.w800,
+              height: 1.1,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+final class _InfoDivider extends StatelessWidget {
+  const _InfoDivider();
+
+  @override
+  Widget build(BuildContext context) {
+    return const Padding(
+      padding: EdgeInsets.symmetric(vertical: 16),
+      child: VerticalDivider(
+        width: 1,
+        thickness: 1,
+        color: AlisverislioColors.divider,
       ),
     );
   }
@@ -171,6 +297,7 @@ final class _HowItWorks extends StatelessWidget {
                   descriptionKey: LocaleKeys.gift_check_choose_code_description,
                 ),
               ),
+              _DashedConnector(),
               Expanded(
                 child: _Step(
                   number: 2,
@@ -179,10 +306,11 @@ final class _HowItWorks extends StatelessWidget {
                   descriptionKey: LocaleKeys.gift_check_use_code_description,
                 ),
               ),
+              _DashedConnector(),
               Expanded(
                 child: _Step(
                   number: 3,
-                  icon: Icons.savings_outlined,
+                  icon: Icons.currency_lira_rounded,
                   titleKey: LocaleKeys.gift_check_earn_cashback,
                   descriptionKey:
                       LocaleKeys.gift_check_earn_cashback_description,
@@ -215,16 +343,16 @@ final class _Step extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 3),
       child: Column(
         children: [
-          IntegrationIconBox(icon: icon, size: 46),
+          IntegrationIconBox(icon: icon, size: 52),
           Transform.translate(
             offset: const Offset(0, -5),
             child: CircleAvatar(
               radius: 10,
-              backgroundColor: context.colorScheme.primary,
+              backgroundColor: AlisverislioColors.primary,
               child: Text(
                 '$number',
                 style: context.textTheme.labelSmall?.copyWith(
-                  color: context.colorScheme.onPrimary,
+                  color: Colors.white,
                   fontWeight: FontWeight.w800,
                 ),
               ),
@@ -245,7 +373,7 @@ final class _Step extends StatelessWidget {
             maxLines: 3,
             overflow: TextOverflow.ellipsis,
             style: context.textTheme.labelSmall?.copyWith(
-              color: context.colorScheme.onSurfaceVariant,
+              color: AlisverislioColors.textSecondary,
               height: 1.2,
             ),
           ),
@@ -253,6 +381,46 @@ final class _Step extends StatelessWidget {
       ),
     );
   }
+}
+
+final class _DashedConnector extends StatelessWidget {
+  const _DashedConnector();
+
+  @override
+  Widget build(BuildContext context) {
+    return const Padding(
+      padding: EdgeInsets.only(top: 25),
+      child: SizedBox(
+        width: 24,
+        height: 2,
+        child: CustomPaint(painter: _DashedLinePainter()),
+      ),
+    );
+  }
+}
+
+final class _DashedLinePainter extends CustomPainter {
+  const _DashedLinePainter();
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()
+      ..color = AlisverislioColors.primary.withAlpha(110)
+      ..strokeWidth = 1.5
+      ..strokeCap = StrokeCap.round;
+    const dash = 4.0;
+    const gap = 4.0;
+    for (double x = 0; x < size.width; x += dash + gap) {
+      canvas.drawLine(
+        Offset(x, size.height / 2),
+        Offset((x + dash).clamp(0, size.width), size.height / 2),
+        paint,
+      );
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }
 
 final class _CashierPrompt extends StatelessWidget {

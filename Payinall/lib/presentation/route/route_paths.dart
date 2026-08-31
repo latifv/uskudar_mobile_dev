@@ -82,6 +82,7 @@ final class RoutePaths {
   static const String customerDemand = '/customer-demand';
   static const String languageSelection = '/language-selection';
   static const String registeredUsers = '/registered-users';
+  static const String alisverislio = 'alisverislio';
   static const String giftChecks = '/gift-checks';
   static const String giftCheckBrands = '/gift-check-brands';
   static const String giftCheckBrandDetail = '/gift-check-brand-detail';

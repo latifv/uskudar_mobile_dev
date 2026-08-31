@@ -19,6 +19,7 @@ final class GiftCheckBrandDetailBloc
     required this.couponTakeUsecase,
   }) : super(const GiftCheckBrandDetailState()) {
     on<GiftCheckBrandDetailLoad>(_loadBrandPage);
+    on<GiftCheckBrandDetailSelectCoupon>(_selectCoupon);
     on<GiftCheckBrandDetailTakeCoupon>(_takeCoupon);
   }
 
@@ -32,10 +33,8 @@ final class GiftCheckBrandDetailBloc
   ) async {
     emit(state.copyWith(status: GiftCheckBrandDetailStatus.loading));
 
-    final detailResult =
-        await getGiftCheckBrandDetailUsecase(event.brandId);
-    final couponsResult =
-        await getGiftCheckCouponsUsecase(event.brandId);
+    final detailResult = await getGiftCheckBrandDetailUsecase(event.brandId);
+    final couponsResult = await getGiftCheckCouponsUsecase(event.brandId);
 
     final detailFailed = detailResult.isLeft();
     final couponsFailed = couponsResult.isLeft();
@@ -70,6 +69,19 @@ final class GiftCheckBrandDetailBloc
         status: GiftCheckBrandDetailStatus.loaded,
         brandDetail: brandDetail,
         coupons: coupons,
+        clearSelectedCoupon: true,
+      ),
+    );
+  }
+
+  void _selectCoupon(
+    GiftCheckBrandDetailSelectCoupon event,
+    Emitter<GiftCheckBrandDetailState> emit,
+  ) {
+    emit(
+      state.copyWith(
+        status: GiftCheckBrandDetailStatus.loaded,
+        selectedCouponId: event.couponId,
       ),
     );
   }

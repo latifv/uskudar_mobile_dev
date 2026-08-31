@@ -32,23 +32,27 @@ mixin MetropolMixin<T extends StatefulWidget> on State<T> {
   }
 
   void navigateToLocations() {
-    context.router.push(const MetropolLocationsRoute());
+    unawaited(context.router.push(const MetropolLocationsRoute()));
   }
 
   void navigateToTransactions() {
-    context.router.push(const MetropolTransactionsRoute());
+    unawaited(context.router.push(const MetropolTransactionsRoute()));
   }
 
   void navigateToTransfer() {
-    context.router.push(const MetropolTransferRoute()).then((_) {
-      refreshBalance();
-    });
+    unawaited(
+      context.router.push(const MetropolTransferRoute()).then((_) {
+        refreshBalance();
+      }),
+    );
   }
 
   void navigateToGiftTransfer() {
-    context.router.push(const MetropolGiftTransferRoute()).then((_) {
-      refreshBalance();
-    });
+    unawaited(
+      context.router.push(const MetropolGiftTransferRoute()).then((_) {
+        refreshBalance();
+      }),
+    );
   }
 
   void blocListener(BuildContext context, MetropolState state) {

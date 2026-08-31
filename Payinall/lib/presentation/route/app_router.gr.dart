@@ -109,18 +109,51 @@ class AddBankAccountRoute extends PageRouteInfo<void> {
 
 /// generated route for
 /// [AddFuelCardScreen]
-class AddFuelCardRoute extends PageRouteInfo<void> {
-  const AddFuelCardRoute({List<PageRouteInfo>? children})
-    : super(AddFuelCardRoute.name, initialChildren: children);
+class AddFuelCardRoute extends PageRouteInfo<AddFuelCardRouteArgs> {
+  AddFuelCardRoute({
+    FuelProvider provider = FuelProvider.shell,
+    Key? key,
+    List<PageRouteInfo>? children,
+  }) : super(
+         AddFuelCardRoute.name,
+         args: AddFuelCardRouteArgs(provider: provider, key: key),
+         initialChildren: children,
+       );
 
   static const String name = 'AddFuelCardRoute';
 
   static PageInfo page = PageInfo(
     name,
     builder: (data) {
-      return const AddFuelCardScreen();
+      final args = data.argsAs<AddFuelCardRouteArgs>(
+        orElse: () => const AddFuelCardRouteArgs(),
+      );
+      return AddFuelCardScreen(provider: args.provider, key: args.key);
     },
   );
+}
+
+class AddFuelCardRouteArgs {
+  const AddFuelCardRouteArgs({this.provider = FuelProvider.shell, this.key});
+
+  final FuelProvider provider;
+
+  final Key? key;
+
+  @override
+  String toString() {
+    return 'AddFuelCardRouteArgs{provider: $provider, key: $key}';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    if (other is! AddFuelCardRouteArgs) return false;
+    return provider == other.provider && key == other.key;
+  }
+
+  @override
+  int get hashCode => provider.hashCode ^ key.hashCode;
 }
 
 /// generated route for
@@ -231,6 +264,22 @@ class AgreementsRoute extends PageRouteInfo<void> {
     name,
     builder: (data) {
       return const AgreementsScreen();
+    },
+  );
+}
+
+/// generated route for
+/// [AlisverislioScreen]
+class AlisverislioRoute extends PageRouteInfo<void> {
+  const AlisverislioRoute({List<PageRouteInfo>? children})
+    : super(AlisverislioRoute.name, initialChildren: children);
+
+  static const String name = 'AlisverislioRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      return const AlisverislioScreen();
     },
   );
 }

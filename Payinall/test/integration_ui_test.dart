@@ -3,8 +3,10 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:payinall/data/config/environment_config.dart';
 import 'package:payinall/domain/entities/gift_check_brand.dart';
 import 'package:payinall/domain/entities/gift_check_category.dart';
+import 'package:payinall/domain/entities/gift_check_coupon.dart';
 import 'package:payinall/domain/entities/metropol_user_balance.dart';
 import 'package:payinall/domain/enums/app_environment.dart';
+import 'package:payinall/presentation/pages/gift_check_brand_detail/widgets/gift_check_coupon_item.dart';
 import 'package:payinall/presentation/pages/gift_check_brands/widgets/gift_check_brand_card.dart';
 import 'package:payinall/presentation/pages/gift_checks/widgets/gift_check_category_item.dart';
 import 'package:payinall/presentation/pages/metropol/widgets/metropol_balance_card.dart';
@@ -36,7 +38,7 @@ void main() {
       ),
     );
 
-    expect(tester.getSize(find.byType(GiftCheckCategoryItem)).height, 68);
+    expect(tester.getSize(find.byType(GiftCheckCategoryItem)).height, 60);
     expect(tester.takeException(), isNull);
   });
 
@@ -108,6 +110,70 @@ void main() {
       ),
     );
 
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('selected gift coupon has a visible selection state', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      host(
+        SizedBox(
+          width: 145,
+          height: 150,
+          child: GiftCheckCouponItem(
+            coupon: const GiftCheckCoupon(
+              id: 'coupon-1',
+              amount: 500,
+              stock: 2,
+            ),
+            cashbackRate: 0.03,
+            isSelected: true,
+            onSelect: () {},
+          ),
+        ),
+      ),
+    );
+
+    expect(find.byIcon(Icons.check_circle_rounded), findsOneWidget);
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('sticky CTA stays compact and invokes its action', (
+    tester,
+  ) async {
+    var tapped = false;
+
+    await tester.pumpWidget(
+      host(
+        AlisverislioStickyCta(
+          title: 'Hediye Çeki Satın Al',
+          subtitle: 'Seçili hediye çekini satın al',
+          onPressed: () => tapped = true,
+        ),
+      ),
+    );
+
+    await tester.tap(find.byType(AlisverislioStickyCta));
+    await tester.pump();
+
+    expect(tapped, isTrue);
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('integration empty state stays calm and compact', (tester) async {
+    await tester.pumpWidget(
+      host(
+        const AlisverislioStateView(
+          icon: Icons.confirmation_number_outlined,
+          title: 'Henüz kuponunuz yok',
+          description: 'Kuponlarınız burada görüntülenecek.',
+        ),
+      ),
+    );
+
+    expect(find.text('Henüz kuponunuz yok'), findsOneWidget);
+    expect(find.byType(FilledButton), findsNothing);
     expect(tester.takeException(), isNull);
   });
 }

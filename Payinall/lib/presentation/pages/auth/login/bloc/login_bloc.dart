@@ -153,15 +153,22 @@ final class LoginBloc extends Bloc<LoginEvent, LoginState> {
                 ),
               );
             }
-          } else {
+          } else if (response.activationProcessCode != null) {
             if (!emit.isDone) {
               emit(
                 state.copyWith(
                   status: LoginBlocStatus.smsVerification,
-                  activationProcessCode: response.activationProcessCode,
+                  activationProcessCode: response.activationProcessCode!,
                 ),
               );
             }
+          } else if (!emit.isDone) {
+            emit(
+              state.copyWith(
+                status: LoginBlocStatus.error,
+                message: LocaleKeys.unknown_error.translate,
+              ),
+            );
           }
         },
       );
@@ -203,8 +210,9 @@ final class LoginBloc extends Bloc<LoginEvent, LoginState> {
               notificationToken: notificationToken,
             );
 
-            final customerResult =
-                await _customerMobilesUsecase(customerParams);
+            final customerResult = await _customerMobilesUsecase(
+              customerParams,
+            );
 
             if (!emit.isDone) {
               customerResult.fold(
@@ -214,8 +222,7 @@ final class LoginBloc extends Bloc<LoginEvent, LoginState> {
                     message: failure.message,
                   ),
                 ),
-                (_) =>
-                    emit(state.copyWith(status: LoginBlocStatus.success)),
+                (_) => emit(state.copyWith(status: LoginBlocStatus.success)),
               );
             }
           } on Exception catch (e, st) {
@@ -253,15 +260,22 @@ final class LoginBloc extends Bloc<LoginEvent, LoginState> {
               ),
             );
           }
-        } else {
+        } else if (response.activationProcessCode != null) {
           if (!emit.isDone) {
             emit(
               state.copyWith(
                 status: LoginBlocStatus.smsVerification,
-                activationProcessCode: response.activationProcessCode,
+                activationProcessCode: response.activationProcessCode!,
               ),
             );
           }
+        } else if (!emit.isDone) {
+          emit(
+            state.copyWith(
+              status: LoginBlocStatus.error,
+              message: LocaleKeys.unknown_error.translate,
+            ),
+          );
         }
       },
     );
