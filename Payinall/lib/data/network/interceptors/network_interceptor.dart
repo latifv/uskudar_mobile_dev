@@ -44,6 +44,8 @@ final class NetworkInterceptor extends Interceptor {
   @override
   void onError(DioException err, ErrorInterceptorHandler handler) {
     if (err.response?.statusCode == HttpStatus.unauthorized) {
+      // Complete the request while preserving the session-expired behavior.
+      handler.next(err);
       unawaited(_handleUnauthorizedError());
       return;
     }

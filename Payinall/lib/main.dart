@@ -33,7 +33,8 @@ Future<void> _initializeRequirements() async {
   unawaited(_configureOrientation());
   unawaited(SystemChannels.textInput.invokeMethod('TextInput.hide'));
 
-  const appEnvironment = kReleaseMode
+  const useProduction = String.fromEnvironment('APP_ENV') == 'production';
+  const appEnvironment = useProduction || kReleaseMode
       ? AppEnvironment.production
       : kDebugMode
       ? AppEnvironment.development

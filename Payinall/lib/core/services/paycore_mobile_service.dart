@@ -1,7 +1,6 @@
 import 'package:payinall/core/error/exceptions.dart';
 import 'package:payinall/core/models/paycore_mobile_models.dart';
 import 'package:payinall/data/core/base_remote_data_source.dart';
-import 'package:payinall/data/network/config/api_constants.dart';
 import 'package:payinall/data/network/config/endpoints.dart';
 import 'package:payinall/data/network/models/network_response.dart';
 
@@ -15,33 +14,6 @@ final class PaycoreMobileService extends BaseRemoteDataSource {
     return _mapCustomerInfoResponse(
       responseJson,
       fallbackMessage: 'Müşteri bilgisi alınamadı.',
-    );
-  }
-
-  Future<NetworkResponse<PaycoreCustomerInfo>> getCustomerInfoByCustomerNumber(
-    String customerNumber,
-  ) async {
-    final responseJson = await get(
-      endpoint: Endpoints.getPayCoreCustomerInfo(customerNumber),
-    );
-    return _mapCustomerInfoResponse(
-      responseJson,
-      fallbackMessage: 'Müşteri bilgisi alınamadı.',
-    );
-  }
-
-  Future<NetworkResponse<PaycoreCustomerInfo>> getCustomerInfoFromManagement(
-    String customerNumber,
-  ) async {
-    final managementBaseUrl = _resolveManagementBaseUrl(ApiConstants.baseUrl);
-
-    final responseJson = await get(
-      endpoint:
-          '$managementBaseUrl/PayCoreManagement/get-customer-info/$customerNumber',
-    );
-    return _mapCustomerInfoResponse(
-      responseJson,
-      fallbackMessage: 'Management müşteri bilgisi alınamadı.',
     );
   }
 
@@ -312,30 +284,13 @@ final class PaycoreMobileService extends BaseRemoteDataSource {
 
   Future<NetworkResponse<PaycoreCreatePrepaidCardResult>> createPrepaidCard({
     required PaycoreCardCreationProfile cardProfile,
-    required String cityCode,
-    required String cityName,
-    required String townCode,
-    required String townName,
-    required String district,
-    required String address1,
-    String? address2,
-    String? zipCode,
+    required Map<String, dynamic> deliveryAddress,
   }) async {
-    final normalizedCityCode = _normalizePaycoreCityCode(cityCode);
-    final normalizedTownCode = _normalizePaycoreTownCode(townCode);
-
     final responseJson = await post(
       endpoint: Endpoints.createPayCorePrepaidCard,
       data: <String, dynamic>{
         'cardProfile': cardProfile.apiValue,
-        'cityCode': normalizedCityCode,
-        'cityName': cityName,
-        'townCode': normalizedTownCode,
-        'townName': townName,
-        'district': district,
-        'address1': address1,
-        'address2': address2,
-        'zipCode': zipCode,
+        'deliveryAddress': deliveryAddress,
       },
     );
 
@@ -754,42 +709,6 @@ final class PaycoreMobileService extends BaseRemoteDataSource {
     );
 
     return response.map(PaycoreAtmQrStartResult.fromJson);
-  }
-
-  String _resolveManagementBaseUrl(String apiBaseUrl) {
-    final normalizedBaseUrl = apiBaseUrl.trim().replaceAll(RegExp(r'/+$'), '');
-
-    if (normalizedBaseUrl.contains('payinallwalletapi.erpapay.com')) {
-      return normalizedBaseUrl.replaceFirst(
-        'payinallwalletapi.erpapay.com',
-        'payinallwalletapp.erpapay.com',
-      );
-    }
-
-    final parsedUri = Uri.tryParse(normalizedBaseUrl);
-    if (parsedUri == null) {
-      return normalizedBaseUrl;
-    }
-
-    final isLocalHost =
-        parsedUri.host == 'localhost' ||
-        parsedUri.host == '127.0.0.1' ||
-        parsedUri.host == '10.0.2.2';
-
-    if (!isLocalHost) {
-      return normalizedBaseUrl;
-    }
-
-    final nextPort = switch (parsedUri.port) {
-      5093 => 5072,
-      7087 => 7052,
-      _ => parsedUri.port,
-    };
-
-    return parsedUri
-        .replace(port: nextPort)
-        .toString()
-        .replaceAll(RegExp(r'/+$'), '');
   }
 
   String _normalizePaycoreCityCode(String value) {

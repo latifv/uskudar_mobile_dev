@@ -8,6 +8,9 @@ analyzer:
     - '**.gr.dart'
     - '**/generated_plugin_registrant.dart'
     - '**/*.freezed.dart'
+    - build/**
+    - android/**
+    - ios/**
 
     
 linter:

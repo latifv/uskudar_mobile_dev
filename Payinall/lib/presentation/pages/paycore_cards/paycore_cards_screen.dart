@@ -16,6 +16,7 @@ import 'package:payinall/data/network/network_client.dart';
 import 'package:payinall/di/di.dart';
 import 'package:payinall/domain/entities/metropol_city.dart';
 import 'package:payinall/domain/usecases/get_metropol_cities_usecase.dart';
+import 'package:payinall/presentation/pages/paycore_cards/paycore_new_address_fields.dart';
 import 'package:payinall/presentation/shared/components/toast_component.dart';
 import 'package:payinall/presentation/shared/constants/icon_asset_constants.dart';
 import 'package:payinall/presentation/shared/constants/paycore_card_asset_constants.dart';
@@ -134,8 +135,6 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
       <PaycoreCardCreationProfile>[
         PaycoreCardCreationProfile.troyPhysical,
         PaycoreCardCreationProfile.troyVirtual,
-        PaycoreCardCreationProfile.masterVirtual,
-        PaycoreCardCreationProfile.masterPhysical,
       ];
   late final PaycoreMobileService _paycoreService;
   late final UserInfoManager _userInfoManager;
@@ -172,42 +171,8 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
     unawaited(_loadPaycoreLocationCodes());
   }
 
-  Future<NetworkResponse<PaycoreCustomerInfo>> _fetchCustomerInfo() async {
-    final customerNumber = _resolveCurrentCustomerNumber();
-    if (customerNumber.isEmpty) {
-      return NetworkResponse.fromJson<PaycoreCustomerInfo>(<String, dynamic>{
-        'isSuccess': false,
-        'message': 'Müşteri numarası bulunamadı.',
-        'data': null,
-      });
-    }
-
-    final managementResponse = await _paycoreService
-        .getCustomerInfoFromManagement(customerNumber);
-    if (managementResponse.isSuccess && managementResponse.data != null) {
-      return managementResponse;
-    }
-
-    final currentCustomerResponse = await _paycoreService.getCustomerInfo();
-    if (currentCustomerResponse.isSuccess &&
-        currentCustomerResponse.data != null) {
-      return currentCustomerResponse;
-    }
-
-    final customerNumberResponse = await _paycoreService
-        .getCustomerInfoByCustomerNumber(customerNumber);
-    if (customerNumberResponse.isSuccess &&
-        customerNumberResponse.data != null) {
-      return customerNumberResponse;
-    }
-
-    return managementResponse.message?.trim().isNotEmpty ?? false
-        ? managementResponse
-        : (customerNumberResponse.message?.trim().isNotEmpty ?? false)
-        ? customerNumberResponse
-        : currentCustomerResponse;
-  }
-
+  Future<NetworkResponse<PaycoreCustomerInfo>> _fetchCustomerInfo() =>
+      _paycoreService.getCustomerInfo();
   String _resolveCurrentCustomerNumber() {
     final walletAddress = _userInfoManager.walletAddress?.trim() ?? '';
     if (walletAddress.isNotEmpty) {
@@ -782,25 +747,6 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
             cityNameController: cityNameController,
             townNameController: townNameController,
           ),
-          Row(
-            children: [
-              Expanded(
-                child: _buildTextField(
-                  controller: townCodeController,
-                  label: 'İlçe kodu',
-                  keyboardType: TextInputType.number,
-                ),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: _buildTextField(
-                  controller: cityCodeController,
-                  label: 'Şehir kodu',
-                  keyboardType: TextInputType.number,
-                ),
-              ),
-            ],
-          ),
         ],
       );
     }
@@ -847,27 +793,6 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
               townCodeController.text = town?.code ?? '';
             });
           },
-        ),
-        Row(
-          children: [
-            Expanded(
-              child: _buildTextField(
-                controller: townCodeController,
-                label: 'İlçe kodu',
-                readOnly: true,
-                hint: 'İlçe seçince otomatik dolar',
-              ),
-            ),
-            const SizedBox(width: 12),
-            Expanded(
-              child: _buildTextField(
-                controller: cityCodeController,
-                label: 'Şehir kodu',
-                readOnly: true,
-                hint: 'Şehir seçince otomatik dolar',
-              ),
-            ),
-          ],
         ),
       ],
     );
@@ -1314,64 +1239,22 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
 
   Future<void> _showCreateCustomerSheet() async {
     final customer = _customerInfo;
-    final address = customer?.addresses.isNotEmpty ?? false
-        ? customer!.addresses.first
-        : null;
     const fallbackGender = 'M';
-    const fallbackCityName = 'Ankara';
-    const fallbackTownName = 'Ankara';
-    const fallbackDistrict = 'Çankaya';
-    const fallbackTownCode = '06';
-    const fallbackCityCode = '06';
-    const fallbackPostalCode = '06';
-    const fallbackAddress = 'Erpa Plaza, Mustafa Kemal, 2125. Sk. No: 5, 06510';
 
     final genderController = TextEditingController(
       text: customer?.gender?.trim().isNotEmpty ?? false
           ? customer!.gender!
           : fallbackGender,
     );
-    final cityNameController = TextEditingController(
-      text: address?.city?.trim().isNotEmpty ?? false
-          ? address!.city!
-          : fallbackCityName,
-    );
-    final townNameController = TextEditingController(
-      text: address?.town?.trim().isNotEmpty ?? false
-          ? address!.town!
-          : fallbackTownName,
-    );
-    final districtController = TextEditingController(
-      text: address?.district?.trim().isNotEmpty ?? false
-          ? address!.district!
-          : fallbackDistrict,
-    );
-    final townCodeController = TextEditingController(
-      text: address?.townCode?.trim().isNotEmpty ?? false
-          ? address!.townCode!
-          : fallbackTownCode,
-    );
-    final cityCodeController = TextEditingController(
-      text: address?.cityCode?.trim().isNotEmpty ?? false
-          ? address!.cityCode!
-          : fallbackCityCode,
-    );
-    final postalCodeController = TextEditingController(
-      text: address?.zipCode?.trim().isNotEmpty ?? false
-          ? address!.zipCode!
-          : fallbackPostalCode,
-    );
-    final addressController = TextEditingController(
-      text: address?.address1.trim().isNotEmpty ?? false
-          ? address!.address1
-          : fallbackAddress,
-    );
-    _syncPaycoreLocationControllers(
-      cityNameController: cityNameController,
-      townNameController: townNameController,
-      cityCodeController: cityCodeController,
-      townCodeController: townCodeController,
-    );
+    final cityNameController = TextEditingController();
+    final townNameController = TextEditingController();
+    final districtController = TextEditingController();
+    final townCodeController = TextEditingController();
+    final cityCodeController = TextEditingController();
+    final postalCodeController = TextEditingController();
+    final addressController = TextEditingController();
+    await _loadMetropolCities();
+    if (!mounted) return;
     var isSubmitting = false;
     String? submitError;
     var isCreated = false;
@@ -1387,8 +1270,6 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
                 final cityName = cityNameController.text.trim();
                 final townName = townNameController.text.trim();
                 final district = districtController.text.trim();
-                final townCode = townCodeController.text.trim();
-                final cityCode = cityCodeController.text.trim();
                 final postalCode = postalCodeController.text.trim();
                 final address = addressController.text.trim();
 
@@ -1397,13 +1278,23 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
                   cityName,
                   townName,
                   district,
-                  townCode,
-                  cityCode,
                   postalCode,
                   address,
                 ].any((value) => value.isEmpty)) {
                   setSheetState(() {
                     submitError = 'Zorunlu alanları doldur.';
+                  });
+                  return;
+                }
+
+                final addressError = PaycoreNewAddressFields.validationError(
+                  address,
+                  districtController.text,
+                  postalCode,
+                );
+                if (addressError != null) {
+                  setSheetState(() {
+                    submitError = addressError;
                   });
                   return;
                 }
@@ -1418,8 +1309,8 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
                   cityName: cityName,
                   townName: townName,
                   district: district,
-                  townCode: townCode,
-                  cityCode: cityCode,
+                  townCode: '',
+                  cityCode: '',
                   postalCode: postalCode,
                   address: address,
                 );
@@ -1444,8 +1335,8 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
                   cityName: cityName,
                   townName: townName,
                   district: district,
-                  townCode: townCode,
-                  cityCode: cityCode,
+                  townCode: '',
+                  cityCode: '',
                   postalCode: postalCode,
                   address: address,
                 );
@@ -1504,25 +1395,13 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
                           title: 'Adres Bilgileri',
                           child: Column(
                             children: [
-                              _buildPaycoreLocationSelectors(
-                                setSheetState: setSheetState,
-                                cityNameController: cityNameController,
-                                townNameController: townNameController,
-                                cityCodeController: cityCodeController,
-                                townCodeController: townCodeController,
-                              ),
-                              _buildTextField(
-                                controller: districtController,
-                                label: 'Semt / Mahalle',
-                              ),
-                              _buildTextField(
-                                controller: postalCodeController,
-                                label: 'Posta Kodu',
-                              ),
-                              _buildTextField(
-                                controller: addressController,
-                                label: 'Adres',
-                                maxLines: 3,
+                              PaycoreNewAddressFields(
+                                cities: _metropolCities,
+                                city: cityNameController,
+                                town: townNameController,
+                                district: districtController,
+                                zip: postalCodeController,
+                                street: addressController,
                               ),
                             ],
                           ),
@@ -1846,33 +1725,13 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
       _customerInfo = effectiveCustomerInfo;
     }
 
-    final address = _resolvedCreateCardAddress;
-    if (address == null) {
-      _showError(
-        'Kart oluşturmak için kayıtlı müşteri adresi gerekli. Önce adresi güncelle.',
-      );
-      return;
-    }
-
-    final cityNameController = TextEditingController(text: address.cityName);
-    final townNameController = TextEditingController(text: address.townName);
-    final cityCodeController = TextEditingController(text: address.cityCode);
-    final townCodeController = TextEditingController(text: address.townCode);
-    final districtController = TextEditingController(text: address.district);
-    final zipCodeController = TextEditingController(
-      text: address.zipCode ?? '',
-    );
-    final address1Controller = TextEditingController(text: address.address1);
-    final address2Controller = TextEditingController(
-      text: _normalizeSecondaryAddressLine(address.address2) ?? '',
-    );
-    _syncPaycoreLocationControllers(
-      cityNameController: cityNameController,
-      townNameController: townNameController,
-      cityCodeController: cityCodeController,
-      townCodeController: townCodeController,
-    );
-
+    final cityNameController = TextEditingController();
+    final townNameController = TextEditingController();
+    final districtController = TextEditingController();
+    final zipCodeController = TextEditingController();
+    final address1Controller = TextEditingController();
+    await _loadMetropolCities();
+    if (!mounted) return;
     var isSubmitting = false;
     var selectedProfile = PaycoreCardCreationProfile.troyPhysical;
 
@@ -1884,22 +1743,16 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
               Future<void> submit() async {
                 final cityName = cityNameController.text.trim();
                 final townName = townNameController.text.trim();
-                final cityCode = cityCodeController.text.trim();
-                final townCode = townCodeController.text.trim();
                 final district = districtController.text.trim();
                 final zipCode = zipCodeController.text.trim();
                 final address1 = address1Controller.text.trim();
-                final address2 = _normalizeSecondaryAddressLine(
-                  address2Controller.text,
-                );
 
                 if ([
                   cityName,
                   townName,
-                  cityCode,
-                  townCode,
                   district,
                   address1,
+                  zipCode,
                 ].any((value) => value.isEmpty)) {
                   _showError(
                     'Kart oluşturmak için zorunlu PayCore alanlarını tamamlayın.',
@@ -1907,20 +1760,29 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
                   return;
                 }
 
+                final addressError = PaycoreNewAddressFields.validationError(
+                  address1,
+                  district,
+                  zipCode,
+                );
+                if (addressError != null) {
+                  _showError(addressError);
+                  return;
+                }
                 setSheetState(() {
                   isSubmitting = true;
                 });
 
                 final response = await _paycoreService.createPrepaidCard(
                   cardProfile: selectedProfile,
-                  cityCode: cityCode,
-                  cityName: cityName,
-                  townCode: townCode,
-                  townName: townName,
-                  district: district,
-                  address1: address1,
-                  address2: address2,
-                  zipCode: zipCode.isEmpty ? null : zipCode,
+                  deliveryAddress: <String, dynamic>{
+                    'cityName': cityName,
+                    'townName': townName,
+                    'district': district,
+                    'address1': address1,
+                    'address2': null,
+                    'zipCode': zipCode,
+                  },
                 );
 
                 if (!mounted || !pageContext.mounted) {
@@ -2010,29 +1872,13 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
                                   ),
                                 ),
                               ),
-                              _buildPaycoreLocationSelectors(
-                                setSheetState: setSheetState,
-                                cityNameController: cityNameController,
-                                townNameController: townNameController,
-                                cityCodeController: cityCodeController,
-                                townCodeController: townCodeController,
-                              ),
-                              _buildTextField(
-                                controller: districtController,
-                                label: 'Semt / Mahalle',
-                              ),
-                              _buildTextField(
-                                controller: zipCodeController,
-                                label: 'Posta Kodu',
-                              ),
-                              _buildTextField(
-                                controller: address1Controller,
-                                label: 'Teslimat adresi',
-                              ),
-                              _buildTextField(
-                                controller: address2Controller,
-                                label: 'Adres satırı 2',
-                                hint: 'Apartman, blok, kat vb. (opsiyonel)',
+                              PaycoreNewAddressFields(
+                                cities: _metropolCities,
+                                city: cityNameController,
+                                town: townNameController,
+                                district: districtController,
+                                zip: zipCodeController,
+                                street: address1Controller,
                               ),
                             ],
                           ),
@@ -2071,12 +1917,9 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
     } finally {
       cityNameController.dispose();
       townNameController.dispose();
-      cityCodeController.dispose();
-      townCodeController.dispose();
       districtController.dispose();
       zipCodeController.dispose();
       address1Controller.dispose();
-      address2Controller.dispose();
     }
   }
 
@@ -2110,25 +1953,7 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
       return;
     }
 
-    if (_resolvedCreateCardAddress != null) {
-      await _showCreateCardSheet();
-      return;
-    }
-
-    final customerAddresses =
-        customer?.addresses ?? const <PaycoreCustomerAddress>[];
-    final editableAddress = customerAddresses.isNotEmpty
-        ? customerAddresses.first
-        : null;
-
-    if (editableAddress != null) {
-      _showError('Kart oluşturmak için adres bilgisini tamamlaman gerekiyor.');
-      await _showAddressEditSheet(editableAddress);
-      return;
-    }
-
-    _showError('Kart oluşturmak için teslimat adresini tamamla.');
-    await _showAddressEditSheet(null);
+    await _showCreateCardSheet();
   }
 
   Future<void> _handleAddPhysicalCardPressed() async {
@@ -5724,136 +5549,6 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
     return value;
   }
 
-  ({
-    String cityCode,
-    String cityName,
-    String townCode,
-    String townName,
-    String district,
-    String address1,
-    String? address2,
-    String? zipCode,
-  })?
-  get _resolvedCreateCardAddress {
-    final addresses =
-        _customerInfo?.addresses ?? const <PaycoreCustomerAddress>[];
-    if (addresses.isEmpty) {
-      return null;
-    }
-
-    String? pickValue(
-      Iterable<String?> candidates, {
-      bool treatZeroAsEmpty = true,
-    }) {
-      for (final candidate in candidates) {
-        final normalized = candidate?.trim();
-        if (normalized == null || normalized.isEmpty) {
-          continue;
-        }
-        if (treatZeroAsEmpty && normalized == '0') {
-          continue;
-        }
-        return normalized;
-      }
-      return null;
-    }
-
-    Iterable<PaycoreCustomerAddress> byTypes(List<String> types) sync* {
-      for (final type in types) {
-        yield* addresses.where((address) => address.addressType == type);
-      }
-    }
-
-    String? pickField(
-      String? Function(PaycoreCustomerAddress address) selector, {
-      List<String> preferredTypes = const ['D', 'P', 'W'],
-      bool treatZeroAsEmpty = true,
-    }) {
-      return pickValue(
-            byTypes(preferredTypes).map(selector),
-            treatZeroAsEmpty: treatZeroAsEmpty,
-          ) ??
-          pickValue(
-            addresses.map(selector),
-            treatZeroAsEmpty: treatZeroAsEmpty,
-          );
-    }
-
-    final address1 = pickField((address) => address.address1);
-    final address2 = _normalizeSecondaryAddressLine(
-      pickField((address) => address.address2, treatZeroAsEmpty: false),
-    );
-    final cityCode = pickField((address) => address.cityCode);
-    final townCode = pickField((address) => address.townCode);
-    final cityName = pickField(
-      (address) => address.city,
-      preferredTypes: const ['P', 'D', 'W'],
-    );
-    final townName = pickField(
-      (address) => address.town,
-      preferredTypes: const ['P', 'D', 'W'],
-    );
-    final district = pickField((address) => address.district);
-    final zipCode = pickField(
-      (address) => address.zipCode,
-      treatZeroAsEmpty: false,
-    );
-
-    if ([
-      address1,
-      cityCode,
-      townCode,
-      cityName,
-      townName,
-      district,
-    ].any((value) => value == null || value.isEmpty)) {
-      return null;
-    }
-
-    return (
-      cityCode: cityCode!,
-      cityName: cityName!,
-      townCode: townCode!,
-      townName: townName!,
-      district: district!,
-      address1: address1!,
-      address2: address2,
-      zipCode: zipCode,
-    );
-  }
-
-  Widget _buildInfoCallout({required String title, required String message}) {
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(14),
-      decoration: BoxDecoration(
-        color: context.colorScheme.surfaceContainerHighest.withValues(
-          alpha: 0.42,
-        ),
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: context.colorScheme.outlineVariant),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            title,
-            style: context.textTheme.titleSmall?.copyWith(
-              fontWeight: FontWeight.w800,
-            ),
-          ),
-          const SizedBox(height: 6),
-          Text(
-            message,
-            style: context.textTheme.bodyMedium?.copyWith(
-              color: context.colorScheme.onSurfaceVariant,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
   Widget _buildSheetHeader({
     required IconData icon,
     required String title,
@@ -6679,8 +6374,7 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
   }
 
   Widget _buildCardsModule() {
-    final canCreateCard =
-        _hasPaycoreCustomerRecord && _resolvedCreateCardAddress != null;
+    final canCreateCard = _hasPaycoreCustomerRecord;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -8094,30 +7788,6 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
       if (address.town?.isNotEmpty ?? false) address.town else address.townCode,
       if (address.city?.isNotEmpty ?? false) address.city else address.cityCode,
       address.zipCode,
-    ].whereType<String>().where((value) => value.isNotEmpty).join(', ');
-  }
-
-  String _buildResolvedCreateCardAddressSummary(
-    ({
-      String cityCode,
-      String cityName,
-      String townCode,
-      String townName,
-      String district,
-      String address1,
-      String? address2,
-      String? zipCode,
-    })
-    address,
-  ) {
-    return [
-      address.address1,
-      if (_normalizeSecondaryAddressLine(address.address2)?.isNotEmpty ?? false)
-        _normalizeSecondaryAddressLine(address.address2),
-      address.district,
-      address.townName,
-      address.cityName,
-      if (address.zipCode?.isNotEmpty ?? false) address.zipCode,
     ].whereType<String>().where((value) => value.isNotEmpty).join(', ');
   }
 

@@ -103,10 +103,6 @@ final class _HomePaycoreCardsCarouselState
 
   @override
   Widget build(BuildContext context) {
-    if (_isLoading || _cards.isEmpty) {
-      return const SizedBox.shrink();
-    }
-
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -115,64 +111,66 @@ final class _HomePaycoreCardsCarouselState
           onRequestPressed: widget.onRequestPressed,
           onWithdrawPressed: widget.onWithdrawPressed,
         ),
-        const SizedBox(height: 8),
-        Row(
-          children: [
-            Text(
-              'Kartlarım',
-              style: context.textTheme.headlineSmall?.copyWith(
-                fontWeight: FontWeight.w800,
-                fontSize: 16,
+        if (!_isLoading && _cards.isNotEmpty) ...[
+          const SizedBox(height: 8),
+          Row(
+            children: [
+              Text(
+                'Kartlarım',
+                style: context.textTheme.headlineSmall?.copyWith(
+                  fontWeight: FontWeight.w800,
+                  fontSize: 16,
+                ),
+              ),
+              const Spacer(),
+              TextButton(
+                onPressed: widget.onPressed,
+                child: const Text('Tümünü Gör'),
+              ),
+            ],
+          ),
+          const SizedBox(height: 6),
+          SizedBox(
+            height: 218,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 6),
+              child: PageView.builder(
+                controller: _pageController,
+                itemCount: _cards.length,
+                itemBuilder: (context, index) {
+                  final card = _cards[index];
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 2),
+                    child: _HomePaycoreCard(
+                      card: card,
+                      onTap: widget.onPressed,
+                    ),
+                  );
+                },
               ),
             ),
-            const Spacer(),
-            TextButton(
-              onPressed: widget.onPressed,
-              child: const Text('Tümünü Gör'),
-            ),
-          ],
-        ),
-        const SizedBox(height: 6),
-        SizedBox(
-          height: 218,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 6),
-            child: PageView.builder(
-              controller: _pageController,
-              itemCount: _cards.length,
-              itemBuilder: (context, index) {
-                final card = _cards[index];
-                return Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 2),
-                  child: _HomePaycoreCard(
-                    card: card,
-                    onTap: widget.onPressed,
-                  ),
-                );
-              },
-            ),
           ),
-        ),
-        if (_cards.length > 1) ...[
-          const SizedBox(height: 6),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: List.generate(
-              _cards.length,
-              (index) => AnimatedContainer(
-                duration: const Duration(milliseconds: 220),
-                margin: const EdgeInsets.symmetric(horizontal: 3),
-                width: index == _currentIndex ? 18 : 6,
-                height: 6,
-                decoration: BoxDecoration(
-                  color: index == _currentIndex
-                      ? context.colorScheme.primary
-                      : context.colorScheme.outlineVariant,
-                  borderRadius: BorderRadius.circular(999),
+          if (_cards.length > 1) ...[
+            const SizedBox(height: 6),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: List.generate(
+                _cards.length,
+                (index) => AnimatedContainer(
+                  duration: const Duration(milliseconds: 220),
+                  margin: const EdgeInsets.symmetric(horizontal: 3),
+                  width: index == _currentIndex ? 18 : 6,
+                  height: 6,
+                  decoration: BoxDecoration(
+                    color: index == _currentIndex
+                        ? context.colorScheme.primary
+                        : context.colorScheme.outlineVariant,
+                    borderRadius: BorderRadius.circular(999),
+                  ),
                 ),
               ),
             ),
-          ),
+          ],
         ],
       ],
     );
