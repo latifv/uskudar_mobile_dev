@@ -26,30 +26,48 @@ final class LogoImage extends StatelessWidget {
       child: ClipRRect(
         borderRadius: borderRadius ?? context.borderRadiusHighAll,
         child: imagePath == null
-            ? ColorFiltered(
-                colorFilter: const ColorFilter.matrix([
-                  1,
-                  0,
-                  0,
-                  0,
-                  0,
-                  0,
-                  1,
-                  0,
-                  0,
-                  0,
-                  0,
-                  0,
-                  1,
-                  0,
-                  0,
-                  -1,
-                  0,
-                  0,
-                  0,
-                  255,
-                ]),
-                child: Image.asset(IconAssetsConstants.logo, fit: fit),
+            ? FittedBox(
+                fit: fit,
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    ClipOval(
+                      child: Image.asset(
+                        IconAssetsConstants.municipalitySeal,
+                        width: 72,
+                        height: 72,
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    const Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          'ÜSKÜDAR',
+                          style: TextStyle(
+                            color: Color(0xFF0E4269),
+                            fontSize: 35,
+                            fontWeight: FontWeight.w800,
+                            height: 1,
+                            letterSpacing: -1.1,
+                          ),
+                        ),
+                        Text(
+                          'BELEDİYESİ',
+                          style: TextStyle(
+                            color: Color(0xFF0E4269),
+                            fontSize: 24,
+                            fontWeight: FontWeight.w800,
+                            height: 1.05,
+                            letterSpacing: 0.1,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
               )
             : Image.asset(imagePath!, fit: fit),
       ),
