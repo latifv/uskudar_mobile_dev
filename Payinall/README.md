@@ -1,3 +1,0 @@
-# Payinall
-
-Payinall Uygulaması
