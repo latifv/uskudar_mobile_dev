@@ -10,6 +10,10 @@ final class CriticalServiceModule extends DIModule {
       ..registerSingleton<LocalNotificationService>(
         LocalNotificationServiceImpl(),
       )
-      ..registerSingleton<FirebaseService>(FirebaseServiceImpl());
+      ..registerSingleton<FirebaseService>(
+        const bool.fromEnvironment('USKUDAR_FIREBASE_CONFIGURED')
+            ? FirebaseServiceImpl()
+            : DisabledFirebaseService(),
+      );
   }
 }

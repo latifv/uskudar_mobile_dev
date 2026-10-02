@@ -15,7 +15,7 @@ import 'package:uskudar_mobile/domain/usecases/save_notification_usecase.dart';
 abstract interface class FirebaseService {
   Future<String?> getFirebaseToken();
 
-  FirebaseAnalyticsObserver getAnalyticsObserver();
+  FirebaseAnalyticsObserver? getAnalyticsObserver();
   Future<void> logEvent(String name, Map<String, Object>? parameters);
   Future<void> setCurrentScreen(String screenName);
 
@@ -300,4 +300,44 @@ final class FirebaseServiceImpl implements FirebaseService {
 
     LogHelper.log(LogLevel.debug, 'Firebase Service dispose edildi');
   }
+}
+
+/// Keeps the existing app flows available until a separate Firebase app is supplied.
+final class DisabledFirebaseService implements FirebaseService {
+  @override
+  Future<String?> getFirebaseToken() async => null;
+
+  @override
+  FirebaseAnalyticsObserver? getAnalyticsObserver() => null;
+
+  @override
+  Future<void> logEvent(String name, Map<String, Object>? parameters) async {}
+
+  @override
+  Future<void> setCurrentScreen(String screenName) async {}
+
+  @override
+  Future<void> subscribeToTopic(String topic) async {}
+
+  @override
+  Future<void> unsubscribeFromTopic(String topic) async {}
+
+  @override
+  Future<void> initializeCrashlytics() async {}
+
+  @override
+  Future<void> setUserIdentifier(String identifier) async {}
+
+  @override
+  Future<void> recordError(
+    dynamic exception,
+    StackTrace? stack, {
+    String? reason,
+  }) async {}
+
+  @override
+  Future<void> crashlyticsLog(String message) async {}
+
+  @override
+  Future<void> dispose() async {}
 }

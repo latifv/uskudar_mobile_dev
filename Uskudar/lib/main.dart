@@ -19,16 +19,8 @@ import 'package:uskudar_mobile/data/models/logged_in_model.dart';
 import 'package:uskudar_mobile/data/models/notification_item_model.dart';
 import 'package:uskudar_mobile/di/di.dart' as di;
 import 'package:uskudar_mobile/domain/enums/app_environment.dart';
-import 'package:uskudar_mobile/preview_app.dart';
 
 Future<void> main() async {
-  const servicesConfigured = bool.fromEnvironment('USKUDAR_SERVICES_CONFIGURED');
-  if (!servicesConfigured) {
-    WidgetsFlutterBinding.ensureInitialized();
-    runApp(const PreviewApp());
-    return;
-  }
-
   await runZonedGuarded(() async {
     WidgetsFlutterBinding.ensureInitialized();
     await _initializeRequirements();
@@ -51,8 +43,11 @@ Future<void> _initializeRequirements() async {
   await Future.wait([
     EnvironmentConfig.initialize(appEnvironment),
     EasyLocalization.ensureInitialized(),
-    Firebase.initializeApp(),
   ]);
+
+  if (const bool.fromEnvironment('USKUDAR_FIREBASE_CONFIGURED')) {
+    await Firebase.initializeApp();
+  }
 
   await di.setupCritical();
   await _setupHiveAsync();

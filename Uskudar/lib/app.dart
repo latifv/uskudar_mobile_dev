@@ -224,7 +224,10 @@ final class _AppState extends State<App> with WidgetsBindingObserver {
           deepLinkBuilder: (deepLink) {
             return deepLink;
           },
-          navigatorObservers: () => [_firebaseService.getAnalyticsObserver()],
+          navigatorObservers: () {
+            final observer = _firebaseService.getAnalyticsObserver();
+            return observer == null ? [] : [observer];
+          },
         ),
         theme: AppTheme.light().data,
         darkTheme: AppTheme.dark().data,
