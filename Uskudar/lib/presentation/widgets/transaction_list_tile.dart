@@ -1,13 +1,13 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
-import 'package:payinall/core/constants/app_constants.dart';
-import 'package:payinall/domain/entities/transaction.dart';
-import 'package:payinall/presentation/route/app_router.dart';
-import 'package:payinall/presentation/shared/extensions/border_radius_extension.dart';
-import 'package:payinall/presentation/shared/extensions/datetime_extension.dart';
-import 'package:payinall/presentation/shared/extensions/double_extension.dart';
-import 'package:payinall/presentation/shared/extensions/padding_extension.dart';
-import 'package:payinall/presentation/shared/extensions/theme_extension.dart';
+import 'package:uskudar_mobile/core/constants/app_constants.dart';
+import 'package:uskudar_mobile/domain/entities/transaction.dart';
+import 'package:uskudar_mobile/presentation/route/app_router.dart';
+import 'package:uskudar_mobile/presentation/shared/extensions/border_radius_extension.dart';
+import 'package:uskudar_mobile/presentation/shared/extensions/datetime_extension.dart';
+import 'package:uskudar_mobile/presentation/shared/extensions/double_extension.dart';
+import 'package:uskudar_mobile/presentation/shared/extensions/padding_extension.dart';
+import 'package:uskudar_mobile/presentation/shared/extensions/theme_extension.dart';
 
 final class TransactionListTile extends StatelessWidget {
   const TransactionListTile({

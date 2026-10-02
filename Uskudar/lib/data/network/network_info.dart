@@ -1,5 +1,5 @@
 import 'package:connectivity_plus/connectivity_plus.dart';
-import 'package:payinall/data/network/models/network_connection_type.dart';
+import 'package:uskudar_mobile/data/network/models/network_connection_type.dart';
 
 abstract interface class NetworkInfo {
   Future<bool> get isConnected;

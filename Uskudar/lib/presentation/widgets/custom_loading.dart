@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:loading_indicator/loading_indicator.dart';
-import 'package:payinall/presentation/shared/extensions/media_query_extension.dart';
-import 'package:payinall/presentation/shared/extensions/theme_extension.dart';
+import 'package:uskudar_mobile/presentation/shared/extensions/media_query_extension.dart';
+import 'package:uskudar_mobile/presentation/shared/extensions/theme_extension.dart';
 
 final class CustomLoading extends StatelessWidget {
   const CustomLoading({

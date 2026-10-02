@@ -1,5 +1,5 @@
 import 'package:json_annotation/json_annotation.dart';
-import 'package:payinall/data/dtos/responses/campaign_merchant_response.dart';
+import 'package:uskudar_mobile/data/dtos/responses/campaign_merchant_response.dart';
 
 part 'campaign_response.g.dart';
 

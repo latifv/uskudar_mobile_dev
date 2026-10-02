@@ -674,8 +674,8 @@ abstract class  LocaleKeys {
   static const discount_points = 'discount_points';
   static const fuel = 'fuel';
   static const alisverislio_subtitle = 'alisverislio_subtitle';
-  static const payinall_discount_points = 'payinall_discount_points';
-  static const payinall_discount_points_description = 'payinall_discount_points_description';
+  static const uskudar_discount_points = 'uskudar_discount_points';
+  static const uskudar_discount_points_description = 'uskudar_discount_points_description';
   static const no_nearby_discount_points = 'no_nearby_discount_points';
   static const discount_points_location_permission = 'discount_points_location_permission';
   static const gift_checks_description = 'gift_checks_description';

@@ -1,8 +1,8 @@
 import 'dart:async';
 
-import 'package:payinall/core/utils/log_helper.dart';
-import 'package:payinall/core/utils/log_level.dart';
-import 'package:payinall/data/network/config/api_constants.dart';
+import 'package:uskudar_mobile/core/utils/log_helper.dart';
+import 'package:uskudar_mobile/core/utils/log_level.dart';
+import 'package:uskudar_mobile/data/network/config/api_constants.dart';
 import 'package:signalr_netcore/signalr_client.dart';
 
 abstract interface class SignalRService {

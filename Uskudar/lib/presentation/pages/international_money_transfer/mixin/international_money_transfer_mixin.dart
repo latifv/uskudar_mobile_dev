@@ -2,19 +2,19 @@ import 'dart:async';
 
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
-import 'package:payinall/core/generated/locale_keys.g.dart';
-import 'package:payinall/di/di.dart';
-import 'package:payinall/domain/entities/attribute_item.dart';
-import 'package:payinall/domain/entities/bic_bank.dart';
-import 'package:payinall/domain/entities/corporation_attribute.dart';
-import 'package:payinall/domain/entities/international_transfer_result.dart';
-import 'package:payinall/domain/entities/office.dart';
-import 'package:payinall/domain/entities/required_attribute.dart';
-import 'package:payinall/domain/entities/wallet_operator.dart';
-import 'package:payinall/presentation/pages/international_money_transfer/bloc/international_money_transfer_bloc.dart';
-import 'package:payinall/presentation/route/app_router.dart';
-import 'package:payinall/presentation/shared/components/toast_component.dart';
-import 'package:payinall/presentation/shared/extensions/string_extension.dart';
+import 'package:uskudar_mobile/core/generated/locale_keys.g.dart';
+import 'package:uskudar_mobile/di/di.dart';
+import 'package:uskudar_mobile/domain/entities/attribute_item.dart';
+import 'package:uskudar_mobile/domain/entities/bic_bank.dart';
+import 'package:uskudar_mobile/domain/entities/corporation_attribute.dart';
+import 'package:uskudar_mobile/domain/entities/international_transfer_result.dart';
+import 'package:uskudar_mobile/domain/entities/office.dart';
+import 'package:uskudar_mobile/domain/entities/required_attribute.dart';
+import 'package:uskudar_mobile/domain/entities/wallet_operator.dart';
+import 'package:uskudar_mobile/presentation/pages/international_money_transfer/bloc/international_money_transfer_bloc.dart';
+import 'package:uskudar_mobile/presentation/route/app_router.dart';
+import 'package:uskudar_mobile/presentation/shared/components/toast_component.dart';
+import 'package:uskudar_mobile/presentation/shared/extensions/string_extension.dart';
 
 mixin InternationalMoneyTransferMixin<T extends StatefulWidget> on State<T> {
   late final InternationalMoneyTransferBloc bloc;

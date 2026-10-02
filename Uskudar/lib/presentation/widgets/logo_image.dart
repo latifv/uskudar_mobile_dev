@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:payinall/presentation/shared/constants/icon_asset_constants.dart';
-import 'package:payinall/presentation/shared/extensions/border_radius_extension.dart';
-import 'package:payinall/presentation/shared/extensions/media_query_extension.dart';
+import 'package:uskudar_mobile/presentation/shared/constants/icon_asset_constants.dart';
+import 'package:uskudar_mobile/presentation/shared/extensions/border_radius_extension.dart';
+import 'package:uskudar_mobile/presentation/shared/extensions/media_query_extension.dart';
 
 final class LogoImage extends StatelessWidget {
   const LogoImage({

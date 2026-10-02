@@ -1,8 +1,8 @@
 import 'dart:async';
 
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:payinall/core/utils/log_helper.dart';
-import 'package:payinall/core/utils/log_level.dart';
+import 'package:uskudar_mobile/core/utils/log_helper.dart';
+import 'package:uskudar_mobile/core/utils/log_level.dart';
 
 abstract interface class LocalNotificationService {
   Future<void> initialize();

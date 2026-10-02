@@ -1,6 +1,6 @@
-import 'package:payinall/core/error/exceptions.dart';
-import 'package:payinall/data/dtos/responses/metropol_transaction_response.dart';
-import 'package:payinall/domain/entities/metropol_transaction.dart';
+import 'package:uskudar_mobile/core/error/exceptions.dart';
+import 'package:uskudar_mobile/data/dtos/responses/metropol_transaction_response.dart';
+import 'package:uskudar_mobile/domain/entities/metropol_transaction.dart';
 
 final class MetropolTransactionModel extends MetropolTransaction {
   const MetropolTransactionModel({

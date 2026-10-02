@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:payinall/presentation/pages/onboarding/enum/onboarding_page.dart';
+import 'package:uskudar_mobile/presentation/pages/onboarding/enum/onboarding_page.dart';
 
 part 'onboarding_event.dart';
 part 'onboarding_state.dart';

@@ -1,6 +1,6 @@
 import 'package:flutter/foundation.dart';
-import 'package:payinall/data/config/environment_config.dart';
-import 'package:payinall/data/network/config/local_endpoint.dart';
+import 'package:uskudar_mobile/data/config/environment_config.dart';
+import 'package:uskudar_mobile/data/network/config/local_endpoint.dart';
 
 final class ApiConstants {
   const ApiConstants._();

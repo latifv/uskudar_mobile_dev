@@ -1,6 +1,6 @@
-import 'package:payinall/core/error/exceptions.dart';
-import 'package:payinall/data/dtos/responses/customer_demand_subject_response.dart';
-import 'package:payinall/domain/entities/customer_demand_subject.dart';
+import 'package:uskudar_mobile/core/error/exceptions.dart';
+import 'package:uskudar_mobile/data/dtos/responses/customer_demand_subject_response.dart';
+import 'package:uskudar_mobile/domain/entities/customer_demand_subject.dart';
 
 final class CustomerDemandSubjectModel extends CustomerDemandSubject {
   const CustomerDemandSubjectModel({required super.key, required super.value});

@@ -1,10 +1,10 @@
 import 'package:fpdart/fpdart.dart';
-import 'package:payinall/core/error/failures.dart';
-import 'package:payinall/data/core/data_source_handler.dart';
-import 'package:payinall/data/datasources/remote/app_banks_remote_data_source.dart';
-import 'package:payinall/data/models/app_bank_model.dart';
-import 'package:payinall/domain/entities/app_bank.dart';
-import 'package:payinall/domain/repositories/app_banks_repository.dart';
+import 'package:uskudar_mobile/core/error/failures.dart';
+import 'package:uskudar_mobile/data/core/data_source_handler.dart';
+import 'package:uskudar_mobile/data/datasources/remote/app_banks_remote_data_source.dart';
+import 'package:uskudar_mobile/data/models/app_bank_model.dart';
+import 'package:uskudar_mobile/domain/entities/app_bank.dart';
+import 'package:uskudar_mobile/domain/repositories/app_banks_repository.dart';
 
 final class AppBanksRepositoryImpl implements AppBanksRepository {
   AppBanksRepositoryImpl({required this.remoteDataSource})

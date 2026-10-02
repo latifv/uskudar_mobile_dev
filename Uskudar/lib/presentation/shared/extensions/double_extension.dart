@@ -1,4 +1,4 @@
-import 'package:payinall/core/constants/app_constants.dart';
+import 'package:uskudar_mobile/core/constants/app_constants.dart';
 
 extension DoubleExtension on double? {
   String toFormattedCurrency() {

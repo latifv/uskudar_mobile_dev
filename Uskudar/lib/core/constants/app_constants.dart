@@ -1,4 +1,4 @@
-import 'package:payinall/data/config/environment_config.dart';
+import 'package:uskudar_mobile/data/config/environment_config.dart';
 
 final class AppConstants {
   const AppConstants._();

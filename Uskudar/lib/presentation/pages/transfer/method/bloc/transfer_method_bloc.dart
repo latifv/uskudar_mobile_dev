@@ -1,13 +1,13 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:payinall/core/error/failures.dart';
-import 'package:payinall/core/managers/user_info_manager.dart';
-import 'package:payinall/domain/entities/customer_bank.dart';
-import 'package:payinall/domain/entities/frequent_iban.dart';
-import 'package:payinall/domain/entities/frequently_sent.dart';
-import 'package:payinall/domain/enums/transfer_method.dart';
-import 'package:payinall/domain/usecases/get_customer_banks_usecase.dart';
-import 'package:payinall/domain/usecases/get_frequently_sents_usecase.dart';
+import 'package:uskudar_mobile/core/error/failures.dart';
+import 'package:uskudar_mobile/core/managers/user_info_manager.dart';
+import 'package:uskudar_mobile/domain/entities/customer_bank.dart';
+import 'package:uskudar_mobile/domain/entities/frequent_iban.dart';
+import 'package:uskudar_mobile/domain/entities/frequently_sent.dart';
+import 'package:uskudar_mobile/domain/enums/transfer_method.dart';
+import 'package:uskudar_mobile/domain/usecases/get_customer_banks_usecase.dart';
+import 'package:uskudar_mobile/domain/usecases/get_frequently_sents_usecase.dart';
 
 part 'transfer_method_event.dart';
 part 'transfer_method_state.dart';

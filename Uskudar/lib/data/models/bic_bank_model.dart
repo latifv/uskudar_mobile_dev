@@ -1,5 +1,5 @@
-import 'package:payinall/data/dtos/responses/bic_bank_response.dart';
-import 'package:payinall/domain/entities/bic_bank.dart';
+import 'package:uskudar_mobile/data/dtos/responses/bic_bank_response.dart';
+import 'package:uskudar_mobile/domain/entities/bic_bank.dart';
 
 final class BicBankModel extends BicBank {
   const BicBankModel({

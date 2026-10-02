@@ -1,15 +1,15 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:payinall/core/error/failures.dart';
-import 'package:payinall/core/generated/locale_keys.g.dart';
-import 'package:payinall/domain/entities/request_money.dart';
-import 'package:payinall/domain/entities/wallet_transfer.dart';
-import 'package:payinall/domain/params/wallet_transfer_params.dart';
-import 'package:payinall/domain/usecases/delete_request_money_usecase.dart';
-import 'package:payinall/domain/usecases/get_buyer_request_moneys_usecase.dart';
-import 'package:payinall/domain/usecases/get_sender_request_moneys_usecase.dart';
-import 'package:payinall/domain/usecases/wallet_transfer_usecase.dart';
-import 'package:payinall/presentation/shared/extensions/string_extension.dart';
+import 'package:uskudar_mobile/core/error/failures.dart';
+import 'package:uskudar_mobile/core/generated/locale_keys.g.dart';
+import 'package:uskudar_mobile/domain/entities/request_money.dart';
+import 'package:uskudar_mobile/domain/entities/wallet_transfer.dart';
+import 'package:uskudar_mobile/domain/params/wallet_transfer_params.dart';
+import 'package:uskudar_mobile/domain/usecases/delete_request_money_usecase.dart';
+import 'package:uskudar_mobile/domain/usecases/get_buyer_request_moneys_usecase.dart';
+import 'package:uskudar_mobile/domain/usecases/get_sender_request_moneys_usecase.dart';
+import 'package:uskudar_mobile/domain/usecases/wallet_transfer_usecase.dart';
+import 'package:uskudar_mobile/presentation/shared/extensions/string_extension.dart';
 
 part 'pending_money_requests_event.dart';
 part 'pending_money_requests_state.dart';

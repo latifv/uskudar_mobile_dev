@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:payinall/core/generated/locale_keys.g.dart';
-import 'package:payinall/domain/entities/attribute_item.dart';
-import 'package:payinall/domain/entities/required_attribute.dart';
-import 'package:payinall/presentation/shared/extensions/string_extension.dart';
-import 'package:payinall/presentation/widgets/custom_dropdown_button_form_field.dart';
-import 'package:payinall/presentation/widgets/custom_text_form_field.dart';
+import 'package:uskudar_mobile/core/generated/locale_keys.g.dart';
+import 'package:uskudar_mobile/domain/entities/attribute_item.dart';
+import 'package:uskudar_mobile/domain/entities/required_attribute.dart';
+import 'package:uskudar_mobile/presentation/shared/extensions/string_extension.dart';
+import 'package:uskudar_mobile/presentation/widgets/custom_dropdown_button_form_field.dart';
+import 'package:uskudar_mobile/presentation/widgets/custom_text_form_field.dart';
 
 class RequiredAttributeField extends StatefulWidget {
   const RequiredAttributeField({

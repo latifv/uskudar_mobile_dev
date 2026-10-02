@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
-import 'package:payinall/domain/entities/constants_data.dart';
-import 'package:payinall/domain/entities/score_operation.dart';
+import 'package:uskudar_mobile/domain/entities/constants_data.dart';
+import 'package:uskudar_mobile/domain/entities/score_operation.dart';
 
 enum ScoringQuestionsBlocState { initial, loading, loaded, success, error }
 

@@ -9,5 +9,5 @@
 -keep class com.arksigner.liveauth.** { *; }
 -keep interface com.arksigner.liveauth.** { *; } 
 
--keep class com.erpapay.payinall.AuthCallback { *; }
--keep interface com.erpapay.payinall.AuthCallback { *; }
+-keep class tr.bel.uskudar.mobile.AuthCallback { *; }
+-keep interface tr.bel.uskudar.mobile.AuthCallback { *; }

@@ -1,9 +1,9 @@
 import 'package:fpdart/fpdart.dart';
-import 'package:payinall/core/error/failures.dart';
-import 'package:payinall/domain/base/data_with_message.dart';
-import 'package:payinall/domain/base/usecases/base_usecase.dart';
-import 'package:payinall/domain/params/send_new_code_params.dart';
-import 'package:payinall/domain/repositories/customer_activations_repository.dart';
+import 'package:uskudar_mobile/core/error/failures.dart';
+import 'package:uskudar_mobile/domain/base/data_with_message.dart';
+import 'package:uskudar_mobile/domain/base/usecases/base_usecase.dart';
+import 'package:uskudar_mobile/domain/params/send_new_code_params.dart';
+import 'package:uskudar_mobile/domain/repositories/customer_activations_repository.dart';
 
 final class SendNewCodeUsecase
     implements BaseUsecase<DataWithMessage<String>, SendNewCodeParams> {

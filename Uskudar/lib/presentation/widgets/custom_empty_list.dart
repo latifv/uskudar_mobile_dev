@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:payinall/presentation/shared/constants/icon_size_constants.dart';
-import 'package:payinall/presentation/shared/extensions/spacing_extension.dart';
-import 'package:payinall/presentation/shared/extensions/theme_extension.dart';
+import 'package:uskudar_mobile/presentation/shared/constants/icon_size_constants.dart';
+import 'package:uskudar_mobile/presentation/shared/extensions/spacing_extension.dart';
+import 'package:uskudar_mobile/presentation/shared/extensions/theme_extension.dart';
 
 final class CustomEmptyList extends StatelessWidget {
   const CustomEmptyList({

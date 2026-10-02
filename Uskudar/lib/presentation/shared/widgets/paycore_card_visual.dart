@@ -2,8 +2,8 @@ import 'dart:async';
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
-import 'package:payinall/core/models/paycore_mobile_models.dart';
-import 'package:payinall/presentation/shared/constants/paycore_card_asset_constants.dart';
+import 'package:uskudar_mobile/core/models/paycore_mobile_models.dart';
+import 'package:uskudar_mobile/presentation/shared/constants/paycore_card_asset_constants.dart';
 
 final class PaycoreCardVisual extends StatefulWidget {
   const PaycoreCardVisual({

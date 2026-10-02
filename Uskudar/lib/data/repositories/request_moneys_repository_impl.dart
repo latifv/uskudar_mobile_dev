@@ -1,12 +1,12 @@
 import 'package:fpdart/fpdart.dart';
-import 'package:payinall/core/error/failures.dart';
-import 'package:payinall/data/core/data_source_handler.dart';
-import 'package:payinall/data/datasources/remote/requst_moneys_remote_data_source.dart';
-import 'package:payinall/data/dtos/requests/request_moneys_request.dart';
-import 'package:payinall/data/models/request_money_model.dart';
-import 'package:payinall/domain/entities/request_money.dart';
-import 'package:payinall/domain/params/request_moneys_params.dart';
-import 'package:payinall/domain/repositories/request_moneys_repository.dart';
+import 'package:uskudar_mobile/core/error/failures.dart';
+import 'package:uskudar_mobile/data/core/data_source_handler.dart';
+import 'package:uskudar_mobile/data/datasources/remote/requst_moneys_remote_data_source.dart';
+import 'package:uskudar_mobile/data/dtos/requests/request_moneys_request.dart';
+import 'package:uskudar_mobile/data/models/request_money_model.dart';
+import 'package:uskudar_mobile/domain/entities/request_money.dart';
+import 'package:uskudar_mobile/domain/params/request_moneys_params.dart';
+import 'package:uskudar_mobile/domain/repositories/request_moneys_repository.dart';
 
 final class RequestMoneysRepositoryImpl implements RequestMoneysRepository {
   RequestMoneysRepositoryImpl({required this.remoteDataSource})

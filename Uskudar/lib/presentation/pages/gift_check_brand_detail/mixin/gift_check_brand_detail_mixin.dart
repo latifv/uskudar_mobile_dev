@@ -2,10 +2,10 @@ import 'dart:async';
 
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
-import 'package:payinall/di/di.dart';
-import 'package:payinall/presentation/pages/gift_check_brand_detail/bloc/gift_check_brand_detail_bloc.dart';
-import 'package:payinall/presentation/route/app_router.dart';
-import 'package:payinall/presentation/shared/components/toast_component.dart';
+import 'package:uskudar_mobile/di/di.dart';
+import 'package:uskudar_mobile/presentation/pages/gift_check_brand_detail/bloc/gift_check_brand_detail_bloc.dart';
+import 'package:uskudar_mobile/presentation/route/app_router.dart';
+import 'package:uskudar_mobile/presentation/shared/components/toast_component.dart';
 
 mixin GiftCheckBrandDetailMixin<T extends StatefulWidget> on State<T> {
   late final GiftCheckBrandDetailBloc bloc;

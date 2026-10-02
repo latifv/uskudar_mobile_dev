@@ -1,6 +1,6 @@
-import 'package:payinall/core/error/exceptions.dart';
-import 'package:payinall/data/dtos/responses/admin_user_count_response.dart';
-import 'package:payinall/domain/entities/admin_user_count_summary.dart';
+import 'package:uskudar_mobile/core/error/exceptions.dart';
+import 'package:uskudar_mobile/data/dtos/responses/admin_user_count_response.dart';
+import 'package:uskudar_mobile/domain/entities/admin_user_count_summary.dart';
 
 final class AdminUserCountSummaryModel extends AdminUserCountSummary {
   const AdminUserCountSummaryModel({

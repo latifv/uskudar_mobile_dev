@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
-import 'package:payinall/domain/entities/app_bank.dart';
+import 'package:uskudar_mobile/domain/entities/app_bank.dart';
 
 enum BankDetailStatus { initial, loading, loaded, error }
 

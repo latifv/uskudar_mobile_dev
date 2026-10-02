@@ -3,10 +3,10 @@ import 'dart:typed_data';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:payinall/core/constants/app_constants.dart';
-import 'package:payinall/core/generated/locale_keys.g.dart';
-import 'package:payinall/core/services/qr_code_service/qr_code_service.dart';
-import 'package:payinall/presentation/shared/extensions/string_extension.dart';
+import 'package:uskudar_mobile/core/constants/app_constants.dart';
+import 'package:uskudar_mobile/core/generated/locale_keys.g.dart';
+import 'package:uskudar_mobile/core/services/qr_code_service/qr_code_service.dart';
+import 'package:uskudar_mobile/presentation/shared/extensions/string_extension.dart';
 
 part 'qr_generate_event.dart';
 part 'qr_generate_state.dart';

@@ -1,6 +1,6 @@
-import 'package:payinall/core/error/exceptions.dart';
-import 'package:payinall/data/dtos/responses/sector_array_response.dart';
-import 'package:payinall/domain/entities/sector_array.dart';
+import 'package:uskudar_mobile/core/error/exceptions.dart';
+import 'package:uskudar_mobile/data/dtos/responses/sector_array_response.dart';
+import 'package:uskudar_mobile/domain/entities/sector_array.dart';
 
 final class SectorArrayModel extends SectorArray {
   const SectorArrayModel({

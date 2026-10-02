@@ -1,8 +1,8 @@
 import 'package:fpdart/fpdart.dart';
-import 'package:payinall/core/error/failures.dart';
-import 'package:payinall/domain/base/usecases/base_usecase.dart';
-import 'package:payinall/domain/params/front_image_check_params.dart';
-import 'package:payinall/domain/repositories/ark_signers_repository.dart';
+import 'package:uskudar_mobile/core/error/failures.dart';
+import 'package:uskudar_mobile/domain/base/usecases/base_usecase.dart';
+import 'package:uskudar_mobile/domain/params/front_image_check_params.dart';
+import 'package:uskudar_mobile/domain/repositories/ark_signers_repository.dart';
 
 final class FrontImageCheckUsecase
     implements BaseUsecase<String, FrontImageCheckParams> {

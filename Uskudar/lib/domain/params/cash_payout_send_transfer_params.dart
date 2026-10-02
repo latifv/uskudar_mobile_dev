@@ -1,4 +1,4 @@
-import 'package:payinall/domain/params/key_value_attribute.dart';
+import 'package:uskudar_mobile/domain/params/key_value_attribute.dart';
 
 class CashPayoutSendTransferParams {
   const CashPayoutSendTransferParams({

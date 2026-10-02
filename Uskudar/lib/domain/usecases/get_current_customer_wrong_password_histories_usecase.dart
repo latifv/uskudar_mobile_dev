@@ -1,8 +1,8 @@
 import 'package:fpdart/fpdart.dart';
-import 'package:payinall/core/error/failures.dart';
-import 'package:payinall/domain/base/usecases/base_usecase_without_params.dart';
-import 'package:payinall/domain/entities/wrong_password_history.dart';
-import 'package:payinall/domain/repositories/wrong_login_attempts_repository.dart';
+import 'package:uskudar_mobile/core/error/failures.dart';
+import 'package:uskudar_mobile/domain/base/usecases/base_usecase_without_params.dart';
+import 'package:uskudar_mobile/domain/entities/wrong_password_history.dart';
+import 'package:uskudar_mobile/domain/repositories/wrong_login_attempts_repository.dart';
 
 final class GetCurrentCustomerWrongPasswordHistoriesUsecase
     implements BaseUsecaseWithoutParams<List<WrongPasswordHistory>> {

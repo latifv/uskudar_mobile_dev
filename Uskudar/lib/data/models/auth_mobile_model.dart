@@ -1,5 +1,5 @@
-import 'package:payinall/data/dtos/responses/auth_mobile_response.dart';
-import 'package:payinall/domain/entities/auth_mobile.dart';
+import 'package:uskudar_mobile/data/dtos/responses/auth_mobile_response.dart';
+import 'package:uskudar_mobile/domain/entities/auth_mobile.dart';
 
 final class AuthMobileModel extends AuthMobile {
   const AuthMobileModel({

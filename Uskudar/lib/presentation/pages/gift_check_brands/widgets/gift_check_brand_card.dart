@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:payinall/core/generated/locale_keys.g.dart';
-import 'package:payinall/domain/entities/gift_check_brand.dart';
-import 'package:payinall/presentation/shared/components/image_network_component.dart';
-import 'package:payinall/presentation/shared/extensions/string_extension.dart';
-import 'package:payinall/presentation/shared/extensions/theme_extension.dart';
-import 'package:payinall/presentation/widgets/integration_components.dart';
+import 'package:uskudar_mobile/core/generated/locale_keys.g.dart';
+import 'package:uskudar_mobile/domain/entities/gift_check_brand.dart';
+import 'package:uskudar_mobile/presentation/shared/components/image_network_component.dart';
+import 'package:uskudar_mobile/presentation/shared/extensions/string_extension.dart';
+import 'package:uskudar_mobile/presentation/shared/extensions/theme_extension.dart';
+import 'package:uskudar_mobile/presentation/widgets/integration_components.dart';
 
 final class GiftCheckBrandCard extends StatelessWidget {
   const GiftCheckBrandCard({

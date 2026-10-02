@@ -1,14 +1,14 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:payinall/core/generated/locale_keys.g.dart';
-import 'package:payinall/presentation/pages/customer_coupons/bloc/customer_coupons_bloc.dart';
-import 'package:payinall/presentation/pages/customer_coupons/mixin/customer_coupons_mixin.dart';
-import 'package:payinall/presentation/pages/customer_coupons/widgets/customer_coupon_card.dart';
-import 'package:payinall/presentation/shared/extensions/string_extension.dart';
-import 'package:payinall/presentation/widgets/custom_app_bar.dart';
-import 'package:payinall/presentation/widgets/custom_loading.dart';
-import 'package:payinall/presentation/widgets/integration_components.dart';
+import 'package:uskudar_mobile/core/generated/locale_keys.g.dart';
+import 'package:uskudar_mobile/presentation/pages/customer_coupons/bloc/customer_coupons_bloc.dart';
+import 'package:uskudar_mobile/presentation/pages/customer_coupons/mixin/customer_coupons_mixin.dart';
+import 'package:uskudar_mobile/presentation/pages/customer_coupons/widgets/customer_coupon_card.dart';
+import 'package:uskudar_mobile/presentation/shared/extensions/string_extension.dart';
+import 'package:uskudar_mobile/presentation/widgets/custom_app_bar.dart';
+import 'package:uskudar_mobile/presentation/widgets/custom_loading.dart';
+import 'package:uskudar_mobile/presentation/widgets/integration_components.dart';
 
 @RoutePage()
 final class CustomerCouponsScreen extends StatefulWidget {

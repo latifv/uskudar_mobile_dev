@@ -1,6 +1,6 @@
-import 'package:payinall/core/error/exceptions.dart';
-import 'package:payinall/data/dtos/responses/admin_deposit_transfer_summary_response.dart';
-import 'package:payinall/domain/entities/admin_deposit_transfer_summary.dart';
+import 'package:uskudar_mobile/core/error/exceptions.dart';
+import 'package:uskudar_mobile/data/dtos/responses/admin_deposit_transfer_summary_response.dart';
+import 'package:uskudar_mobile/domain/entities/admin_deposit_transfer_summary.dart';
 
 final class AdminDepositTransferSummaryModel
     extends AdminDepositTransferSummary {

@@ -1,6 +1,6 @@
-import 'package:payinall/core/error/exceptions.dart';
-import 'package:payinall/data/dtos/responses/gift_check_coupon_response.dart';
-import 'package:payinall/domain/entities/gift_check_coupon.dart';
+import 'package:uskudar_mobile/core/error/exceptions.dart';
+import 'package:uskudar_mobile/data/dtos/responses/gift_check_coupon_response.dart';
+import 'package:uskudar_mobile/domain/entities/gift_check_coupon.dart';
 
 final class GiftCheckCouponModel extends GiftCheckCoupon {
   const GiftCheckCouponModel({

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:payinall/di/di.dart';
-import 'package:payinall/domain/enums/time_type.dart';
-import 'package:payinall/presentation/pages/admin/bloc/admin_bloc.dart';
+import 'package:uskudar_mobile/di/di.dart';
+import 'package:uskudar_mobile/domain/enums/time_type.dart';
+import 'package:uskudar_mobile/presentation/pages/admin/bloc/admin_bloc.dart';
 
 mixin AdminMixin<T extends StatefulWidget> on State<T> {
   late final AdminBloc bloc;

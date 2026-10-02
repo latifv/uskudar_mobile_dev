@@ -1,7 +1,7 @@
-import 'package:payinall/core/error/exceptions.dart';
-import 'package:payinall/data/dtos/responses/campaign_merchant_response.dart';
-import 'package:payinall/data/models/merchant_model.dart';
-import 'package:payinall/domain/entities/campaign_merchant.dart';
+import 'package:uskudar_mobile/core/error/exceptions.dart';
+import 'package:uskudar_mobile/data/dtos/responses/campaign_merchant_response.dart';
+import 'package:uskudar_mobile/data/models/merchant_model.dart';
+import 'package:uskudar_mobile/domain/entities/campaign_merchant.dart';
 
 final class CampaignMerchantModel extends CampaignMerchant {
   const CampaignMerchantModel({

@@ -1,6 +1,6 @@
-import 'package:payinall/core/error/exceptions.dart';
-import 'package:payinall/data/dtos/responses/merchant_wallet_response.dart';
-import 'package:payinall/domain/entities/merchant_wallet.dart';
+import 'package:uskudar_mobile/core/error/exceptions.dart';
+import 'package:uskudar_mobile/data/dtos/responses/merchant_wallet_response.dart';
+import 'package:uskudar_mobile/domain/entities/merchant_wallet.dart';
 
 final class MerchantWalletModel extends MerchantWallet {
   const MerchantWalletModel({

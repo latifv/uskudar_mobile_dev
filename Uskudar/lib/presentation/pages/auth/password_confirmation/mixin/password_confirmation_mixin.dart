@@ -2,16 +2,16 @@ import 'dart:async';
 
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
-import 'package:payinall/core/generated/locale_keys.g.dart';
-import 'package:payinall/core/managers/signalr_manager.dart';
+import 'package:uskudar_mobile/core/generated/locale_keys.g.dart';
+import 'package:uskudar_mobile/core/managers/signalr_manager.dart';
 
-import 'package:payinall/di/di.dart';
-import 'package:payinall/domain/enums/sms_verification_type.dart';
-import 'package:payinall/presentation/pages/auth/password_confirmation/bloc/password_confirmation_bloc.dart';
-import 'package:payinall/presentation/route/app_router.dart';
-import 'package:payinall/presentation/shared/components/toast_component.dart';
-import 'package:payinall/presentation/shared/constants/validator_constants.dart';
-import 'package:payinall/presentation/shared/extensions/string_extension.dart';
+import 'package:uskudar_mobile/di/di.dart';
+import 'package:uskudar_mobile/domain/enums/sms_verification_type.dart';
+import 'package:uskudar_mobile/presentation/pages/auth/password_confirmation/bloc/password_confirmation_bloc.dart';
+import 'package:uskudar_mobile/presentation/route/app_router.dart';
+import 'package:uskudar_mobile/presentation/shared/components/toast_component.dart';
+import 'package:uskudar_mobile/presentation/shared/constants/validator_constants.dart';
+import 'package:uskudar_mobile/presentation/shared/extensions/string_extension.dart';
 
 mixin PasswordConfirmationMixin<T extends StatefulWidget> on State<T> {
   late final TextEditingController passwordController;

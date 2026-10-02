@@ -1,6 +1,6 @@
-import 'package:payinall/core/error/exceptions.dart';
-import 'package:payinall/data/dtos/responses/frequent_iban_response.dart';
-import 'package:payinall/domain/entities/frequent_iban.dart';
+import 'package:uskudar_mobile/core/error/exceptions.dart';
+import 'package:uskudar_mobile/data/dtos/responses/frequent_iban_response.dart';
+import 'package:uskudar_mobile/domain/entities/frequent_iban.dart';
 
 final class FrequentIbanModel extends FrequentIban {
   const FrequentIbanModel({

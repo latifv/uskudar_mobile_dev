@@ -1,10 +1,10 @@
 import 'package:get_it/get_it.dart';
-import 'package:payinall/data/network/config/network_config.dart';
-import 'package:payinall/data/network/interceptors/network_interceptor.dart';
-import 'package:payinall/data/network/interceptors/token_interceptor.dart';
-import 'package:payinall/data/network/network_client.dart';
-import 'package:payinall/data/network/network_info.dart';
-import 'package:payinall/di/di_module.dart';
+import 'package:uskudar_mobile/data/network/config/network_config.dart';
+import 'package:uskudar_mobile/data/network/interceptors/network_interceptor.dart';
+import 'package:uskudar_mobile/data/network/interceptors/token_interceptor.dart';
+import 'package:uskudar_mobile/data/network/network_client.dart';
+import 'package:uskudar_mobile/data/network/network_info.dart';
+import 'package:uskudar_mobile/di/di_module.dart';
 
 final class NetworkModule extends DIModule {
   @override

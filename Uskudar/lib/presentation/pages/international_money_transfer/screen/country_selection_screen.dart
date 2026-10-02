@@ -4,20 +4,20 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flag/flag.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:payinall/core/generated/locale_keys.g.dart';
-import 'package:payinall/di/di.dart';
-import 'package:payinall/domain/entities/country.dart';
-import 'package:payinall/presentation/pages/international_money_transfer/bloc/country_selection_bloc.dart';
-import 'package:payinall/presentation/route/app_router.dart';
-import 'package:payinall/presentation/shared/components/toast_component.dart';
-import 'package:payinall/presentation/shared/extensions/border_radius_extension.dart';
-import 'package:payinall/presentation/shared/extensions/padding_extension.dart';
-import 'package:payinall/presentation/shared/extensions/spacing_extension.dart';
-import 'package:payinall/presentation/shared/extensions/string_extension.dart';
-import 'package:payinall/presentation/shared/extensions/theme_extension.dart';
-import 'package:payinall/presentation/widgets/custom_app_bar.dart';
-import 'package:payinall/presentation/widgets/custom_loading.dart';
-import 'package:payinall/presentation/widgets/custom_text_form_field.dart';
+import 'package:uskudar_mobile/core/generated/locale_keys.g.dart';
+import 'package:uskudar_mobile/di/di.dart';
+import 'package:uskudar_mobile/domain/entities/country.dart';
+import 'package:uskudar_mobile/presentation/pages/international_money_transfer/bloc/country_selection_bloc.dart';
+import 'package:uskudar_mobile/presentation/route/app_router.dart';
+import 'package:uskudar_mobile/presentation/shared/components/toast_component.dart';
+import 'package:uskudar_mobile/presentation/shared/extensions/border_radius_extension.dart';
+import 'package:uskudar_mobile/presentation/shared/extensions/padding_extension.dart';
+import 'package:uskudar_mobile/presentation/shared/extensions/spacing_extension.dart';
+import 'package:uskudar_mobile/presentation/shared/extensions/string_extension.dart';
+import 'package:uskudar_mobile/presentation/shared/extensions/theme_extension.dart';
+import 'package:uskudar_mobile/presentation/widgets/custom_app_bar.dart';
+import 'package:uskudar_mobile/presentation/widgets/custom_loading.dart';
+import 'package:uskudar_mobile/presentation/widgets/custom_text_form_field.dart';
 
 @RoutePage()
 final class CountrySelectionScreen extends StatefulWidget {

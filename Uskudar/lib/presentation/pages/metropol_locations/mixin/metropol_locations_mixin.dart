@@ -4,9 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:latlong2/latlong.dart';
-import 'package:payinall/di/di.dart';
-import 'package:payinall/presentation/pages/metropol_locations/bloc/metropol_locations_bloc.dart';
-import 'package:payinall/presentation/shared/components/toast_component.dart';
+import 'package:uskudar_mobile/di/di.dart';
+import 'package:uskudar_mobile/presentation/pages/metropol_locations/bloc/metropol_locations_bloc.dart';
+import 'package:uskudar_mobile/presentation/shared/components/toast_component.dart';
 
 mixin MetropolLocationsMixin<T extends StatefulWidget> on State<T> {
   late final MetropolLocationsBloc bloc;

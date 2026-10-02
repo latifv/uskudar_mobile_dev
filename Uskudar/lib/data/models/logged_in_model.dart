@@ -1,5 +1,5 @@
 import 'package:hive_ce_flutter/hive_flutter.dart';
-import 'package:payinall/domain/entities/logged_in.dart';
+import 'package:uskudar_mobile/domain/entities/logged_in.dart';
 
 part 'logged_in_model.g.dart';
 

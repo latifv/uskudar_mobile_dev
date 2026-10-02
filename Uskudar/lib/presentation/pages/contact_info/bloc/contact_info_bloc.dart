@@ -1,10 +1,10 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:payinall/core/constants/app_constants.dart';
-import 'package:payinall/core/generated/locale_keys.g.dart';
-import 'package:payinall/domain/entities/contact_info.dart';
-import 'package:payinall/presentation/shared/extensions/string_extension.dart';
+import 'package:uskudar_mobile/core/constants/app_constants.dart';
+import 'package:uskudar_mobile/core/generated/locale_keys.g.dart';
+import 'package:uskudar_mobile/domain/entities/contact_info.dart';
+import 'package:uskudar_mobile/presentation/shared/extensions/string_extension.dart';
 
 part 'contact_info_event.dart';
 part 'contact_info_state.dart';

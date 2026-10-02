@@ -1,20 +1,20 @@
 import 'package:fpdart/fpdart.dart';
-import 'package:payinall/core/error/failures.dart';
-import 'package:payinall/data/core/data_source_handler.dart';
-import 'package:payinall/data/datasources/remote/users_remote_data_source.dart';
-import 'package:payinall/data/dtos/requests/email_verification_confirm_request.dart';
-import 'package:payinall/data/dtos/requests/register_request.dart';
-import 'package:payinall/data/dtos/requests/update_email_confirm_request.dart';
-import 'package:payinall/data/dtos/requests/update_email_send_code_request.dart';
-import 'package:payinall/data/dtos/requests/update_secret_question_request.dart';
-import 'package:payinall/data/models/current_user_info_model.dart';
-import 'package:payinall/domain/entities/current_user_info.dart';
-import 'package:payinall/domain/params/email_verification_confirm_params.dart';
-import 'package:payinall/domain/params/register_params.dart';
-import 'package:payinall/domain/params/update_email_confirm_params.dart';
-import 'package:payinall/domain/params/update_email_send_code_params.dart';
-import 'package:payinall/domain/params/update_secret_question_params.dart';
-import 'package:payinall/domain/repositories/users_repository.dart';
+import 'package:uskudar_mobile/core/error/failures.dart';
+import 'package:uskudar_mobile/data/core/data_source_handler.dart';
+import 'package:uskudar_mobile/data/datasources/remote/users_remote_data_source.dart';
+import 'package:uskudar_mobile/data/dtos/requests/email_verification_confirm_request.dart';
+import 'package:uskudar_mobile/data/dtos/requests/register_request.dart';
+import 'package:uskudar_mobile/data/dtos/requests/update_email_confirm_request.dart';
+import 'package:uskudar_mobile/data/dtos/requests/update_email_send_code_request.dart';
+import 'package:uskudar_mobile/data/dtos/requests/update_secret_question_request.dart';
+import 'package:uskudar_mobile/data/models/current_user_info_model.dart';
+import 'package:uskudar_mobile/domain/entities/current_user_info.dart';
+import 'package:uskudar_mobile/domain/params/email_verification_confirm_params.dart';
+import 'package:uskudar_mobile/domain/params/register_params.dart';
+import 'package:uskudar_mobile/domain/params/update_email_confirm_params.dart';
+import 'package:uskudar_mobile/domain/params/update_email_send_code_params.dart';
+import 'package:uskudar_mobile/domain/params/update_secret_question_params.dart';
+import 'package:uskudar_mobile/domain/repositories/users_repository.dart';
 
 final class UsersRepositoryImpl implements UsersRepository {
   UsersRepositoryImpl({required this.remoteDataSource})

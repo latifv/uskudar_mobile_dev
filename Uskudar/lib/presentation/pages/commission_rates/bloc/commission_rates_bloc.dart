@@ -1,11 +1,11 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:payinall/core/error/failures.dart';
-import 'package:payinall/core/managers/user_info_manager.dart';
-import 'package:payinall/domain/entities/commission.dart';
-import 'package:payinall/domain/usecases/get_commissions_active_list_usecase.dart';
-import 'package:payinall/domain/usecases/get_merchant_commissions_usecase.dart';
+import 'package:uskudar_mobile/core/error/failures.dart';
+import 'package:uskudar_mobile/core/managers/user_info_manager.dart';
+import 'package:uskudar_mobile/domain/entities/commission.dart';
+import 'package:uskudar_mobile/domain/usecases/get_commissions_active_list_usecase.dart';
+import 'package:uskudar_mobile/domain/usecases/get_merchant_commissions_usecase.dart';
 
 part 'commission_rates_event.dart';
 part 'commission_rates_state.dart';

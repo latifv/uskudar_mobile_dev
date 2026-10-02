@@ -7,20 +7,28 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:hive_ce_flutter/hive_flutter.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:payinall/app.dart';
-import 'package:payinall/core/constants/localization_constants.dart';
-import 'package:payinall/core/utils/log_helper.dart';
-import 'package:payinall/core/utils/log_level.dart';
-import 'package:payinall/data/config/environment_config.dart';
-import 'package:payinall/data/datasources/local/app_local_data_source.dart';
-import 'package:payinall/data/local_storage/hive_boxes.dart';
-import 'package:payinall/data/models/auth_token_model.dart';
-import 'package:payinall/data/models/logged_in_model.dart';
-import 'package:payinall/data/models/notification_item_model.dart';
-import 'package:payinall/di/di.dart' as di;
-import 'package:payinall/domain/enums/app_environment.dart';
+import 'package:uskudar_mobile/app.dart';
+import 'package:uskudar_mobile/core/constants/localization_constants.dart';
+import 'package:uskudar_mobile/core/utils/log_helper.dart';
+import 'package:uskudar_mobile/core/utils/log_level.dart';
+import 'package:uskudar_mobile/data/config/environment_config.dart';
+import 'package:uskudar_mobile/data/datasources/local/app_local_data_source.dart';
+import 'package:uskudar_mobile/data/local_storage/hive_boxes.dart';
+import 'package:uskudar_mobile/data/models/auth_token_model.dart';
+import 'package:uskudar_mobile/data/models/logged_in_model.dart';
+import 'package:uskudar_mobile/data/models/notification_item_model.dart';
+import 'package:uskudar_mobile/di/di.dart' as di;
+import 'package:uskudar_mobile/domain/enums/app_environment.dart';
+import 'package:uskudar_mobile/preview_app.dart';
 
 Future<void> main() async {
+  const servicesConfigured = bool.fromEnvironment('USKUDAR_SERVICES_CONFIGURED');
+  if (!servicesConfigured) {
+    WidgetsFlutterBinding.ensureInitialized();
+    runApp(const PreviewApp());
+    return;
+  }
+
   await runZonedGuarded(() async {
     WidgetsFlutterBinding.ensureInitialized();
     await _initializeRequirements();

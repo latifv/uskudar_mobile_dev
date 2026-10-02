@@ -2,22 +2,22 @@ import 'dart:async';
 
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
-import 'package:payinall/core/generated/locale_keys.g.dart';
-import 'package:payinall/core/managers/user_info_manager.dart';
-import 'package:payinall/di/di.dart';
-import 'package:payinall/domain/entities/frequent_iban.dart';
-import 'package:payinall/domain/entities/frequently_sent.dart';
-import 'package:payinall/domain/entities/transaction.dart';
-import 'package:payinall/domain/enums/transfer_method.dart';
-import 'package:payinall/presentation/pages/home/widgets/transaction_list_section.dart';
-import 'package:payinall/presentation/pages/registered_users/widgets/frequent_iban_card.dart';
-import 'package:payinall/presentation/pages/registered_users/widgets/frequently_sent_card.dart';
-import 'package:payinall/presentation/route/app_router.dart';
-import 'package:payinall/presentation/shared/constants/icon_size_constants.dart';
-import 'package:payinall/presentation/shared/extensions/padding_extension.dart';
-import 'package:payinall/presentation/shared/extensions/spacing_extension.dart';
-import 'package:payinall/presentation/shared/extensions/string_extension.dart';
-import 'package:payinall/presentation/shared/extensions/theme_extension.dart';
+import 'package:uskudar_mobile/core/generated/locale_keys.g.dart';
+import 'package:uskudar_mobile/core/managers/user_info_manager.dart';
+import 'package:uskudar_mobile/di/di.dart';
+import 'package:uskudar_mobile/domain/entities/frequent_iban.dart';
+import 'package:uskudar_mobile/domain/entities/frequently_sent.dart';
+import 'package:uskudar_mobile/domain/entities/transaction.dart';
+import 'package:uskudar_mobile/domain/enums/transfer_method.dart';
+import 'package:uskudar_mobile/presentation/pages/home/widgets/transaction_list_section.dart';
+import 'package:uskudar_mobile/presentation/pages/registered_users/widgets/frequent_iban_card.dart';
+import 'package:uskudar_mobile/presentation/pages/registered_users/widgets/frequently_sent_card.dart';
+import 'package:uskudar_mobile/presentation/route/app_router.dart';
+import 'package:uskudar_mobile/presentation/shared/constants/icon_size_constants.dart';
+import 'package:uskudar_mobile/presentation/shared/extensions/padding_extension.dart';
+import 'package:uskudar_mobile/presentation/shared/extensions/spacing_extension.dart';
+import 'package:uskudar_mobile/presentation/shared/extensions/string_extension.dart';
+import 'package:uskudar_mobile/presentation/shared/extensions/theme_extension.dart';
 
 final class HomeTabSection extends StatefulWidget {
   const HomeTabSection({

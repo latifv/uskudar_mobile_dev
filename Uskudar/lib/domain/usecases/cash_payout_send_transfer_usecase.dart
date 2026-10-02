@@ -1,9 +1,9 @@
 import 'package:fpdart/fpdart.dart';
-import 'package:payinall/core/error/failures.dart';
-import 'package:payinall/domain/base/usecases/base_usecase.dart';
-import 'package:payinall/domain/entities/international_transfer_result.dart';
-import 'package:payinall/domain/params/cash_payout_send_transfer_params.dart';
-import 'package:payinall/domain/repositories/international_money_transfer_repository.dart';
+import 'package:uskudar_mobile/core/error/failures.dart';
+import 'package:uskudar_mobile/domain/base/usecases/base_usecase.dart';
+import 'package:uskudar_mobile/domain/entities/international_transfer_result.dart';
+import 'package:uskudar_mobile/domain/params/cash_payout_send_transfer_params.dart';
+import 'package:uskudar_mobile/domain/repositories/international_money_transfer_repository.dart';
 
 final class CashPayoutSendTransferUsecase
     implements

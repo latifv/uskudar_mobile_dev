@@ -2,11 +2,11 @@ import 'dart:async';
 
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
-import 'package:payinall/di/di.dart';
-import 'package:payinall/presentation/pages/fuel_card_top_up/bloc/fuel_card_top_up_bloc.dart';
-import 'package:payinall/presentation/pages/fuel_card_top_up/fuel_card_top_up_screen.dart';
-import 'package:payinall/presentation/shared/components/toast_component.dart';
-import 'package:payinall/presentation/shared/extensions/string_extension.dart';
+import 'package:uskudar_mobile/di/di.dart';
+import 'package:uskudar_mobile/presentation/pages/fuel_card_top_up/bloc/fuel_card_top_up_bloc.dart';
+import 'package:uskudar_mobile/presentation/pages/fuel_card_top_up/fuel_card_top_up_screen.dart';
+import 'package:uskudar_mobile/presentation/shared/components/toast_component.dart';
+import 'package:uskudar_mobile/presentation/shared/extensions/string_extension.dart';
 
 mixin FuelCardTopUpMixin on State<FuelCardTopUpScreen> {
   late final FuelCardTopUpBloc bloc;

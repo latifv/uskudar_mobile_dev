@@ -1,10 +1,10 @@
-import 'package:payinall/core/error/exceptions.dart';
-import 'package:payinall/data/core/base_remote_data_source.dart';
-import 'package:payinall/data/dtos/requests/customer_banks_request.dart';
-import 'package:payinall/data/dtos/responses/customer_bank_response.dart';
-import 'package:payinall/data/models/customer_bank_model.dart';
-import 'package:payinall/data/network/config/endpoints.dart';
-import 'package:payinall/data/network/models/network_response.dart';
+import 'package:uskudar_mobile/core/error/exceptions.dart';
+import 'package:uskudar_mobile/data/core/base_remote_data_source.dart';
+import 'package:uskudar_mobile/data/dtos/requests/customer_banks_request.dart';
+import 'package:uskudar_mobile/data/dtos/responses/customer_bank_response.dart';
+import 'package:uskudar_mobile/data/models/customer_bank_model.dart';
+import 'package:uskudar_mobile/data/network/config/endpoints.dart';
+import 'package:uskudar_mobile/data/network/models/network_response.dart';
 
 abstract interface class CustomerBanksRemoteDataSource {
   Future<NetworkResponse<List<CustomerBankModel>>> getBanks();

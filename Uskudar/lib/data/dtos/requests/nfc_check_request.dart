@@ -1,5 +1,5 @@
 import 'package:json_annotation/json_annotation.dart';
-import 'package:payinall/domain/params/nfc_check_params.dart';
+import 'package:uskudar_mobile/domain/params/nfc_check_params.dart';
 
 part 'nfc_check_request.g.dart';
 

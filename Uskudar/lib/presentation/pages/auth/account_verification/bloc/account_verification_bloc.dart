@@ -2,9 +2,9 @@ import 'dart:async';
 
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:payinall/core/error/failures.dart';
-import 'package:payinall/domain/entities/user_question.dart';
-import 'package:payinall/domain/usecases/get_user_questions_usecase.dart';
+import 'package:uskudar_mobile/core/error/failures.dart';
+import 'package:uskudar_mobile/domain/entities/user_question.dart';
+import 'package:uskudar_mobile/domain/usecases/get_user_questions_usecase.dart';
 
 part 'account_verification_event.dart';
 part 'account_verification_state.dart';

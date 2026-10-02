@@ -1,8 +1,8 @@
 // import 'package:equatable/equatable.dart';
 // import 'package:flutter_bloc/flutter_bloc.dart';
-// import 'package:payinall/core/error/failures.dart';
-// import 'package:payinall/domain/params/address_number_inquiry_params.dart';
-// import 'package:payinall/domain/usecases/address_number_inquiry_usecase.dart';
+// import 'package:uskudar_mobile/core/error/failures.dart';
+// import 'package:uskudar_mobile/domain/params/address_number_inquiry_params.dart';
+// import 'package:uskudar_mobile/domain/usecases/address_number_inquiry_usecase.dart';
 
 // part 'address_confirmation_event.dart';
 // part 'address_confirmation_state.dart';

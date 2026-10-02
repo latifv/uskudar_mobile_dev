@@ -1,5 +1,5 @@
 import 'package:json_annotation/json_annotation.dart';
-import 'package:payinall/domain/params/email_verification_confirm_params.dart';
+import 'package:uskudar_mobile/domain/params/email_verification_confirm_params.dart';
 
 part 'email_verification_confirm_request.g.dart';
 

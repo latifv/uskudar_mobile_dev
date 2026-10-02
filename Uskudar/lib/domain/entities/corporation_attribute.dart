@@ -1,4 +1,4 @@
-import 'package:payinall/domain/entities/required_attribute.dart';
+import 'package:uskudar_mobile/domain/entities/required_attribute.dart';
 
 class CorporationAttribute {
   const CorporationAttribute({

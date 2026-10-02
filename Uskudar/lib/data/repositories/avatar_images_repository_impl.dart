@@ -1,9 +1,9 @@
 import 'package:fpdart/fpdart.dart';
-import 'package:payinall/core/error/failures.dart';
-import 'package:payinall/data/core/data_source_handler.dart';
-import 'package:payinall/data/datasources/remote/avatar_images_remote_data_source.dart';
-import 'package:payinall/domain/entities/avatar_image.dart';
-import 'package:payinall/domain/repositories/avatar_images_repository.dart';
+import 'package:uskudar_mobile/core/error/failures.dart';
+import 'package:uskudar_mobile/data/core/data_source_handler.dart';
+import 'package:uskudar_mobile/data/datasources/remote/avatar_images_remote_data_source.dart';
+import 'package:uskudar_mobile/domain/entities/avatar_image.dart';
+import 'package:uskudar_mobile/domain/repositories/avatar_images_repository.dart';
 
 final class AvatarImagesRepositoryImpl implements AvatarImagesRepository {
   AvatarImagesRepositoryImpl({required this.remoteDataSource})

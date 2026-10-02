@@ -3,12 +3,12 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
-import 'package:payinall/core/generated/locale_keys.g.dart';
-import 'package:payinall/domain/entities/customer_coupon.dart';
-import 'package:payinall/presentation/shared/components/toast_component.dart';
-import 'package:payinall/presentation/shared/extensions/string_extension.dart';
-import 'package:payinall/presentation/shared/extensions/theme_extension.dart';
-import 'package:payinall/presentation/widgets/integration_components.dart';
+import 'package:uskudar_mobile/core/generated/locale_keys.g.dart';
+import 'package:uskudar_mobile/domain/entities/customer_coupon.dart';
+import 'package:uskudar_mobile/presentation/shared/components/toast_component.dart';
+import 'package:uskudar_mobile/presentation/shared/extensions/string_extension.dart';
+import 'package:uskudar_mobile/presentation/shared/extensions/theme_extension.dart';
+import 'package:uskudar_mobile/presentation/widgets/integration_components.dart';
 
 final class CustomerCouponCard extends StatelessWidget {
   const CustomerCouponCard({required this.coupon, super.key});

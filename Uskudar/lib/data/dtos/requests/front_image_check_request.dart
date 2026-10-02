@@ -1,5 +1,5 @@
 import 'package:json_annotation/json_annotation.dart';
-import 'package:payinall/domain/params/front_image_check_params.dart';
+import 'package:uskudar_mobile/domain/params/front_image_check_params.dart';
 
 part 'front_image_check_request.g.dart';
 

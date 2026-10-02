@@ -2,17 +2,17 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_html/flutter_html.dart';
-import 'package:payinall/core/generated/locale_keys.g.dart';
-import 'package:payinall/presentation/pages/iwallet_agreements/bloc/iwallet_agreements_bloc.dart';
-import 'package:payinall/presentation/pages/iwallet_agreements/mixin/iwallet_agreements_mixin.dart';
-import 'package:payinall/presentation/shared/extensions/padding_extension.dart';
-import 'package:payinall/presentation/shared/extensions/spacing_extension.dart';
-import 'package:payinall/presentation/shared/extensions/string_extension.dart';
-import 'package:payinall/presentation/shared/extensions/theme_extension.dart';
-import 'package:payinall/presentation/widgets/custom_app_bar.dart';
-import 'package:payinall/presentation/widgets/custom_loading.dart';
-import 'package:payinall/presentation/widgets/error_try_again.dart';
-import 'package:payinall/presentation/widgets/primary_elevated_button.dart';
+import 'package:uskudar_mobile/core/generated/locale_keys.g.dart';
+import 'package:uskudar_mobile/presentation/pages/iwallet_agreements/bloc/iwallet_agreements_bloc.dart';
+import 'package:uskudar_mobile/presentation/pages/iwallet_agreements/mixin/iwallet_agreements_mixin.dart';
+import 'package:uskudar_mobile/presentation/shared/extensions/padding_extension.dart';
+import 'package:uskudar_mobile/presentation/shared/extensions/spacing_extension.dart';
+import 'package:uskudar_mobile/presentation/shared/extensions/string_extension.dart';
+import 'package:uskudar_mobile/presentation/shared/extensions/theme_extension.dart';
+import 'package:uskudar_mobile/presentation/widgets/custom_app_bar.dart';
+import 'package:uskudar_mobile/presentation/widgets/custom_loading.dart';
+import 'package:uskudar_mobile/presentation/widgets/error_try_again.dart';
+import 'package:uskudar_mobile/presentation/widgets/primary_elevated_button.dart';
 
 @RoutePage()
 final class IWalletAgreementsScreen extends StatefulWidget {

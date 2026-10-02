@@ -1,5 +1,5 @@
-import 'package:payinall/data/dtos/responses/wallet_operator_response.dart';
-import 'package:payinall/domain/entities/wallet_operator.dart';
+import 'package:uskudar_mobile/data/dtos/responses/wallet_operator_response.dart';
+import 'package:uskudar_mobile/domain/entities/wallet_operator.dart';
 
 class WalletOperatorModel extends WalletOperator {
   const WalletOperatorModel({

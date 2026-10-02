@@ -1,7 +1,7 @@
 import 'package:fpdart/fpdart.dart';
-import 'package:payinall/core/error/failures.dart';
-import 'package:payinall/domain/entities/wallet_operator.dart';
-import 'package:payinall/domain/repositories/international_money_transfer_repository.dart';
+import 'package:uskudar_mobile/core/error/failures.dart';
+import 'package:uskudar_mobile/domain/entities/wallet_operator.dart';
+import 'package:uskudar_mobile/domain/repositories/international_money_transfer_repository.dart';
 
 class GetWalletOperatorUsecase {
   GetWalletOperatorUsecase(this._repository);

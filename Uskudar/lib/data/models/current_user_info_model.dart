@@ -1,6 +1,6 @@
-import 'package:payinall/core/error/exceptions.dart';
-import 'package:payinall/data/dtos/responses/current_user_info_response.dart';
-import 'package:payinall/domain/entities/current_user_info.dart';
+import 'package:uskudar_mobile/core/error/exceptions.dart';
+import 'package:uskudar_mobile/data/dtos/responses/current_user_info_response.dart';
+import 'package:uskudar_mobile/domain/entities/current_user_info.dart';
 
 final class CurrentUserInfoModel extends CurrentUserInfo {
   const CurrentUserInfoModel({

@@ -1,6 +1,6 @@
 import 'package:flutter/services.dart';
 import 'package:flutter_contacts/flutter_contacts.dart';
-import 'package:payinall/core/services/permission_service.dart';
+import 'package:uskudar_mobile/core/services/permission_service.dart';
 
 final class ContactPermissionDeniedException implements Exception {
   const ContactPermissionDeniedException();

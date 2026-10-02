@@ -3,9 +3,9 @@
 // Check in to version control
 
 import 'package:hive_ce/hive_ce.dart';
-import 'package:payinall/data/models/auth_token_model.dart';
-import 'package:payinall/data/models/logged_in_model.dart';
-import 'package:payinall/data/models/notification_item_model.dart';
+import 'package:uskudar_mobile/data/models/auth_token_model.dart';
+import 'package:uskudar_mobile/data/models/logged_in_model.dart';
+import 'package:uskudar_mobile/data/models/notification_item_model.dart';
 
 extension HiveRegistrar on HiveInterface {
   void registerAdapters() {

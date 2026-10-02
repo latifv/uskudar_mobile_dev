@@ -1,6 +1,6 @@
-import 'package:payinall/core/error/exceptions.dart';
-import 'package:payinall/data/dtos/responses/customer_bank_response.dart';
-import 'package:payinall/domain/entities/customer_bank.dart';
+import 'package:uskudar_mobile/core/error/exceptions.dart';
+import 'package:uskudar_mobile/data/dtos/responses/customer_bank_response.dart';
+import 'package:uskudar_mobile/domain/entities/customer_bank.dart';
 
 final class CustomerBankModel extends CustomerBank {
   const CustomerBankModel({

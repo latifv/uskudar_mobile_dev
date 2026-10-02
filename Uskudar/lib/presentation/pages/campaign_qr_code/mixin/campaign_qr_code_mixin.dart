@@ -2,8 +2,8 @@ import 'dart:async';
 
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
-import 'package:payinall/presentation/pages/campaign_qr_code/bloc/campaign_qr_code_bloc.dart';
-import 'package:payinall/presentation/shared/components/toast_component.dart';
+import 'package:uskudar_mobile/presentation/pages/campaign_qr_code/bloc/campaign_qr_code_bloc.dart';
+import 'package:uskudar_mobile/presentation/shared/components/toast_component.dart';
 
 mixin CampaignQrCodeMixin<T extends StatefulWidget> on State<T> {
   late final CampaignQrCodeBloc bloc;

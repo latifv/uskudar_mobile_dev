@@ -1,4 +1,4 @@
-import 'package:payinall/data/network/network_client.dart';
+import 'package:uskudar_mobile/data/network/network_client.dart';
 
 abstract class BaseRemoteDataSource {
   BaseRemoteDataSource(this.networkClient);

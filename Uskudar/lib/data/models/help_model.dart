@@ -1,6 +1,6 @@
-import 'package:payinall/core/error/exceptions.dart';
-import 'package:payinall/data/dtos/responses/help_response.dart';
-import 'package:payinall/domain/entities/help.dart';
+import 'package:uskudar_mobile/core/error/exceptions.dart';
+import 'package:uskudar_mobile/data/dtos/responses/help_response.dart';
+import 'package:uskudar_mobile/domain/entities/help.dart';
 
 final class HelpModel extends Help {
   const HelpModel({

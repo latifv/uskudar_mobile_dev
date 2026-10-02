@@ -1,11 +1,11 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:payinall/core/generated/locale_keys.g.dart';
-import 'package:payinall/di/di.dart';
-import 'package:payinall/presentation/pages/notification/bloc/notification_bloc.dart';
-import 'package:payinall/presentation/shared/components/toast_component.dart';
-import 'package:payinall/presentation/shared/extensions/string_extension.dart';
+import 'package:uskudar_mobile/core/generated/locale_keys.g.dart';
+import 'package:uskudar_mobile/di/di.dart';
+import 'package:uskudar_mobile/presentation/pages/notification/bloc/notification_bloc.dart';
+import 'package:uskudar_mobile/presentation/shared/components/toast_component.dart';
+import 'package:uskudar_mobile/presentation/shared/extensions/string_extension.dart';
 
 mixin NotificationMixin<T extends StatefulWidget> on State<T> {
   late final NotificationBloc bloc;

@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:payinall/data/network/config/local_endpoint.dart';
+import 'package:uskudar_mobile/data/network/config/local_endpoint.dart';
 
 void main() {
   test('iOS debug preserves local API port and path', () {

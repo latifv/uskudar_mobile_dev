@@ -6,13 +6,13 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:latlong2/latlong.dart';
-import 'package:payinall/core/generated/locale_keys.g.dart';
-import 'package:payinall/di/di.dart';
-import 'package:payinall/presentation/pages/metropol_locations/bloc/metropol_locations_bloc.dart';
-import 'package:payinall/presentation/pages/metropol_locations/widgets/metropol_locations_map.dart';
-import 'package:payinall/presentation/route/app_router.dart';
-import 'package:payinall/presentation/shared/extensions/string_extension.dart';
-import 'package:payinall/presentation/shared/extensions/theme_extension.dart';
+import 'package:uskudar_mobile/core/generated/locale_keys.g.dart';
+import 'package:uskudar_mobile/di/di.dart';
+import 'package:uskudar_mobile/presentation/pages/metropol_locations/bloc/metropol_locations_bloc.dart';
+import 'package:uskudar_mobile/presentation/pages/metropol_locations/widgets/metropol_locations_map.dart';
+import 'package:uskudar_mobile/presentation/route/app_router.dart';
+import 'package:uskudar_mobile/presentation/shared/extensions/string_extension.dart';
+import 'package:uskudar_mobile/presentation/shared/extensions/theme_extension.dart';
 
 final class HomeDiscountPointsPreview extends StatefulWidget {
   const HomeDiscountPointsPreview({super.key});
@@ -118,7 +118,7 @@ final class _HomeDiscountPointsPreviewState
           children: [
             Expanded(
               child: Text(
-                LocaleKeys.payinall_discount_points.translate,
+                LocaleKeys.uskudar_discount_points.translate,
                 style: context.textTheme.titleSmall?.copyWith(
                   fontSize: 16,
                   fontWeight: FontWeight.w700,

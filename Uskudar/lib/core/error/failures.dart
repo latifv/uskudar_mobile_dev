@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
-import 'package:payinall/core/generated/locale_keys.g.dart';
-import 'package:payinall/presentation/shared/extensions/string_extension.dart';
+import 'package:uskudar_mobile/core/generated/locale_keys.g.dart';
+import 'package:uskudar_mobile/presentation/shared/extensions/string_extension.dart';
 
 sealed class Failure extends Equatable {
   const Failure({String? message}) : _message = message;

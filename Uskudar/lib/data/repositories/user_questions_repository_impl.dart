@@ -1,10 +1,10 @@
 import 'package:fpdart/fpdart.dart';
-import 'package:payinall/core/error/failures.dart';
-import 'package:payinall/data/core/data_source_handler.dart';
-import 'package:payinall/data/datasources/remote/user_questions_remote_data_source.dart';
-import 'package:payinall/data/models/user_question_model.dart';
-import 'package:payinall/domain/entities/user_question.dart';
-import 'package:payinall/domain/repositories/user_questions_repository.dart';
+import 'package:uskudar_mobile/core/error/failures.dart';
+import 'package:uskudar_mobile/data/core/data_source_handler.dart';
+import 'package:uskudar_mobile/data/datasources/remote/user_questions_remote_data_source.dart';
+import 'package:uskudar_mobile/data/models/user_question_model.dart';
+import 'package:uskudar_mobile/domain/entities/user_question.dart';
+import 'package:uskudar_mobile/domain/repositories/user_questions_repository.dart';
 
 final class UserQuestionsRepositoryImpl implements UserQuestionsRepository {
   UserQuestionsRepositoryImpl({required this.remoteDataSource})

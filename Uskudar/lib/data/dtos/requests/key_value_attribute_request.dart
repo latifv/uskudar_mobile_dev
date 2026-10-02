@@ -1,5 +1,5 @@
 import 'package:json_annotation/json_annotation.dart';
-import 'package:payinall/domain/params/key_value_attribute.dart';
+import 'package:uskudar_mobile/domain/params/key_value_attribute.dart';
 
 part 'key_value_attribute_request.g.dart';
 

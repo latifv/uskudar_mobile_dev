@@ -1,12 +1,12 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:payinall/core/error/failures.dart';
-import 'package:payinall/core/generated/locale_keys.g.dart';
-import 'package:payinall/domain/entities/nfc_identity.dart';
-import 'package:payinall/domain/params/nfc_check_params.dart';
-import 'package:payinall/domain/usecases/nfc_check_usecase.dart';
-import 'package:payinall/presentation/shared/extensions/string_extension.dart';
+import 'package:uskudar_mobile/core/error/failures.dart';
+import 'package:uskudar_mobile/core/generated/locale_keys.g.dart';
+import 'package:uskudar_mobile/domain/entities/nfc_identity.dart';
+import 'package:uskudar_mobile/domain/params/nfc_check_params.dart';
+import 'package:uskudar_mobile/domain/usecases/nfc_check_usecase.dart';
+import 'package:uskudar_mobile/presentation/shared/extensions/string_extension.dart';
 
 part 'nfc_scan_event.dart';
 part 'nfc_scan_state.dart';

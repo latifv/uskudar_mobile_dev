@@ -3,16 +3,16 @@ import 'dart:async';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
-import 'package:payinall/core/services/permission_service.dart';
-import 'package:payinall/core/utils/log_helper.dart';
-import 'package:payinall/core/utils/log_level.dart';
-import 'package:payinall/di/di.dart';
-import 'package:payinall/presentation/pages/metropol_transfer/bloc/metropol_transfer_bloc.dart';
-import 'package:payinall/presentation/shared/components/toast_component.dart';
-import 'package:payinall/presentation/shared/extensions/border_radius_extension.dart';
-import 'package:payinall/presentation/shared/extensions/media_query_extension.dart';
-import 'package:payinall/presentation/shared/extensions/padding_extension.dart';
-import 'package:payinall/presentation/shared/extensions/theme_extension.dart';
+import 'package:uskudar_mobile/core/services/permission_service.dart';
+import 'package:uskudar_mobile/core/utils/log_helper.dart';
+import 'package:uskudar_mobile/core/utils/log_level.dart';
+import 'package:uskudar_mobile/di/di.dart';
+import 'package:uskudar_mobile/presentation/pages/metropol_transfer/bloc/metropol_transfer_bloc.dart';
+import 'package:uskudar_mobile/presentation/shared/components/toast_component.dart';
+import 'package:uskudar_mobile/presentation/shared/extensions/border_radius_extension.dart';
+import 'package:uskudar_mobile/presentation/shared/extensions/media_query_extension.dart';
+import 'package:uskudar_mobile/presentation/shared/extensions/padding_extension.dart';
+import 'package:uskudar_mobile/presentation/shared/extensions/theme_extension.dart';
 
 mixin MetropolTransferMixin<T extends StatefulWidget> on State<T> {
   late final MetropolTransferBloc bloc;

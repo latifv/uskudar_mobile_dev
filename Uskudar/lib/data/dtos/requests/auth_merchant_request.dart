@@ -1,5 +1,5 @@
 import 'package:json_annotation/json_annotation.dart';
-import 'package:payinall/domain/params/auth_merchant_params.dart';
+import 'package:uskudar_mobile/domain/params/auth_merchant_params.dart';
 
 part 'auth_merchant_request.g.dart';
 

@@ -2,20 +2,20 @@ import 'dart:async';
 
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
-import 'package:payinall/core/generated/locale_keys.g.dart';
-import 'package:payinall/core/managers/user_info_manager.dart';
-import 'package:payinall/core/services/contact_service.dart';
-import 'package:payinall/di/di.dart';
-import 'package:payinall/domain/entities/customer_bank.dart';
-import 'package:payinall/domain/enums/transfer_method.dart';
-import 'package:payinall/presentation/pages/transfer/method/bloc/transfer_method_bloc.dart';
-import 'package:payinall/presentation/pages/transfer/method/screen/transfer_method_screen.dart';
-import 'package:payinall/presentation/route/app_router.dart';
-import 'package:payinall/presentation/shared/components/snackbar_component.dart';
-import 'package:payinall/presentation/shared/components/toast_component.dart';
-import 'package:payinall/presentation/shared/extensions/string_extension.dart';
-import 'package:payinall/presentation/shared/extensions/theme_extension.dart';
-import 'package:payinall/presentation/widgets/custom_dialog.dart';
+import 'package:uskudar_mobile/core/generated/locale_keys.g.dart';
+import 'package:uskudar_mobile/core/managers/user_info_manager.dart';
+import 'package:uskudar_mobile/core/services/contact_service.dart';
+import 'package:uskudar_mobile/di/di.dart';
+import 'package:uskudar_mobile/domain/entities/customer_bank.dart';
+import 'package:uskudar_mobile/domain/enums/transfer_method.dart';
+import 'package:uskudar_mobile/presentation/pages/transfer/method/bloc/transfer_method_bloc.dart';
+import 'package:uskudar_mobile/presentation/pages/transfer/method/screen/transfer_method_screen.dart';
+import 'package:uskudar_mobile/presentation/route/app_router.dart';
+import 'package:uskudar_mobile/presentation/shared/components/snackbar_component.dart';
+import 'package:uskudar_mobile/presentation/shared/components/toast_component.dart';
+import 'package:uskudar_mobile/presentation/shared/extensions/string_extension.dart';
+import 'package:uskudar_mobile/presentation/shared/extensions/theme_extension.dart';
+import 'package:uskudar_mobile/presentation/widgets/custom_dialog.dart';
 
 mixin TransferMethodMixin on State<TransferMethodScreen> {
   late final TextEditingController phoneController;

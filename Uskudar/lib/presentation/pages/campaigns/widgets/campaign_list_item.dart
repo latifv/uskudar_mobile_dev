@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:payinall/domain/entities/campaign_merchant.dart';
-import 'package:payinall/presentation/shared/components/image_network_component.dart';
-import 'package:payinall/presentation/shared/extensions/border_radius_extension.dart';
-import 'package:payinall/presentation/shared/extensions/padding_extension.dart';
-import 'package:payinall/presentation/shared/extensions/spacing_extension.dart';
-import 'package:payinall/presentation/shared/extensions/theme_extension.dart';
+import 'package:uskudar_mobile/domain/entities/campaign_merchant.dart';
+import 'package:uskudar_mobile/presentation/shared/components/image_network_component.dart';
+import 'package:uskudar_mobile/presentation/shared/extensions/border_radius_extension.dart';
+import 'package:uskudar_mobile/presentation/shared/extensions/padding_extension.dart';
+import 'package:uskudar_mobile/presentation/shared/extensions/spacing_extension.dart';
+import 'package:uskudar_mobile/presentation/shared/extensions/theme_extension.dart';
 
 final class CampaignListItem extends StatelessWidget {
   const CampaignListItem({

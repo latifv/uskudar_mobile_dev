@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:payinall/domain/entities/metropol_transfer_result.dart';
-import 'package:payinall/presentation/shared/extensions/theme_extension.dart';
-import 'package:payinall/presentation/widgets/primary_elevated_button.dart';
-import 'package:payinall/presentation/widgets/integration_components.dart';
+import 'package:uskudar_mobile/domain/entities/metropol_transfer_result.dart';
+import 'package:uskudar_mobile/presentation/shared/extensions/theme_extension.dart';
+import 'package:uskudar_mobile/presentation/widgets/primary_elevated_button.dart';
+import 'package:uskudar_mobile/presentation/widgets/integration_components.dart';
 
 final class TransferResultCard extends StatelessWidget {
   const TransferResultCard({

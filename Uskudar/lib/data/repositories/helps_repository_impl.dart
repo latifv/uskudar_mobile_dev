@@ -1,10 +1,10 @@
 import 'package:fpdart/fpdart.dart';
-import 'package:payinall/core/error/failures.dart';
-import 'package:payinall/data/core/data_source_handler.dart';
-import 'package:payinall/data/datasources/remote/helps_remote_data_source.dart';
-import 'package:payinall/data/models/help_model.dart';
-import 'package:payinall/domain/entities/help.dart';
-import 'package:payinall/domain/repositories/helps_repository.dart';
+import 'package:uskudar_mobile/core/error/failures.dart';
+import 'package:uskudar_mobile/data/core/data_source_handler.dart';
+import 'package:uskudar_mobile/data/datasources/remote/helps_remote_data_source.dart';
+import 'package:uskudar_mobile/data/models/help_model.dart';
+import 'package:uskudar_mobile/domain/entities/help.dart';
+import 'package:uskudar_mobile/domain/repositories/helps_repository.dart';
 
 final class HelpsRepositoryImpl implements HelpsRepository {
   HelpsRepositoryImpl({required this.remoteDataSource})

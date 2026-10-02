@@ -1,4 +1,4 @@
-package com.erpapay.payinall;
+package tr.bel.uskudar.mobile;
 
 import android.graphics.Typeface;
 import android.os.Bundle;
@@ -10,8 +10,8 @@ import com.arksigner.liveauth.face.UIFaceCapture;
 import com.arksigner.liveauth.face.UIFaceCaptureListener;
 import java.util.HashMap;
 import java.util.Map;
-import com.erpapay.payinall.AuthManager;
-import com.erpapay.payinall.AuthCallback;
+import tr.bel.uskudar.mobile.AuthManager;
+import tr.bel.uskudar.mobile.AuthCallback;
 
 
 public class SelfieReaderActivity extends AppCompatActivity implements UIFaceCaptureListener {

@@ -2,9 +2,9 @@ import 'dart:async';
 
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/widgets.dart';
-import 'package:payinall/di/di.dart';
-import 'package:payinall/presentation/pages/iwallet_agreements/bloc/iwallet_agreements_bloc.dart';
-import 'package:payinall/presentation/shared/components/snackbar_component.dart';
+import 'package:uskudar_mobile/di/di.dart';
+import 'package:uskudar_mobile/presentation/pages/iwallet_agreements/bloc/iwallet_agreements_bloc.dart';
+import 'package:uskudar_mobile/presentation/shared/components/snackbar_component.dart';
 
 mixin IWalletAgreementsMixin<T extends StatefulWidget> on State<T> {
   late final IWalletAgreementsBloc bloc;

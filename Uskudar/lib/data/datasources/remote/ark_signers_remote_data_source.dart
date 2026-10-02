@@ -1,13 +1,13 @@
-import 'package:payinall/core/error/exceptions.dart';
-import 'package:payinall/data/core/base_remote_data_source.dart';
-import 'package:payinall/data/dtos/requests/back_image_check_request.dart';
-import 'package:payinall/data/dtos/requests/face_image_check_request.dart';
-import 'package:payinall/data/dtos/requests/front_image_check_request.dart';
-import 'package:payinall/data/dtos/requests/nfc_check_request.dart';
-import 'package:payinall/data/dtos/responses/nfc_response.dart';
-import 'package:payinall/data/models/nfc_model.dart';
-import 'package:payinall/data/network/config/endpoints.dart';
-import 'package:payinall/data/network/models/network_response.dart';
+import 'package:uskudar_mobile/core/error/exceptions.dart';
+import 'package:uskudar_mobile/data/core/base_remote_data_source.dart';
+import 'package:uskudar_mobile/data/dtos/requests/back_image_check_request.dart';
+import 'package:uskudar_mobile/data/dtos/requests/face_image_check_request.dart';
+import 'package:uskudar_mobile/data/dtos/requests/front_image_check_request.dart';
+import 'package:uskudar_mobile/data/dtos/requests/nfc_check_request.dart';
+import 'package:uskudar_mobile/data/dtos/responses/nfc_response.dart';
+import 'package:uskudar_mobile/data/models/nfc_model.dart';
+import 'package:uskudar_mobile/data/network/config/endpoints.dart';
+import 'package:uskudar_mobile/data/network/models/network_response.dart';
 
 abstract interface class ArkSignersRemoteDataSource {
   Future<NetworkResponse<String>> frontImageCheck(

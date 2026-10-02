@@ -1,6 +1,6 @@
-import 'package:payinall/core/error/exceptions.dart';
-import 'package:payinall/data/dtos/responses/bill_product_response.dart';
-import 'package:payinall/domain/entities/bill_product.dart';
+import 'package:uskudar_mobile/core/error/exceptions.dart';
+import 'package:uskudar_mobile/data/dtos/responses/bill_product_response.dart';
+import 'package:uskudar_mobile/domain/entities/bill_product.dart';
 
 final class BillProductModel extends BillProduct {
   const BillProductModel({

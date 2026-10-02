@@ -1,7 +1,7 @@
 import 'dart:async';
 
-import 'package:payinall/core/utils/log_helper.dart';
-import 'package:payinall/core/utils/log_level.dart';
+import 'package:uskudar_mobile/core/utils/log_helper.dart';
+import 'package:uskudar_mobile/core/utils/log_level.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 extension LaunchUrlStringExtension on String {

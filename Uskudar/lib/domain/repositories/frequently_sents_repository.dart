@@ -1,6 +1,6 @@
 import 'package:fpdart/fpdart.dart';
-import 'package:payinall/core/error/failures.dart';
-import 'package:payinall/domain/entities/frequently_sent.dart';
+import 'package:uskudar_mobile/core/error/failures.dart';
+import 'package:uskudar_mobile/domain/entities/frequently_sent.dart';
 
 abstract interface class FrequentlySentsRepository {
   Future<Either<Failure, List<FrequentlySent>>> getFrequentlySents();

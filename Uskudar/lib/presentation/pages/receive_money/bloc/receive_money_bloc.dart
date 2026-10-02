@@ -1,8 +1,8 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:payinall/core/error/failures.dart';
-import 'package:payinall/domain/usecases/get_transfer_info_usecase.dart';
-import 'package:payinall/presentation/pages/receive_money/bloc/receive_money_event.dart';
-import 'package:payinall/presentation/pages/receive_money/bloc/receive_money_state.dart';
+import 'package:uskudar_mobile/core/error/failures.dart';
+import 'package:uskudar_mobile/domain/usecases/get_transfer_info_usecase.dart';
+import 'package:uskudar_mobile/presentation/pages/receive_money/bloc/receive_money_event.dart';
+import 'package:uskudar_mobile/presentation/pages/receive_money/bloc/receive_money_state.dart';
 
 final class ReceiveMoneyBloc extends Bloc<ReceiveMoneyEvent, ReceiveMoneyState> {
   ReceiveMoneyBloc({required this.getTransferInfoUsecase})

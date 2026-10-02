@@ -1,10 +1,10 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:payinall/core/error/failures.dart';
-import 'package:payinall/domain/params/request_moneys_params.dart';
-import 'package:payinall/domain/usecases/request_money_usecase.dart';
-import 'package:payinall/presentation/shared/extensions/string_extension.dart';
+import 'package:uskudar_mobile/core/error/failures.dart';
+import 'package:uskudar_mobile/domain/params/request_moneys_params.dart';
+import 'package:uskudar_mobile/domain/usecases/request_money_usecase.dart';
+import 'package:uskudar_mobile/presentation/shared/extensions/string_extension.dart';
 
 part 'request_money_event.dart';
 part 'request_money_state.dart';

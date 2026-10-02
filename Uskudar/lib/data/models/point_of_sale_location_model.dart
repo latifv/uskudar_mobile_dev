@@ -1,6 +1,6 @@
-import 'package:payinall/core/error/exceptions.dart';
-import 'package:payinall/data/dtos/responses/point_of_sale_location_response.dart';
-import 'package:payinall/domain/entities/point_of_sale_location.dart';
+import 'package:uskudar_mobile/core/error/exceptions.dart';
+import 'package:uskudar_mobile/data/dtos/responses/point_of_sale_location_response.dart';
+import 'package:uskudar_mobile/domain/entities/point_of_sale_location.dart';
 
 final class PointOfSaleLocationModel extends PointOfSaleLocation {
   const PointOfSaleLocationModel({

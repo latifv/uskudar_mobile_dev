@@ -1,5 +1,5 @@
 import 'package:json_annotation/json_annotation.dart';
-import 'package:payinall/domain/params/register_params.dart';
+import 'package:uskudar_mobile/domain/params/register_params.dart';
 
 part 'register_request.g.dart';
 

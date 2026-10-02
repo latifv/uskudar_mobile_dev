@@ -2,10 +2,10 @@ import 'dart:async';
 
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
-import 'package:payinall/di/di.dart';
-import 'package:payinall/presentation/pages/onboarding/bloc/onboarding_bloc.dart';
-import 'package:payinall/presentation/pages/onboarding/enum/onboarding_page.dart';
-import 'package:payinall/presentation/route/app_router.dart';
+import 'package:uskudar_mobile/di/di.dart';
+import 'package:uskudar_mobile/presentation/pages/onboarding/bloc/onboarding_bloc.dart';
+import 'package:uskudar_mobile/presentation/pages/onboarding/enum/onboarding_page.dart';
+import 'package:uskudar_mobile/presentation/route/app_router.dart';
 
 mixin OnboardingMixin<T extends StatefulWidget> on State<T> {
   late final PageController pageController;

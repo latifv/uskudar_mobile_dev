@@ -1,10 +1,10 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:payinall/core/error/failures.dart';
-import 'package:payinall/domain/entities/user_question.dart';
-import 'package:payinall/domain/params/update_secret_question_params.dart';
-import 'package:payinall/domain/usecases/get_user_questions_usecase.dart';
-import 'package:payinall/domain/usecases/update_secret_question_usecase.dart';
+import 'package:uskudar_mobile/core/error/failures.dart';
+import 'package:uskudar_mobile/domain/entities/user_question.dart';
+import 'package:uskudar_mobile/domain/params/update_secret_question_params.dart';
+import 'package:uskudar_mobile/domain/usecases/get_user_questions_usecase.dart';
+import 'package:uskudar_mobile/domain/usecases/update_secret_question_usecase.dart';
 
 part 'secret_question_event.dart';
 part 'secret_question_state.dart';

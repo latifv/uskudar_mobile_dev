@@ -1,5 +1,5 @@
 import 'package:easy_localization/easy_localization.dart';
-import 'package:payinall/core/constants/app_constants.dart';
+import 'package:uskudar_mobile/core/constants/app_constants.dart';
 
 extension StringExtension on String? {
   String get translate => this?.tr() ?? '404';

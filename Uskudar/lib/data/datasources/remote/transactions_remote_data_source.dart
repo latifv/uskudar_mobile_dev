@@ -1,14 +1,14 @@
-import 'package:payinall/core/error/exceptions.dart';
-import 'package:payinall/data/core/base_remote_data_source.dart';
-import 'package:payinall/data/dtos/requests/transactions_request.dart';
-import 'package:payinall/data/dtos/responses/customer_process_response.dart';
-import 'package:payinall/data/dtos/responses/transaction_receipt_response.dart';
-import 'package:payinall/data/dtos/responses/transaction_response.dart';
-import 'package:payinall/data/models/customer_process_model.dart';
-import 'package:payinall/data/models/transaction_model.dart';
-import 'package:payinall/data/models/transaction_receipt_model.dart';
-import 'package:payinall/data/network/config/endpoints.dart';
-import 'package:payinall/data/network/models/network_response.dart';
+import 'package:uskudar_mobile/core/error/exceptions.dart';
+import 'package:uskudar_mobile/data/core/base_remote_data_source.dart';
+import 'package:uskudar_mobile/data/dtos/requests/transactions_request.dart';
+import 'package:uskudar_mobile/data/dtos/responses/customer_process_response.dart';
+import 'package:uskudar_mobile/data/dtos/responses/transaction_receipt_response.dart';
+import 'package:uskudar_mobile/data/dtos/responses/transaction_response.dart';
+import 'package:uskudar_mobile/data/models/customer_process_model.dart';
+import 'package:uskudar_mobile/data/models/transaction_model.dart';
+import 'package:uskudar_mobile/data/models/transaction_receipt_model.dart';
+import 'package:uskudar_mobile/data/network/config/endpoints.dart';
+import 'package:uskudar_mobile/data/network/models/network_response.dart';
 
 abstract interface class TransactionsRemoteDataSource {
   Future<NetworkResponse<List<TransactionModel>>> getLastTransactions(

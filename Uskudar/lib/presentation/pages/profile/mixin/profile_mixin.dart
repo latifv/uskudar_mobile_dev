@@ -3,17 +3,17 @@ import 'dart:async';
 import 'package:auto_route/auto_route.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:payinall/app_inherited_widget.dart';
-import 'package:payinall/core/constants/localization_constants.dart';
-import 'package:payinall/core/managers/user_info_manager.dart';
-import 'package:payinall/core/utils/app_utils.dart';
-import 'package:payinall/data/datasources/local/app_local_data_source.dart';
-import 'package:payinall/di/di.dart';
-import 'package:payinall/presentation/pages/home/bloc/home_bloc.dart';
-import 'package:payinall/presentation/pages/paycore_cards/paycore_cards_screen.dart';
-import 'package:payinall/presentation/pages/profile/bloc/profile_bloc.dart';
-import 'package:payinall/presentation/route/app_router.dart';
-import 'package:payinall/presentation/widgets/language_selection_dialog.dart';
+import 'package:uskudar_mobile/app_inherited_widget.dart';
+import 'package:uskudar_mobile/core/constants/localization_constants.dart';
+import 'package:uskudar_mobile/core/managers/user_info_manager.dart';
+import 'package:uskudar_mobile/core/utils/app_utils.dart';
+import 'package:uskudar_mobile/data/datasources/local/app_local_data_source.dart';
+import 'package:uskudar_mobile/di/di.dart';
+import 'package:uskudar_mobile/presentation/pages/home/bloc/home_bloc.dart';
+import 'package:uskudar_mobile/presentation/pages/paycore_cards/paycore_cards_screen.dart';
+import 'package:uskudar_mobile/presentation/pages/profile/bloc/profile_bloc.dart';
+import 'package:uskudar_mobile/presentation/route/app_router.dart';
+import 'package:uskudar_mobile/presentation/widgets/language_selection_dialog.dart';
 
 mixin ProfileMixin<T extends StatefulWidget> on State<T> {
   late final ProfileBloc bloc;

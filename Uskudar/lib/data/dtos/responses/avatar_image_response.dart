@@ -1,5 +1,5 @@
 import 'package:json_annotation/json_annotation.dart';
-import 'package:payinall/domain/entities/avatar_image.dart';
+import 'package:uskudar_mobile/domain/entities/avatar_image.dart';
 
 part 'avatar_image_response.g.dart';
 

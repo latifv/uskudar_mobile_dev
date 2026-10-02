@@ -1,5 +1,5 @@
 import 'package:json_annotation/json_annotation.dart';
-import 'package:payinall/domain/params/auth_mobile_params.dart';
+import 'package:uskudar_mobile/domain/params/auth_mobile_params.dart';
 
 part 'auth_mobile_request.g.dart';
 

@@ -2,11 +2,11 @@ import 'dart:async';
 
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
-import 'package:payinall/core/managers/user_info_manager.dart';
-import 'package:payinall/di/di.dart';
-import 'package:payinall/presentation/pages/change_email/bloc/change_email_bloc.dart';
-import 'package:payinall/presentation/route/app_router.dart';
-import 'package:payinall/presentation/shared/components/toast_component.dart';
+import 'package:uskudar_mobile/core/managers/user_info_manager.dart';
+import 'package:uskudar_mobile/di/di.dart';
+import 'package:uskudar_mobile/presentation/pages/change_email/bloc/change_email_bloc.dart';
+import 'package:uskudar_mobile/presentation/route/app_router.dart';
+import 'package:uskudar_mobile/presentation/shared/components/toast_component.dart';
 
 mixin ChangeEmailMixin<T extends StatefulWidget> on State<T> {
   late final TextEditingController newEmailController;

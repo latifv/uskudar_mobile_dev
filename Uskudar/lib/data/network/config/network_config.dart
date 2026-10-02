@@ -1,6 +1,6 @@
-import 'package:payinall/data/network/config/api_constants.dart';
-import 'package:payinall/data/network/constants/header_constants.dart';
-import 'package:payinall/data/network/constants/timeout_constants.dart';
+import 'package:uskudar_mobile/data/network/config/api_constants.dart';
+import 'package:uskudar_mobile/data/network/constants/header_constants.dart';
+import 'package:uskudar_mobile/data/network/constants/timeout_constants.dart';
 
 final class NetworkConfig {
   const NetworkConfig({

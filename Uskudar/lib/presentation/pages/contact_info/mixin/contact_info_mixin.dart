@@ -1,12 +1,12 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:payinall/core/generated/locale_keys.g.dart';
-import 'package:payinall/di/di.dart';
-import 'package:payinall/domain/entities/contact_info.dart';
-import 'package:payinall/presentation/pages/contact_info/bloc/contact_info_bloc.dart';
-import 'package:payinall/presentation/shared/extensions/launch_url_extension.dart';
-import 'package:payinall/presentation/shared/extensions/string_extension.dart';
+import 'package:uskudar_mobile/core/generated/locale_keys.g.dart';
+import 'package:uskudar_mobile/di/di.dart';
+import 'package:uskudar_mobile/domain/entities/contact_info.dart';
+import 'package:uskudar_mobile/presentation/pages/contact_info/bloc/contact_info_bloc.dart';
+import 'package:uskudar_mobile/presentation/shared/extensions/launch_url_extension.dart';
+import 'package:uskudar_mobile/presentation/shared/extensions/string_extension.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 mixin ContactInfoMixin<T extends StatefulWidget> on State<T> {

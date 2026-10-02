@@ -1,8 +1,8 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:payinall/core/error/failures.dart';
-import 'package:payinall/domain/entities/customer_coupon.dart';
-import 'package:payinall/domain/usecases/get_customer_coupons_usecase.dart';
+import 'package:uskudar_mobile/core/error/failures.dart';
+import 'package:uskudar_mobile/domain/entities/customer_coupon.dart';
+import 'package:uskudar_mobile/domain/usecases/get_customer_coupons_usecase.dart';
 
 part 'customer_coupons_event.dart';
 part 'customer_coupons_state.dart';

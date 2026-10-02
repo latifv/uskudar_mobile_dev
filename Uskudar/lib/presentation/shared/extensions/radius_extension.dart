@@ -1,6 +1,6 @@
 import 'package:flutter/widgets.dart';
-import 'package:payinall/presentation/shared/constants/radius_constants.dart';
-import 'package:payinall/presentation/shared/extensions/media_query_extension.dart';
+import 'package:uskudar_mobile/presentation/shared/constants/radius_constants.dart';
+import 'package:uskudar_mobile/presentation/shared/extensions/media_query_extension.dart';
 
 extension RadiusExtension on BuildContext {
   Radius get lowRadius => Radius.circular(screenWidth * RadiusConstants.low);

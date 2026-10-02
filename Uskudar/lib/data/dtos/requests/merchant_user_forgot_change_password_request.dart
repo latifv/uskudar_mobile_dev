@@ -1,5 +1,5 @@
 import 'package:json_annotation/json_annotation.dart';
-import 'package:payinall/domain/params/merchant_user_forgot_change_password_params.dart';
+import 'package:uskudar_mobile/domain/params/merchant_user_forgot_change_password_params.dart';
 
 part 'merchant_user_forgot_change_password_request.g.dart';
 

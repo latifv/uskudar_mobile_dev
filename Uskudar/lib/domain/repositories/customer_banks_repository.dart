@@ -1,7 +1,7 @@
 import 'package:fpdart/fpdart.dart';
-import 'package:payinall/core/error/failures.dart';
-import 'package:payinall/domain/entities/customer_bank.dart';
-import 'package:payinall/domain/params/customer_banks_params.dart';
+import 'package:uskudar_mobile/core/error/failures.dart';
+import 'package:uskudar_mobile/domain/entities/customer_bank.dart';
+import 'package:uskudar_mobile/domain/params/customer_banks_params.dart';
 
 abstract interface class CustomerBanksRepository {
   Future<Either<Failure, List<CustomerBank>>> getBanks();

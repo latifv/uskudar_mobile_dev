@@ -1,8 +1,8 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:payinall/core/error/failures.dart';
-import 'package:payinall/domain/params/create_fuel_card_params.dart';
-import 'package:payinall/domain/usecases/create_fuel_card_usecase.dart';
+import 'package:uskudar_mobile/core/error/failures.dart';
+import 'package:uskudar_mobile/domain/params/create_fuel_card_params.dart';
+import 'package:uskudar_mobile/domain/usecases/create_fuel_card_usecase.dart';
 
 part 'add_fuel_card_event.dart';
 part 'add_fuel_card_state.dart';

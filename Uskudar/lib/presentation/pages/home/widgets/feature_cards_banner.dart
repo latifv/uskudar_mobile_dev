@@ -1,14 +1,14 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
-import 'package:payinall/core/generated/locale_keys.g.dart';
-import 'package:payinall/core/managers/user_info_manager.dart';
-import 'package:payinall/di/di.dart';
-import 'package:payinall/presentation/route/app_router.dart';
-import 'package:payinall/presentation/shared/constants/image_asset_constants.dart';
-import 'package:payinall/presentation/shared/extensions/border_radius_extension.dart';
-import 'package:payinall/presentation/shared/extensions/spacing_extension.dart';
-import 'package:payinall/presentation/shared/extensions/string_extension.dart';
-import 'package:payinall/presentation/shared/extensions/theme_extension.dart';
+import 'package:uskudar_mobile/core/generated/locale_keys.g.dart';
+import 'package:uskudar_mobile/core/managers/user_info_manager.dart';
+import 'package:uskudar_mobile/di/di.dart';
+import 'package:uskudar_mobile/presentation/route/app_router.dart';
+import 'package:uskudar_mobile/presentation/shared/constants/image_asset_constants.dart';
+import 'package:uskudar_mobile/presentation/shared/extensions/border_radius_extension.dart';
+import 'package:uskudar_mobile/presentation/shared/extensions/spacing_extension.dart';
+import 'package:uskudar_mobile/presentation/shared/extensions/string_extension.dart';
+import 'package:uskudar_mobile/presentation/shared/extensions/theme_extension.dart';
 
 final class FeatureCardsBanner extends StatelessWidget {
   const FeatureCardsBanner({super.key});
@@ -31,7 +31,7 @@ final class FeatureCardsBanner extends StatelessWidget {
         itemBuilder: (context, index) {
           return switch (index) {
             0 => _FeatureCard(
-              label: LocaleKeys.payinall_discount_points.translate,
+              label: LocaleKeys.uskudar_discount_points.translate,
               imagePath: ImageAssetsConstants.metropol,
               onTap: () => context.router.push(const MetropolLocationsRoute()),
             ),

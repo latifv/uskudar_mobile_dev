@@ -1,4 +1,4 @@
-package com.erpapay.payinall;
+package tr.bel.uskudar.mobile;
 
 import java.util.Map;
 public interface AuthCallback {

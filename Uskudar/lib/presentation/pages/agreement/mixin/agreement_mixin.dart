@@ -2,12 +2,12 @@ import 'dart:async';
 
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
-import 'package:payinall/core/generated/locale_keys.g.dart';
-import 'package:payinall/domain/enums/agreement_type.dart';
-import 'package:payinall/presentation/pages/agreement/bloc/agreement_bloc.dart';
-import 'package:payinall/presentation/shared/extensions/string_extension.dart';
-import 'package:payinall/presentation/shared/extensions/theme_extension.dart';
-import 'package:payinall/presentation/widgets/custom_dialog.dart';
+import 'package:uskudar_mobile/core/generated/locale_keys.g.dart';
+import 'package:uskudar_mobile/domain/enums/agreement_type.dart';
+import 'package:uskudar_mobile/presentation/pages/agreement/bloc/agreement_bloc.dart';
+import 'package:uskudar_mobile/presentation/shared/extensions/string_extension.dart';
+import 'package:uskudar_mobile/presentation/shared/extensions/theme_extension.dart';
+import 'package:uskudar_mobile/presentation/widgets/custom_dialog.dart';
 
 mixin AgreementMixin<T extends StatefulWidget> on State<T> {
   late final AgreementBloc bloc;

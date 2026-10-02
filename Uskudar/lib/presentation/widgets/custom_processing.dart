@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:payinall/presentation/widgets/custom_loading.dart';
+import 'package:uskudar_mobile/presentation/widgets/custom_loading.dart';
 
 final class CustomProcessing extends StatelessWidget {
   const CustomProcessing({super.key});

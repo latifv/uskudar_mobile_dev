@@ -1,6 +1,6 @@
-import 'package:payinall/core/error/exceptions.dart';
-import 'package:payinall/data/dtos/responses/user_address_information_response.dart';
-import 'package:payinall/domain/entities/user_address_information.dart';
+import 'package:uskudar_mobile/core/error/exceptions.dart';
+import 'package:uskudar_mobile/data/dtos/responses/user_address_information_response.dart';
+import 'package:uskudar_mobile/domain/entities/user_address_information.dart';
 
 final class UserAddressInformationModel extends UserAddressInformation {
   const UserAddressInformationModel({

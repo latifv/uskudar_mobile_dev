@@ -1,5 +1,5 @@
 import 'package:flutter/widgets.dart';
-import 'package:payinall/presentation/shared/extensions/media_query_extension.dart';
+import 'package:uskudar_mobile/presentation/shared/extensions/media_query_extension.dart';
 
 extension PaddingExtension on BuildContext {
   EdgeInsets get paddingBase =>

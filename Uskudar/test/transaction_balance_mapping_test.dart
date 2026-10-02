@@ -1,8 +1,8 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:payinall/data/dtos/responses/transaction_receipt_response.dart';
-import 'package:payinall/data/dtos/responses/transaction_response.dart';
-import 'package:payinall/data/models/transaction_model.dart';
-import 'package:payinall/data/models/transaction_receipt_model.dart';
+import 'package:uskudar_mobile/data/dtos/responses/transaction_receipt_response.dart';
+import 'package:uskudar_mobile/data/dtos/responses/transaction_response.dart';
+import 'package:uskudar_mobile/data/models/transaction_model.dart';
+import 'package:uskudar_mobile/data/models/transaction_receipt_model.dart';
 
 void main() {
   test('maps wallet balances returned by the transaction API', () {
@@ -45,7 +45,7 @@ void main() {
       'institutionAddress': 'Adres',
       'institutionTaxOffice': 'Vergi Dairesi',
       'institutionTaxNo': '123',
-      'institutionName': 'Payinall',
+      'institutionName': 'Üsküdar Belediyesi',
       'basisAmount': 42,
       'bsmvAmount': 8,
       'bsmvRate': 0.2,

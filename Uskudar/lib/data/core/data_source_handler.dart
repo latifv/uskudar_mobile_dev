@@ -1,14 +1,14 @@
 import 'package:fpdart/fpdart.dart';
-import 'package:payinall/core/error/exceptions.dart';
-import 'package:payinall/core/error/failures.dart';
-import 'package:payinall/core/generated/locale_keys.g.dart';
-import 'package:payinall/core/utils/log_helper.dart';
-import 'package:payinall/core/utils/log_level.dart';
-import 'package:payinall/data/network/models/network_response.dart';
-import 'package:payinall/data/network/network_info.dart';
-import 'package:payinall/di/di.dart';
-import 'package:payinall/domain/base/data_with_message.dart';
-import 'package:payinall/presentation/shared/extensions/string_extension.dart';
+import 'package:uskudar_mobile/core/error/exceptions.dart';
+import 'package:uskudar_mobile/core/error/failures.dart';
+import 'package:uskudar_mobile/core/generated/locale_keys.g.dart';
+import 'package:uskudar_mobile/core/utils/log_helper.dart';
+import 'package:uskudar_mobile/core/utils/log_level.dart';
+import 'package:uskudar_mobile/data/network/models/network_response.dart';
+import 'package:uskudar_mobile/data/network/network_info.dart';
+import 'package:uskudar_mobile/di/di.dart';
+import 'package:uskudar_mobile/domain/base/data_with_message.dart';
+import 'package:uskudar_mobile/presentation/shared/extensions/string_extension.dart';
 
 final class DataSourceHandler {
   DataSourceHandler();

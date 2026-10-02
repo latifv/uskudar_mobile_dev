@@ -2,10 +2,10 @@ import 'dart:async';
 
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
-import 'package:payinall/domain/enums/email_verification_type.dart';
-import 'package:payinall/presentation/pages/email_verification/bloc/email_verification_bloc.dart';
-import 'package:payinall/presentation/shared/components/toast_component.dart';
-import 'package:payinall/presentation/shared/constants/validator_constants.dart';
+import 'package:uskudar_mobile/domain/enums/email_verification_type.dart';
+import 'package:uskudar_mobile/presentation/pages/email_verification/bloc/email_verification_bloc.dart';
+import 'package:uskudar_mobile/presentation/shared/components/toast_component.dart';
+import 'package:uskudar_mobile/presentation/shared/constants/validator_constants.dart';
 
 mixin EmailVerificationMixin<T extends StatefulWidget> on State<T> {
   late final EmailVerificationBloc bloc;

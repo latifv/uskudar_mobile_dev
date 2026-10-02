@@ -1,5 +1,5 @@
 import 'package:json_annotation/json_annotation.dart';
-import 'package:payinall/domain/params/metropol_transaction_list_params.dart';
+import 'package:uskudar_mobile/domain/params/metropol_transaction_list_params.dart';
 
 part 'metropol_transaction_list_request.g.dart';
 

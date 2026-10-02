@@ -2,12 +2,12 @@ import 'dart:async';
 
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:payinall/core/error/failures.dart';
-import 'package:payinall/core/managers/user_info_manager.dart';
-import 'package:payinall/domain/entities/customer_bank.dart';
-import 'package:payinall/domain/params/customer_banks_params.dart';
-import 'package:payinall/domain/usecases/customer_bank_usecase.dart';
-import 'package:payinall/domain/usecases/customer_merchant_bank_usecase.dart';
+import 'package:uskudar_mobile/core/error/failures.dart';
+import 'package:uskudar_mobile/core/managers/user_info_manager.dart';
+import 'package:uskudar_mobile/domain/entities/customer_bank.dart';
+import 'package:uskudar_mobile/domain/params/customer_banks_params.dart';
+import 'package:uskudar_mobile/domain/usecases/customer_bank_usecase.dart';
+import 'package:uskudar_mobile/domain/usecases/customer_merchant_bank_usecase.dart';
 
 part 'add_bank_account_event.dart';
 part 'add_bank_account_state.dart';

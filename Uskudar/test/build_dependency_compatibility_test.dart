@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:payinall/domain/entities/contact_info.dart';
+import 'package:uskudar_mobile/domain/entities/contact_info.dart';
 
 void main() {
   testWidgets('Font Awesome icons render with the new wrapper type', (

@@ -1,10 +1,10 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:payinall/core/error/failures.dart';
-import 'package:payinall/domain/entities/customer_demand_subject.dart';
-import 'package:payinall/domain/params/create_customer_demand_params.dart';
-import 'package:payinall/domain/usecases/create_customer_demand_usecase.dart';
-import 'package:payinall/domain/usecases/get_customer_demand_subject_types_usecase.dart';
+import 'package:uskudar_mobile/core/error/failures.dart';
+import 'package:uskudar_mobile/domain/entities/customer_demand_subject.dart';
+import 'package:uskudar_mobile/domain/params/create_customer_demand_params.dart';
+import 'package:uskudar_mobile/domain/usecases/create_customer_demand_usecase.dart';
+import 'package:uskudar_mobile/domain/usecases/get_customer_demand_subject_types_usecase.dart';
 
 part 'customer_demand_event.dart';
 part 'customer_demand_state.dart';

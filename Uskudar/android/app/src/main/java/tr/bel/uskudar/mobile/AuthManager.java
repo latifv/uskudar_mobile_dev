@@ -1,6 +1,6 @@
-package com.erpapay.payinall;
+package tr.bel.uskudar.mobile;
 
-import com.erpapay.payinall.AuthCallback;
+import tr.bel.uskudar.mobile.AuthCallback;
 
 public class AuthManager {
     private static AuthCallback callback;

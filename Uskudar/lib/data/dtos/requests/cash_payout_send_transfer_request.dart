@@ -1,7 +1,7 @@
 import 'package:json_annotation/json_annotation.dart';
-import 'package:payinall/data/dtos/requests/key_value_attribute_request.dart';
-import 'package:payinall/domain/params/cash_payout_send_transfer_params.dart';
-import 'package:payinall/domain/params/key_value_attribute.dart';
+import 'package:uskudar_mobile/data/dtos/requests/key_value_attribute_request.dart';
+import 'package:uskudar_mobile/domain/params/cash_payout_send_transfer_params.dart';
+import 'package:uskudar_mobile/domain/params/key_value_attribute.dart';
 
 part 'cash_payout_send_transfer_request.g.dart';
 

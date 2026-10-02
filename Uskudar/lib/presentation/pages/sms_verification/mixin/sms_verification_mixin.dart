@@ -2,16 +2,16 @@ import 'dart:async';
 
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
-import 'package:payinall/core/managers/signalr_manager.dart';
+import 'package:uskudar_mobile/core/managers/signalr_manager.dart';
 
-import 'package:payinall/di/di.dart';
-import 'package:payinall/domain/entities/logged_in.dart';
-import 'package:payinall/domain/enums/sms_verification_type.dart';
-import 'package:payinall/domain/usecases/save_logged_in_usecase.dart';
-import 'package:payinall/presentation/pages/sms_verification/bloc/sms_verification_bloc.dart';
-import 'package:payinall/presentation/route/app_router.dart';
-import 'package:payinall/presentation/shared/components/toast_component.dart';
-import 'package:payinall/presentation/shared/constants/validator_constants.dart';
+import 'package:uskudar_mobile/di/di.dart';
+import 'package:uskudar_mobile/domain/entities/logged_in.dart';
+import 'package:uskudar_mobile/domain/enums/sms_verification_type.dart';
+import 'package:uskudar_mobile/domain/usecases/save_logged_in_usecase.dart';
+import 'package:uskudar_mobile/presentation/pages/sms_verification/bloc/sms_verification_bloc.dart';
+import 'package:uskudar_mobile/presentation/route/app_router.dart';
+import 'package:uskudar_mobile/presentation/shared/components/toast_component.dart';
+import 'package:uskudar_mobile/presentation/shared/constants/validator_constants.dart';
 
 mixin VerificationMixin<T extends StatefulWidget> on State<T> {
   late final SmsVerificationBloc bloc;

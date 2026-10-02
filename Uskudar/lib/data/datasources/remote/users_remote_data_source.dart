@@ -1,14 +1,14 @@
-import 'package:payinall/core/error/exceptions.dart';
-import 'package:payinall/data/core/base_remote_data_source.dart';
-import 'package:payinall/data/dtos/requests/email_verification_confirm_request.dart';
-import 'package:payinall/data/dtos/requests/register_request.dart';
-import 'package:payinall/data/dtos/requests/update_email_confirm_request.dart';
-import 'package:payinall/data/dtos/requests/update_email_send_code_request.dart';
-import 'package:payinall/data/dtos/requests/update_secret_question_request.dart';
-import 'package:payinall/data/dtos/responses/current_user_info_response.dart';
-import 'package:payinall/data/models/current_user_info_model.dart';
-import 'package:payinall/data/network/config/endpoints.dart';
-import 'package:payinall/data/network/models/network_response.dart';
+import 'package:uskudar_mobile/core/error/exceptions.dart';
+import 'package:uskudar_mobile/data/core/base_remote_data_source.dart';
+import 'package:uskudar_mobile/data/dtos/requests/email_verification_confirm_request.dart';
+import 'package:uskudar_mobile/data/dtos/requests/register_request.dart';
+import 'package:uskudar_mobile/data/dtos/requests/update_email_confirm_request.dart';
+import 'package:uskudar_mobile/data/dtos/requests/update_email_send_code_request.dart';
+import 'package:uskudar_mobile/data/dtos/requests/update_secret_question_request.dart';
+import 'package:uskudar_mobile/data/dtos/responses/current_user_info_response.dart';
+import 'package:uskudar_mobile/data/models/current_user_info_model.dart';
+import 'package:uskudar_mobile/data/network/config/endpoints.dart';
+import 'package:uskudar_mobile/data/network/models/network_response.dart';
 
 abstract interface class UsersRemoteDataSource {
   Future<NetworkResponse<String>> register(RegisterRequest request);

@@ -1,7 +1,7 @@
-import 'package:payinall/data/core/base_remote_data_source.dart';
-import 'package:payinall/data/dtos/requests/customer_mobiles_request.dart';
-import 'package:payinall/data/network/config/endpoints.dart';
-import 'package:payinall/data/network/models/network_response.dart';
+import 'package:uskudar_mobile/data/core/base_remote_data_source.dart';
+import 'package:uskudar_mobile/data/dtos/requests/customer_mobiles_request.dart';
+import 'package:uskudar_mobile/data/network/config/endpoints.dart';
+import 'package:uskudar_mobile/data/network/models/network_response.dart';
 
 abstract interface class CustomerMobilesRemoteDataSource {
   Future<NetworkResponse<void>> customerMobiles(CustomerMobilesRequest request);

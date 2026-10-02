@@ -4,9 +4,9 @@ import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
-import 'package:payinall/core/services/qr_code_service/completer.dart';
-import 'package:payinall/core/utils/log_helper.dart';
-import 'package:payinall/core/utils/log_level.dart';
+import 'package:uskudar_mobile/core/services/qr_code_service/completer.dart';
+import 'package:uskudar_mobile/core/utils/log_helper.dart';
+import 'package:uskudar_mobile/core/utils/log_level.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 
 abstract interface class QRCodeService {

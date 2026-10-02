@@ -1,12 +1,12 @@
 import 'package:fpdart/fpdart.dart';
-import 'package:payinall/core/error/failures.dart';
-import 'package:payinall/data/core/data_source_handler.dart';
-import 'package:payinall/data/datasources/remote/customer_demands_remote_data_source.dart';
-import 'package:payinall/data/dtos/requests/create_customer_demand_request.dart';
-import 'package:payinall/data/models/customer_demand_subject_model.dart';
-import 'package:payinall/domain/entities/customer_demand_subject.dart';
-import 'package:payinall/domain/params/create_customer_demand_params.dart';
-import 'package:payinall/domain/repositories/customer_demands_repository.dart';
+import 'package:uskudar_mobile/core/error/failures.dart';
+import 'package:uskudar_mobile/data/core/data_source_handler.dart';
+import 'package:uskudar_mobile/data/datasources/remote/customer_demands_remote_data_source.dart';
+import 'package:uskudar_mobile/data/dtos/requests/create_customer_demand_request.dart';
+import 'package:uskudar_mobile/data/models/customer_demand_subject_model.dart';
+import 'package:uskudar_mobile/domain/entities/customer_demand_subject.dart';
+import 'package:uskudar_mobile/domain/params/create_customer_demand_params.dart';
+import 'package:uskudar_mobile/domain/repositories/customer_demands_repository.dart';
 
 final class CustomerDemandsRepositoryImpl implements CustomerDemandsRepository {
   CustomerDemandsRepositoryImpl({required this.remoteDataSource})

@@ -1,8 +1,8 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:payinall/core/error/failures.dart';
-import 'package:payinall/domain/entities/transaction_receipt.dart';
-import 'package:payinall/domain/usecases/get_transaction_receipt_usecase.dart';
+import 'package:uskudar_mobile/core/error/failures.dart';
+import 'package:uskudar_mobile/domain/entities/transaction_receipt.dart';
+import 'package:uskudar_mobile/domain/usecases/get_transaction_receipt_usecase.dart';
 
 part 'transfer_result_event.dart';
 part 'transfer_result_state.dart';

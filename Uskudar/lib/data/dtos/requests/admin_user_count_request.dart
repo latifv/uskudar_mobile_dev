@@ -1,6 +1,6 @@
 import 'package:json_annotation/json_annotation.dart';
-import 'package:payinall/domain/enums/time_type.dart';
-import 'package:payinall/domain/params/admin_user_count_params.dart';
+import 'package:uskudar_mobile/domain/enums/time_type.dart';
+import 'package:uskudar_mobile/domain/params/admin_user_count_params.dart';
 
 part 'admin_user_count_request.g.dart';
 

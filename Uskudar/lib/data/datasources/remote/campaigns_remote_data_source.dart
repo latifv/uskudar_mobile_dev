@@ -1,12 +1,12 @@
-import 'package:payinall/core/error/exceptions.dart';
-import 'package:payinall/data/core/base_remote_data_source.dart';
-import 'package:payinall/data/dtos/requests/create_card_request.dart';
-import 'package:payinall/data/dtos/responses/campaign_response.dart';
-import 'package:payinall/data/dtos/responses/iwallet_agreement_response.dart';
-import 'package:payinall/data/models/campaign_model.dart';
-import 'package:payinall/data/models/iwallet_agreement_model.dart';
-import 'package:payinall/data/network/config/endpoints.dart';
-import 'package:payinall/data/network/models/network_response.dart';
+import 'package:uskudar_mobile/core/error/exceptions.dart';
+import 'package:uskudar_mobile/data/core/base_remote_data_source.dart';
+import 'package:uskudar_mobile/data/dtos/requests/create_card_request.dart';
+import 'package:uskudar_mobile/data/dtos/responses/campaign_response.dart';
+import 'package:uskudar_mobile/data/dtos/responses/iwallet_agreement_response.dart';
+import 'package:uskudar_mobile/data/models/campaign_model.dart';
+import 'package:uskudar_mobile/data/models/iwallet_agreement_model.dart';
+import 'package:uskudar_mobile/data/network/config/endpoints.dart';
+import 'package:uskudar_mobile/data/network/models/network_response.dart';
 
 abstract interface class CampaignsRemoteDataSource {
   Future<NetworkResponse<List<CampaignModel>>> getCampaigns();

@@ -1,5 +1,5 @@
 import 'package:json_annotation/json_annotation.dart';
-import 'package:payinall/domain/params/fuel_card_top_up_params.dart';
+import 'package:uskudar_mobile/domain/params/fuel_card_top_up_params.dart';
 
 part 'fuel_card_top_up_request.g.dart';
 

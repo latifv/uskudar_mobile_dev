@@ -1,9 +1,9 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:payinall/di/di.dart';
-import 'package:payinall/domain/entities/app_bank.dart';
-import 'package:payinall/presentation/pages/deposit/bank_detail/bloc/bank_detail_bloc.dart';
+import 'package:uskudar_mobile/di/di.dart';
+import 'package:uskudar_mobile/domain/entities/app_bank.dart';
+import 'package:uskudar_mobile/presentation/pages/deposit/bank_detail/bloc/bank_detail_bloc.dart';
 
 mixin BankDetailMixin<T extends StatefulWidget> on State<T> {
   late final BankDetailBloc bloc;

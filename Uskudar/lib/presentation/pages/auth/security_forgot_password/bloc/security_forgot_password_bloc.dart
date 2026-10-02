@@ -2,14 +2,14 @@ import 'dart:async';
 
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:payinall/core/error/failures.dart';
-import 'package:payinall/core/generated/locale_keys.g.dart';
-import 'package:payinall/domain/enums/login_type.dart';
-import 'package:payinall/domain/params/merchant_user_forgot_password_params.dart';
-import 'package:payinall/domain/params/question_name_params.dart';
-import 'package:payinall/domain/usecases/get_question_name_usecase.dart';
-import 'package:payinall/domain/usecases/merchant_user_forgot_password_usecase.dart';
-import 'package:payinall/presentation/shared/extensions/string_extension.dart';
+import 'package:uskudar_mobile/core/error/failures.dart';
+import 'package:uskudar_mobile/core/generated/locale_keys.g.dart';
+import 'package:uskudar_mobile/domain/enums/login_type.dart';
+import 'package:uskudar_mobile/domain/params/merchant_user_forgot_password_params.dart';
+import 'package:uskudar_mobile/domain/params/question_name_params.dart';
+import 'package:uskudar_mobile/domain/usecases/get_question_name_usecase.dart';
+import 'package:uskudar_mobile/domain/usecases/merchant_user_forgot_password_usecase.dart';
+import 'package:uskudar_mobile/presentation/shared/extensions/string_extension.dart';
 
 part 'security_forgot_password_event.dart';
 part 'security_forgot_password_state.dart';

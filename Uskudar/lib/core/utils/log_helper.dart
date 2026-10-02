@@ -1,9 +1,9 @@
 import 'dart:async';
 
 import 'package:flutter/foundation.dart';
-import 'package:payinall/core/services/firebase_service.dart';
-import 'package:payinall/core/utils/log_level.dart';
-import 'package:payinall/di/di.dart';
+import 'package:uskudar_mobile/core/services/firebase_service.dart';
+import 'package:uskudar_mobile/core/utils/log_level.dart';
+import 'package:uskudar_mobile/di/di.dart';
 
 final class LogHelper {
   const LogHelper._();

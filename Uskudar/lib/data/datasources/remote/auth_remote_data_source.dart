@@ -1,11 +1,11 @@
-import 'package:payinall/core/error/exceptions.dart';
-import 'package:payinall/data/core/base_remote_data_source.dart';
-import 'package:payinall/data/dtos/requests/auth_merchant_request.dart';
-import 'package:payinall/data/dtos/requests/auth_mobile_request.dart';
-import 'package:payinall/data/dtos/responses/auth_mobile_response.dart';
-import 'package:payinall/data/models/auth_mobile_model.dart';
-import 'package:payinall/data/network/config/endpoints.dart';
-import 'package:payinall/data/network/models/network_response.dart';
+import 'package:uskudar_mobile/core/error/exceptions.dart';
+import 'package:uskudar_mobile/data/core/base_remote_data_source.dart';
+import 'package:uskudar_mobile/data/dtos/requests/auth_merchant_request.dart';
+import 'package:uskudar_mobile/data/dtos/requests/auth_mobile_request.dart';
+import 'package:uskudar_mobile/data/dtos/responses/auth_mobile_response.dart';
+import 'package:uskudar_mobile/data/models/auth_mobile_model.dart';
+import 'package:uskudar_mobile/data/network/config/endpoints.dart';
+import 'package:uskudar_mobile/data/network/models/network_response.dart';
 
 abstract interface class AuthRemoteDataSource {
   Future<NetworkResponse<AuthMobileModel>> authMobile(

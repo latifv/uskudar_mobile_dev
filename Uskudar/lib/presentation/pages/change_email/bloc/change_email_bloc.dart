@@ -1,8 +1,8 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:payinall/core/error/failures.dart';
-import 'package:payinall/domain/params/update_email_send_code_params.dart';
-import 'package:payinall/domain/usecases/update_email_send_code_usecase.dart';
+import 'package:uskudar_mobile/core/error/failures.dart';
+import 'package:uskudar_mobile/domain/params/update_email_send_code_params.dart';
+import 'package:uskudar_mobile/domain/usecases/update_email_send_code_usecase.dart';
 
 part 'change_email_event.dart';
 part 'change_email_state.dart';

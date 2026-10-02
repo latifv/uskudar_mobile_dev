@@ -2,17 +2,17 @@ import 'dart:async';
 
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:payinall/app_inherited_widget.dart';
-import 'package:payinall/core/constants/app_constants.dart';
-import 'package:payinall/core/constants/localization_constants.dart';
-import 'package:payinall/core/managers/signalr_manager.dart';
-import 'package:payinall/core/services/firebase_service.dart';
-import 'package:payinall/core/utils/log_helper.dart';
-import 'package:payinall/core/utils/log_level.dart';
-import 'package:payinall/data/datasources/local/app_local_data_source.dart';
-import 'package:payinall/di/di.dart' as di;
-import 'package:payinall/presentation/route/app_router.dart';
-import 'package:payinall/presentation/theme/app_theme.dart';
+import 'package:uskudar_mobile/app_inherited_widget.dart';
+import 'package:uskudar_mobile/core/constants/app_constants.dart';
+import 'package:uskudar_mobile/core/constants/localization_constants.dart';
+import 'package:uskudar_mobile/core/managers/signalr_manager.dart';
+import 'package:uskudar_mobile/core/services/firebase_service.dart';
+import 'package:uskudar_mobile/core/utils/log_helper.dart';
+import 'package:uskudar_mobile/core/utils/log_level.dart';
+import 'package:uskudar_mobile/data/datasources/local/app_local_data_source.dart';
+import 'package:uskudar_mobile/di/di.dart' as di;
+import 'package:uskudar_mobile/presentation/route/app_router.dart';
+import 'package:uskudar_mobile/presentation/theme/app_theme.dart';
 
 final class App extends StatefulWidget {
   const App({super.key});

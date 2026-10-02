@@ -1,18 +1,18 @@
-import 'package:payinall/core/error/exceptions.dart';
-import 'package:payinall/data/core/base_remote_data_source.dart';
-import 'package:payinall/data/dtos/requests/coupon_take_request.dart';
-import 'package:payinall/data/dtos/responses/customer_coupon_response.dart';
-import 'package:payinall/data/dtos/responses/gift_check_brand_detail_response.dart';
-import 'package:payinall/data/dtos/responses/gift_check_brand_response.dart';
-import 'package:payinall/data/dtos/responses/gift_check_category_response.dart';
-import 'package:payinall/data/dtos/responses/gift_check_coupon_response.dart';
-import 'package:payinall/data/models/customer_coupon_model.dart';
-import 'package:payinall/data/models/gift_check_brand_detail_model.dart';
-import 'package:payinall/data/models/gift_check_brand_model.dart';
-import 'package:payinall/data/models/gift_check_category_model.dart';
-import 'package:payinall/data/models/gift_check_coupon_model.dart';
-import 'package:payinall/data/network/config/endpoints.dart';
-import 'package:payinall/data/network/models/network_response.dart';
+import 'package:uskudar_mobile/core/error/exceptions.dart';
+import 'package:uskudar_mobile/data/core/base_remote_data_source.dart';
+import 'package:uskudar_mobile/data/dtos/requests/coupon_take_request.dart';
+import 'package:uskudar_mobile/data/dtos/responses/customer_coupon_response.dart';
+import 'package:uskudar_mobile/data/dtos/responses/gift_check_brand_detail_response.dart';
+import 'package:uskudar_mobile/data/dtos/responses/gift_check_brand_response.dart';
+import 'package:uskudar_mobile/data/dtos/responses/gift_check_category_response.dart';
+import 'package:uskudar_mobile/data/dtos/responses/gift_check_coupon_response.dart';
+import 'package:uskudar_mobile/data/models/customer_coupon_model.dart';
+import 'package:uskudar_mobile/data/models/gift_check_brand_detail_model.dart';
+import 'package:uskudar_mobile/data/models/gift_check_brand_model.dart';
+import 'package:uskudar_mobile/data/models/gift_check_category_model.dart';
+import 'package:uskudar_mobile/data/models/gift_check_coupon_model.dart';
+import 'package:uskudar_mobile/data/network/config/endpoints.dart';
+import 'package:uskudar_mobile/data/network/models/network_response.dart';
 
 abstract interface class GiftChecksRemoteDataSource {
   Future<NetworkResponse<List<GiftCheckCategoryModel>>> getCategories();

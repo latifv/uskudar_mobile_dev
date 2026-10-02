@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:payinall/presentation/shared/constants/size_constants.dart';
+import 'package:uskudar_mobile/presentation/shared/constants/size_constants.dart';
 
 final class AppTextTheme {
   factory AppTextTheme(Color color) {

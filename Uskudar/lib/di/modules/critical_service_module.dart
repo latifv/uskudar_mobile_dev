@@ -1,7 +1,7 @@
 import 'package:get_it/get_it.dart';
-import 'package:payinall/core/services/firebase_service.dart';
-import 'package:payinall/core/services/local_notification_service.dart';
-import 'package:payinall/di/di_module.dart';
+import 'package:uskudar_mobile/core/services/firebase_service.dart';
+import 'package:uskudar_mobile/core/services/local_notification_service.dart';
+import 'package:uskudar_mobile/di/di_module.dart';
 
 final class CriticalServiceModule extends DIModule {
   @override

@@ -1,7 +1,7 @@
 import 'package:fpdart/fpdart.dart';
-import 'package:payinall/core/error/failures.dart';
-import 'package:payinall/domain/base/usecases/base_usecase.dart';
-import 'package:payinall/domain/repositories/avatar_images_repository.dart';
+import 'package:uskudar_mobile/core/error/failures.dart';
+import 'package:uskudar_mobile/domain/base/usecases/base_usecase.dart';
+import 'package:uskudar_mobile/domain/repositories/avatar_images_repository.dart';
 
 final class SelectCustomerAvatarUsecase implements BaseUsecase<void, int> {
   SelectCustomerAvatarUsecase(this.repository);

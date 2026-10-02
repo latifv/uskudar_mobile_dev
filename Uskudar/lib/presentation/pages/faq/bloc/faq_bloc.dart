@@ -1,9 +1,9 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:payinall/core/error/failures.dart';
-import 'package:payinall/domain/entities/help.dart';
-import 'package:payinall/domain/usecases/get_helps_usecase.dart';
+import 'package:uskudar_mobile/core/error/failures.dart';
+import 'package:uskudar_mobile/domain/entities/help.dart';
+import 'package:uskudar_mobile/domain/usecases/get_helps_usecase.dart';
 
 part 'faq_event.dart';
 part 'faq_state.dart';

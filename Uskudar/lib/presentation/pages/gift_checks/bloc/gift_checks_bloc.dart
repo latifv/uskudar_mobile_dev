@@ -1,8 +1,8 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:payinall/core/error/failures.dart';
-import 'package:payinall/domain/entities/gift_check_category.dart';
-import 'package:payinall/domain/usecases/get_gift_check_categories_usecase.dart';
+import 'package:uskudar_mobile/core/error/failures.dart';
+import 'package:uskudar_mobile/domain/entities/gift_check_category.dart';
+import 'package:uskudar_mobile/domain/usecases/get_gift_check_categories_usecase.dart';
 
 part 'gift_checks_event.dart';
 part 'gift_checks_state.dart';

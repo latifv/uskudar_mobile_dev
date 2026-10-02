@@ -2,11 +2,11 @@ import 'dart:typed_data';
 
 import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:payinall/core/services/paycore_mobile_service.dart';
-import 'package:payinall/data/network/config/network_config.dart';
-import 'package:payinall/data/network/interceptors/network_interceptor.dart';
-import 'package:payinall/data/network/network_client.dart';
-import 'package:payinall/di/di.dart';
+import 'package:uskudar_mobile/core/services/paycore_mobile_service.dart';
+import 'package:uskudar_mobile/data/network/config/network_config.dart';
+import 'package:uskudar_mobile/data/network/interceptors/network_interceptor.dart';
+import 'package:uskudar_mobile/data/network/network_client.dart';
+import 'package:uskudar_mobile/di/di.dart';
 
 class RecordingAdapter implements HttpClientAdapter {
   final requests = <Uri>[];
@@ -32,12 +32,12 @@ class RecordingAdapter implements HttpClientAdapter {
 }
 
 void main() {
-  test('card list and customer info stay on the mobile live API', () async {
+  test('card list and customer info use the configured API', () async {
     getIt.registerSingleton<NetworkInterceptor>(const NetworkInterceptor());
     addTearDown(getIt.reset);
     final client = NetworkClient.withConfig(
       NetworkConfig.withCustomApiUrl(
-        'https://payinallwalletapi.erpapay.com/api',
+        'https://example.invalid/api',
       ),
     );
     client.interceptors.clear();
@@ -48,8 +48,8 @@ void main() {
     await service.getMyCards();
     await service.getCustomerInfo();
     expect(adapter.requests.map((uri) => uri.toString()).toList(), [
-      'https://payinallwalletapi.erpapay.com/api/PayCoreCards/my-cards',
-      'https://payinallwalletapi.erpapay.com/api/PayCoreCards/customer-info',
+      'https://example.invalid/api/PayCoreCards/my-cards',
+      'https://example.invalid/api/PayCoreCards/customer-info',
     ]);
   });
 }

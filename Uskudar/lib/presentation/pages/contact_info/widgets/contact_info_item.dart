@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:payinall/domain/entities/contact_info.dart';
-import 'package:payinall/presentation/shared/constants/icon_size_constants.dart';
-import 'package:payinall/presentation/shared/extensions/media_query_extension.dart';
-import 'package:payinall/presentation/shared/extensions/padding_extension.dart';
-import 'package:payinall/presentation/shared/extensions/spacing_extension.dart';
-import 'package:payinall/presentation/shared/extensions/theme_extension.dart';
+import 'package:uskudar_mobile/domain/entities/contact_info.dart';
+import 'package:uskudar_mobile/presentation/shared/constants/icon_size_constants.dart';
+import 'package:uskudar_mobile/presentation/shared/extensions/media_query_extension.dart';
+import 'package:uskudar_mobile/presentation/shared/extensions/padding_extension.dart';
+import 'package:uskudar_mobile/presentation/shared/extensions/spacing_extension.dart';
+import 'package:uskudar_mobile/presentation/shared/extensions/theme_extension.dart';
 
 final class ContactInfoItem extends StatelessWidget {
   const ContactInfoItem({required this.info, required this.onTap, super.key});

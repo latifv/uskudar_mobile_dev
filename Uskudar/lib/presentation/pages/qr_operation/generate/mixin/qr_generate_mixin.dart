@@ -2,12 +2,12 @@ import 'dart:async';
 
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
-import 'package:payinall/core/managers/user_info_manager.dart';
-import 'package:payinall/di/di.dart';
-import 'package:payinall/presentation/pages/qr_operation/generate/bloc/qr_generate_bloc.dart';
-import 'package:payinall/presentation/route/app_router.dart';
-import 'package:payinall/presentation/shared/components/snackbar_component.dart';
-import 'package:payinall/presentation/shared/extensions/string_extension.dart';
+import 'package:uskudar_mobile/core/managers/user_info_manager.dart';
+import 'package:uskudar_mobile/di/di.dart';
+import 'package:uskudar_mobile/presentation/pages/qr_operation/generate/bloc/qr_generate_bloc.dart';
+import 'package:uskudar_mobile/presentation/route/app_router.dart';
+import 'package:uskudar_mobile/presentation/shared/components/snackbar_component.dart';
+import 'package:uskudar_mobile/presentation/shared/extensions/string_extension.dart';
 
 mixin QrGenerateMixin<T extends StatefulWidget> on State<T> {
   late final QrGenerateBloc bloc;

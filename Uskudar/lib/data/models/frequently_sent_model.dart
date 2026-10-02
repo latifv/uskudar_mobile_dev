@@ -1,6 +1,6 @@
-import 'package:payinall/core/error/exceptions.dart';
-import 'package:payinall/data/dtos/responses/frequently_sent_response.dart';
-import 'package:payinall/domain/entities/frequently_sent.dart';
+import 'package:uskudar_mobile/core/error/exceptions.dart';
+import 'package:uskudar_mobile/data/dtos/responses/frequently_sent_response.dart';
+import 'package:uskudar_mobile/domain/entities/frequently_sent.dart';
 
 final class FrequentlySentModel extends FrequentlySent {
   const FrequentlySentModel({

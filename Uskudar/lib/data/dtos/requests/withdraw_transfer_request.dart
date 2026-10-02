@@ -1,5 +1,5 @@
 import 'package:json_annotation/json_annotation.dart';
-import 'package:payinall/domain/params/withdraw_transfer_params.dart';
+import 'package:uskudar_mobile/domain/params/withdraw_transfer_params.dart';
 
 part 'withdraw_transfer_request.g.dart';
 

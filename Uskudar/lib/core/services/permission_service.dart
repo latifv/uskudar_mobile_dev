@@ -1,8 +1,8 @@
 import 'dart:io';
 
-import 'package:payinall/core/services/device_info_service.dart';
-import 'package:payinall/core/utils/log_helper.dart';
-import 'package:payinall/core/utils/log_level.dart';
+import 'package:uskudar_mobile/core/services/device_info_service.dart';
+import 'package:uskudar_mobile/core/utils/log_helper.dart';
+import 'package:uskudar_mobile/core/utils/log_level.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 abstract interface class PermissionService {

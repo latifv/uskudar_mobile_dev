@@ -1,20 +1,20 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:payinall/core/generated/locale_keys.g.dart';
-import 'package:payinall/core/managers/user_info_manager.dart';
-import 'package:payinall/di/di.dart';
-import 'package:payinall/domain/entities/frequent_iban.dart';
-import 'package:payinall/domain/entities/frequently_sent.dart';
-import 'package:payinall/domain/validators/app_validators.dart';
-import 'package:payinall/presentation/pages/registered_users/bloc/registered_users_bloc.dart';
-import 'package:payinall/presentation/shared/components/toast_component.dart';
-import 'package:payinall/presentation/shared/extensions/string_extension.dart';
-import 'package:payinall/presentation/shared/extensions/theme_extension.dart';
-import 'package:payinall/presentation/widgets/custom_dialog.dart';
-import 'package:payinall/presentation/widgets/custom_text_form_field.dart';
-import 'package:payinall/presentation/shared/extensions/padding_extension.dart';
-import 'package:payinall/presentation/shared/extensions/spacing_extension.dart';
+import 'package:uskudar_mobile/core/generated/locale_keys.g.dart';
+import 'package:uskudar_mobile/core/managers/user_info_manager.dart';
+import 'package:uskudar_mobile/di/di.dart';
+import 'package:uskudar_mobile/domain/entities/frequent_iban.dart';
+import 'package:uskudar_mobile/domain/entities/frequently_sent.dart';
+import 'package:uskudar_mobile/domain/validators/app_validators.dart';
+import 'package:uskudar_mobile/presentation/pages/registered_users/bloc/registered_users_bloc.dart';
+import 'package:uskudar_mobile/presentation/shared/components/toast_component.dart';
+import 'package:uskudar_mobile/presentation/shared/extensions/string_extension.dart';
+import 'package:uskudar_mobile/presentation/shared/extensions/theme_extension.dart';
+import 'package:uskudar_mobile/presentation/widgets/custom_dialog.dart';
+import 'package:uskudar_mobile/presentation/widgets/custom_text_form_field.dart';
+import 'package:uskudar_mobile/presentation/shared/extensions/padding_extension.dart';
+import 'package:uskudar_mobile/presentation/shared/extensions/spacing_extension.dart';
 
 mixin RegisteredUsersMixin<T extends StatefulWidget> on State<T> {
   late final RegisteredUsersBloc bloc;

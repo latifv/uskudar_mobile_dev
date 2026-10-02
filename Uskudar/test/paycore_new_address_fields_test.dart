@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:payinall/domain/entities/metropol_city.dart';
-import 'package:payinall/presentation/pages/paycore_cards/paycore_new_address_fields.dart';
+import 'package:uskudar_mobile/domain/entities/metropol_city.dart';
+import 'package:uskudar_mobile/presentation/pages/paycore_cards/paycore_new_address_fields.dart';
 
 void main() {
   test('Address and district boundary validation', () {

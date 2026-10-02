@@ -1,6 +1,6 @@
-import 'package:payinall/core/error/exceptions.dart';
-import 'package:payinall/data/dtos/responses/bill_inquiry_response.dart';
-import 'package:payinall/domain/entities/bill_inquiry.dart';
+import 'package:uskudar_mobile/core/error/exceptions.dart';
+import 'package:uskudar_mobile/data/dtos/responses/bill_inquiry_response.dart';
+import 'package:uskudar_mobile/domain/entities/bill_inquiry.dart';
 
 final class BillInquiryModel extends BillInquiry {
   const BillInquiryModel({

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:payinall/presentation/shared/components/image_network_component.dart';
-import 'package:payinall/presentation/shared/extensions/theme_extension.dart';
+import 'package:uskudar_mobile/presentation/shared/components/image_network_component.dart';
+import 'package:uskudar_mobile/presentation/shared/extensions/theme_extension.dart';
 
 abstract final class AlisverislioColors {
   static const primary = Color(0xFF4F2BD8);

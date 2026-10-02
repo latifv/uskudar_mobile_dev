@@ -1,12 +1,12 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:payinall/core/models/paycore_mobile_models.dart';
-import 'package:payinall/core/services/paycore_mobile_service.dart';
-import 'package:payinall/data/network/network_client.dart';
-import 'package:payinall/di/di.dart';
-import 'package:payinall/presentation/shared/extensions/theme_extension.dart';
-import 'package:payinall/presentation/shared/widgets/paycore_card_visual.dart';
+import 'package:uskudar_mobile/core/models/paycore_mobile_models.dart';
+import 'package:uskudar_mobile/core/services/paycore_mobile_service.dart';
+import 'package:uskudar_mobile/data/network/network_client.dart';
+import 'package:uskudar_mobile/di/di.dart';
+import 'package:uskudar_mobile/presentation/shared/extensions/theme_extension.dart';
+import 'package:uskudar_mobile/presentation/shared/widgets/paycore_card_visual.dart';
 
 final class HomePaycoreCardsCarousel extends StatefulWidget {
   const HomePaycoreCardsCarousel({

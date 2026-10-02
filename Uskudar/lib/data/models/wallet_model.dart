@@ -1,6 +1,6 @@
-import 'package:payinall/core/error/exceptions.dart';
-import 'package:payinall/data/dtos/responses/wallet_response.dart';
-import 'package:payinall/domain/entities/wallet.dart';
+import 'package:uskudar_mobile/core/error/exceptions.dart';
+import 'package:uskudar_mobile/data/dtos/responses/wallet_response.dart';
+import 'package:uskudar_mobile/domain/entities/wallet.dart';
 
 final class WalletModel extends Wallet {
   const WalletModel({

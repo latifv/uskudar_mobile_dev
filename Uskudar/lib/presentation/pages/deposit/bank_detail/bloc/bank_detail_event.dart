@@ -1,4 +1,4 @@
-import 'package:payinall/domain/entities/app_bank.dart';
+import 'package:uskudar_mobile/domain/entities/app_bank.dart';
 
 sealed class BankDetailEvent {
   const BankDetailEvent();

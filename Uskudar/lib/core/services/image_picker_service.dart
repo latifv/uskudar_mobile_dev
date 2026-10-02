@@ -1,6 +1,6 @@
 import 'package:image_picker/image_picker.dart';
-import 'package:payinall/core/utils/log_helper.dart';
-import 'package:payinall/core/utils/log_level.dart';
+import 'package:uskudar_mobile/core/utils/log_helper.dart';
+import 'package:uskudar_mobile/core/utils/log_level.dart';
 
 abstract interface class ImagePickerService {
   Future<XFile?> selectFromGallery();

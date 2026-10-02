@@ -1,9 +1,9 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:payinall/core/error/failures.dart';
-import 'package:payinall/domain/entities/metropol_transaction.dart';
-import 'package:payinall/domain/params/metropol_transaction_list_params.dart';
-import 'package:payinall/domain/usecases/get_metropol_transaction_list_usecase.dart';
+import 'package:uskudar_mobile/core/error/failures.dart';
+import 'package:uskudar_mobile/domain/entities/metropol_transaction.dart';
+import 'package:uskudar_mobile/domain/params/metropol_transaction_list_params.dart';
+import 'package:uskudar_mobile/domain/usecases/get_metropol_transaction_list_usecase.dart';
 
 part 'metropol_transactions_event.dart';
 part 'metropol_transactions_state.dart';

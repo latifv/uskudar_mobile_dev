@@ -1,10 +1,10 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:payinall/core/generated/locale_keys.g.dart';
-import 'package:payinall/core/managers/user_info_manager.dart';
-import 'package:payinall/domain/usecases/get_cache_product_list_usecase.dart';
-import 'package:payinall/presentation/pages/page_search/models/app_page_item.dart';
-import 'package:payinall/presentation/shared/extensions/string_extension.dart';
+import 'package:uskudar_mobile/core/generated/locale_keys.g.dart';
+import 'package:uskudar_mobile/core/managers/user_info_manager.dart';
+import 'package:uskudar_mobile/domain/usecases/get_cache_product_list_usecase.dart';
+import 'package:uskudar_mobile/presentation/pages/page_search/models/app_page_item.dart';
+import 'package:uskudar_mobile/presentation/shared/extensions/string_extension.dart';
 
 part 'page_search_event.dart';
 part 'page_search_state.dart';

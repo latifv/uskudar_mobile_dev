@@ -1,20 +1,20 @@
 // import 'package:auto_route/auto_route.dart';
 // import 'package:flutter/material.dart';
 // import 'package:flutter_bloc/flutter_bloc.dart';
-// import 'package:payinall/core/generated/locale_keys.g.dart';
-// import 'package:payinall/domain/validators/app_validators.dart';
-// import 'package:payinall/presentation/pages/address_confirmation/bloc/address_confirmation_bloc.dart';
-// import 'package:payinall/presentation/pages/address_confirmation/mixin/address_confirmation_mixin.dart';
-// import 'package:payinall/presentation/shared/constants/icon_size_constants.dart';
-// import 'package:payinall/presentation/shared/extensions/border_radius_extension.dart';
-// import 'package:payinall/presentation/shared/extensions/padding_extension.dart';
-// import 'package:payinall/presentation/shared/extensions/spacing_extension.dart';
-// import 'package:payinall/presentation/shared/extensions/string_extension.dart';
-// import 'package:payinall/presentation/shared/extensions/theme_extension.dart';
-// import 'package:payinall/presentation/widgets/custom_app_bar.dart';
-// import 'package:payinall/presentation/widgets/custom_processing.dart';
-// import 'package:payinall/presentation/widgets/custom_text_form_field.dart';
-// import 'package:payinall/presentation/widgets/primary_elevated_button.dart';
+// import 'package:uskudar_mobile/core/generated/locale_keys.g.dart';
+// import 'package:uskudar_mobile/domain/validators/app_validators.dart';
+// import 'package:uskudar_mobile/presentation/pages/address_confirmation/bloc/address_confirmation_bloc.dart';
+// import 'package:uskudar_mobile/presentation/pages/address_confirmation/mixin/address_confirmation_mixin.dart';
+// import 'package:uskudar_mobile/presentation/shared/constants/icon_size_constants.dart';
+// import 'package:uskudar_mobile/presentation/shared/extensions/border_radius_extension.dart';
+// import 'package:uskudar_mobile/presentation/shared/extensions/padding_extension.dart';
+// import 'package:uskudar_mobile/presentation/shared/extensions/spacing_extension.dart';
+// import 'package:uskudar_mobile/presentation/shared/extensions/string_extension.dart';
+// import 'package:uskudar_mobile/presentation/shared/extensions/theme_extension.dart';
+// import 'package:uskudar_mobile/presentation/widgets/custom_app_bar.dart';
+// import 'package:uskudar_mobile/presentation/widgets/custom_processing.dart';
+// import 'package:uskudar_mobile/presentation/widgets/custom_text_form_field.dart';
+// import 'package:uskudar_mobile/presentation/widgets/primary_elevated_button.dart';
 
 // @RoutePage()
 // final class AddressConfirmationScreen extends StatefulWidget {

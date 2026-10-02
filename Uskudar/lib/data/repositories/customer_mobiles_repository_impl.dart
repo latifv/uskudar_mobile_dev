@@ -1,10 +1,10 @@
 import 'package:fpdart/fpdart.dart';
-import 'package:payinall/core/error/failures.dart';
-import 'package:payinall/data/core/data_source_handler.dart';
-import 'package:payinall/data/datasources/remote/customer_mobiles_remote_data_source.dart';
-import 'package:payinall/data/dtos/requests/customer_mobiles_request.dart';
-import 'package:payinall/domain/params/customer_mobiles_params.dart';
-import 'package:payinall/domain/repositories/customer_mobiles_repository.dart';
+import 'package:uskudar_mobile/core/error/failures.dart';
+import 'package:uskudar_mobile/data/core/data_source_handler.dart';
+import 'package:uskudar_mobile/data/datasources/remote/customer_mobiles_remote_data_source.dart';
+import 'package:uskudar_mobile/data/dtos/requests/customer_mobiles_request.dart';
+import 'package:uskudar_mobile/domain/params/customer_mobiles_params.dart';
+import 'package:uskudar_mobile/domain/repositories/customer_mobiles_repository.dart';
 
 final class CustomerMobilesRepositoryImpl implements CustomerMobilesRepository {
   CustomerMobilesRepositoryImpl({required this.remoteDataSource})

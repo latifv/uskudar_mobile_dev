@@ -1,10 +1,10 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:payinall/core/error/failures.dart';
-import 'package:payinall/domain/params/metropol_draw_back_transfer_params.dart';
-import 'package:payinall/domain/params/metropol_gift_transfer_params.dart';
-import 'package:payinall/domain/usecases/metropol_draw_back_transfer_usecase.dart';
-import 'package:payinall/domain/usecases/metropol_gift_transfer_usecase.dart';
+import 'package:uskudar_mobile/core/error/failures.dart';
+import 'package:uskudar_mobile/domain/params/metropol_draw_back_transfer_params.dart';
+import 'package:uskudar_mobile/domain/params/metropol_gift_transfer_params.dart';
+import 'package:uskudar_mobile/domain/usecases/metropol_draw_back_transfer_usecase.dart';
+import 'package:uskudar_mobile/domain/usecases/metropol_gift_transfer_usecase.dart';
 
 part 'metropol_gift_transfer_event.dart';
 part 'metropol_gift_transfer_state.dart';

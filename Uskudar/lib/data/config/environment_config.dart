@@ -1,6 +1,6 @@
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:payinall/data/dtos/environment.dart';
-import 'package:payinall/domain/enums/app_environment.dart';
+import 'package:uskudar_mobile/data/dtos/environment.dart';
+import 'package:uskudar_mobile/domain/enums/app_environment.dart';
 
 final class EnvironmentConfig {
   EnvironmentConfig._();

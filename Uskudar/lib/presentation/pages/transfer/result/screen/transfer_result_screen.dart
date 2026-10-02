@@ -1,16 +1,16 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:payinall/core/constants/app_constants.dart';
-import 'package:payinall/core/generated/locale_keys.g.dart';
-import 'package:payinall/presentation/pages/transfer/result/bloc/transfer_result_bloc.dart';
-import 'package:payinall/presentation/pages/transfer/result/mixin/transfer_result_mixin.dart';
-import 'package:payinall/presentation/pages/transfer/result/widgets/transfer_result_card.dart';
-import 'package:payinall/presentation/shared/constants/icon_size_constants.dart';
-import 'package:payinall/presentation/shared/extensions/padding_extension.dart';
-import 'package:payinall/presentation/shared/extensions/spacing_extension.dart';
-import 'package:payinall/presentation/shared/extensions/string_extension.dart';
-import 'package:payinall/presentation/shared/extensions/theme_extension.dart';
+import 'package:uskudar_mobile/core/constants/app_constants.dart';
+import 'package:uskudar_mobile/core/generated/locale_keys.g.dart';
+import 'package:uskudar_mobile/presentation/pages/transfer/result/bloc/transfer_result_bloc.dart';
+import 'package:uskudar_mobile/presentation/pages/transfer/result/mixin/transfer_result_mixin.dart';
+import 'package:uskudar_mobile/presentation/pages/transfer/result/widgets/transfer_result_card.dart';
+import 'package:uskudar_mobile/presentation/shared/constants/icon_size_constants.dart';
+import 'package:uskudar_mobile/presentation/shared/extensions/padding_extension.dart';
+import 'package:uskudar_mobile/presentation/shared/extensions/spacing_extension.dart';
+import 'package:uskudar_mobile/presentation/shared/extensions/string_extension.dart';
+import 'package:uskudar_mobile/presentation/shared/extensions/theme_extension.dart';
 
 @RoutePage()
 final class TransferResultScreen extends StatefulWidget {

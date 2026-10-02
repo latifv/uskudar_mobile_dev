@@ -1,5 +1,5 @@
 import 'package:flutter/widgets.dart';
-import 'package:payinall/presentation/shared/constants/padding_constants.dart';
+import 'package:uskudar_mobile/presentation/shared/constants/padding_constants.dart';
 
 extension MediaQueryExtension on BuildContext {
   double get screenHeight => MediaQuery.of(this).size.height;

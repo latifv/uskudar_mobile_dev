@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_map_marker_cluster/flutter_map_marker_cluster.dart';
 import 'package:latlong2/latlong.dart';
-import 'package:payinall/domain/entities/point_of_sale_location.dart';
-import 'package:payinall/presentation/shared/extensions/theme_extension.dart';
-import 'package:payinall/presentation/widgets/integration_components.dart';
+import 'package:uskudar_mobile/domain/entities/point_of_sale_location.dart';
+import 'package:uskudar_mobile/presentation/shared/extensions/theme_extension.dart';
+import 'package:uskudar_mobile/presentation/widgets/integration_components.dart';
 
 final class MetropolLocationsMap extends StatelessWidget {
   const MetropolLocationsMap({
@@ -67,7 +67,7 @@ final class MetropolLocationsMap extends StatelessWidget {
             children: [
               TileLayer(
                 urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-                userAgentPackageName: 'com.erpapay.payinall',
+                userAgentPackageName: 'tr.bel.uskudar.mobile',
               ),
               MarkerClusterLayerWidget(
                 options: MarkerClusterLayerOptions(

@@ -1,6 +1,6 @@
-import 'package:payinall/core/error/exceptions.dart';
-import 'package:payinall/data/dtos/responses/constants_data_response.dart';
-import 'package:payinall/domain/entities/constants_data.dart';
+import 'package:uskudar_mobile/core/error/exceptions.dart';
+import 'package:uskudar_mobile/data/dtos/responses/constants_data_response.dart';
+import 'package:uskudar_mobile/domain/entities/constants_data.dart';
 
 final class ConstantsDataModel extends ConstantsData {
   const ConstantsDataModel({required super.key, required super.value});

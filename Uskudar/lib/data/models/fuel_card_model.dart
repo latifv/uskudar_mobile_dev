@@ -1,6 +1,6 @@
-import 'package:payinall/core/error/exceptions.dart';
-import 'package:payinall/data/dtos/responses/fuel_card_response.dart';
-import 'package:payinall/domain/entities/fuel_card.dart';
+import 'package:uskudar_mobile/core/error/exceptions.dart';
+import 'package:uskudar_mobile/data/dtos/responses/fuel_card_response.dart';
+import 'package:uskudar_mobile/domain/entities/fuel_card.dart';
 
 final class FuelCardModel extends FuelCard {
   const FuelCardModel({

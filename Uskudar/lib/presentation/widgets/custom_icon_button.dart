@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:payinall/presentation/shared/constants/icon_size_constants.dart';
+import 'package:uskudar_mobile/presentation/shared/constants/icon_size_constants.dart';
 
 final class CustomIconButton extends StatelessWidget {
   const CustomIconButton({

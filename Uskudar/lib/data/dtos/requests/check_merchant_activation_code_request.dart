@@ -1,5 +1,5 @@
 import 'package:json_annotation/json_annotation.dart';
-import 'package:payinall/domain/params/check_merchant_activation_code_params.dart';
+import 'package:uskudar_mobile/domain/params/check_merchant_activation_code_params.dart';
 
 part 'check_merchant_activation_code_request.g.dart';
 

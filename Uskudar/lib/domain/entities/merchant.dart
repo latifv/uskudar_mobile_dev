@@ -1,4 +1,4 @@
-import 'package:payinall/domain/entities/sector_array.dart';
+import 'package:uskudar_mobile/domain/entities/sector_array.dart';
 
 class Merchant {
   const Merchant({

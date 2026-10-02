@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:payinall/domain/entities/metropol_city.dart';
+import 'package:uskudar_mobile/domain/entities/metropol_city.dart';
 
 /// New-address forms never populate fields from stored customer addresses.
 class PaycoreNewAddressFields extends StatefulWidget {

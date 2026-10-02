@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:payinall/data/config/environment_config.dart';
-import 'package:payinall/domain/entities/gift_check_brand.dart';
-import 'package:payinall/domain/entities/gift_check_category.dart';
-import 'package:payinall/domain/entities/gift_check_coupon.dart';
-import 'package:payinall/domain/entities/metropol_user_balance.dart';
-import 'package:payinall/domain/enums/app_environment.dart';
-import 'package:payinall/presentation/pages/gift_check_brand_detail/widgets/gift_check_coupon_item.dart';
-import 'package:payinall/presentation/pages/gift_check_brands/widgets/gift_check_brand_card.dart';
-import 'package:payinall/presentation/pages/gift_checks/widgets/gift_check_category_item.dart';
-import 'package:payinall/presentation/pages/metropol/widgets/metropol_balance_card.dart';
-import 'package:payinall/presentation/widgets/integration_components.dart';
+import 'package:uskudar_mobile/data/config/environment_config.dart';
+import 'package:uskudar_mobile/domain/entities/gift_check_brand.dart';
+import 'package:uskudar_mobile/domain/entities/gift_check_category.dart';
+import 'package:uskudar_mobile/domain/entities/gift_check_coupon.dart';
+import 'package:uskudar_mobile/domain/entities/metropol_user_balance.dart';
+import 'package:uskudar_mobile/domain/enums/app_environment.dart';
+import 'package:uskudar_mobile/presentation/pages/gift_check_brand_detail/widgets/gift_check_coupon_item.dart';
+import 'package:uskudar_mobile/presentation/pages/gift_check_brands/widgets/gift_check_brand_card.dart';
+import 'package:uskudar_mobile/presentation/pages/gift_checks/widgets/gift_check_category_item.dart';
+import 'package:uskudar_mobile/presentation/pages/metropol/widgets/metropol_balance_card.dart';
+import 'package:uskudar_mobile/presentation/widgets/integration_components.dart';
 
 void main() {
   setUpAll(() => EnvironmentConfig.initialize(AppEnvironment.test));

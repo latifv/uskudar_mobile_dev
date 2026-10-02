@@ -1,5 +1,5 @@
 import 'package:hive_ce_flutter/hive_flutter.dart';
-import 'package:payinall/domain/entities/notification_item.dart';
+import 'package:uskudar_mobile/domain/entities/notification_item.dart';
 
 part 'notification_item_model.g.dart';
 

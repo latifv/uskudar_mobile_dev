@@ -1,11 +1,11 @@
 import 'package:fpdart/fpdart.dart';
-import 'package:payinall/core/error/failures.dart';
-import 'package:payinall/domain/entities/wallet_transfer.dart';
-import 'package:payinall/domain/entities/withdraw_transfer.dart';
-import 'package:payinall/domain/params/merchant_transfer_params.dart';
-import 'package:payinall/domain/params/merchant_withdraw_transfer_params.dart';
-import 'package:payinall/domain/params/wallet_transfer_params.dart';
-import 'package:payinall/domain/params/withdraw_transfer_params.dart';
+import 'package:uskudar_mobile/core/error/failures.dart';
+import 'package:uskudar_mobile/domain/entities/wallet_transfer.dart';
+import 'package:uskudar_mobile/domain/entities/withdraw_transfer.dart';
+import 'package:uskudar_mobile/domain/params/merchant_transfer_params.dart';
+import 'package:uskudar_mobile/domain/params/merchant_withdraw_transfer_params.dart';
+import 'package:uskudar_mobile/domain/params/wallet_transfer_params.dart';
+import 'package:uskudar_mobile/domain/params/withdraw_transfer_params.dart';
 
 abstract interface class TransfersRepository {
   Future<Either<Failure, WalletTransfer>> walletTransfer(

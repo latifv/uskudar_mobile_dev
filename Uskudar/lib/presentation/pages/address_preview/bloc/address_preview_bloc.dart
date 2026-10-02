@@ -1,11 +1,11 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:payinall/core/error/failures.dart';
-import 'package:payinall/domain/entities/user_address_information.dart';
-import 'package:payinall/domain/params/get_user_address_information_params.dart';
-import 'package:payinall/domain/params/user_address_information_approve_params.dart';
-import 'package:payinall/domain/usecases/get_user_address_information_usecase.dart';
-import 'package:payinall/domain/usecases/user_address_information_approve_usecase.dart';
+import 'package:uskudar_mobile/core/error/failures.dart';
+import 'package:uskudar_mobile/domain/entities/user_address_information.dart';
+import 'package:uskudar_mobile/domain/params/get_user_address_information_params.dart';
+import 'package:uskudar_mobile/domain/params/user_address_information_approve_params.dart';
+import 'package:uskudar_mobile/domain/usecases/get_user_address_information_usecase.dart';
+import 'package:uskudar_mobile/domain/usecases/user_address_information_approve_usecase.dart';
 
 part 'address_preview_event.dart';
 part 'address_preview_state.dart';

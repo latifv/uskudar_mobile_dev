@@ -1,11 +1,11 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:payinall/core/error/failures.dart';
-import 'package:payinall/core/managers/user_info_manager.dart';
-import 'package:payinall/domain/entities/avatar_image.dart';
-import 'package:payinall/domain/usecases/delete_customer_avatar_usecase.dart';
-import 'package:payinall/domain/usecases/get_avatar_images_usecase.dart';
-import 'package:payinall/domain/usecases/select_customer_avatar_usecase.dart';
+import 'package:uskudar_mobile/core/error/failures.dart';
+import 'package:uskudar_mobile/core/managers/user_info_manager.dart';
+import 'package:uskudar_mobile/domain/entities/avatar_image.dart';
+import 'package:uskudar_mobile/domain/usecases/delete_customer_avatar_usecase.dart';
+import 'package:uskudar_mobile/domain/usecases/get_avatar_images_usecase.dart';
+import 'package:uskudar_mobile/domain/usecases/select_customer_avatar_usecase.dart';
 
 part 'avatar_selection_event.dart';
 part 'avatar_selection_state.dart';

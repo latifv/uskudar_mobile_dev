@@ -1,5 +1,5 @@
 import 'package:fpdart/fpdart.dart';
-import 'package:payinall/core/error/failures.dart';
+import 'package:uskudar_mobile/core/error/failures.dart';
 
 abstract interface class CustomersRepository {
   Future<Either<Failure, void>> logOut();

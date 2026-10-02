@@ -1,6 +1,6 @@
 import 'package:fpdart/fpdart.dart';
-import 'package:payinall/core/error/failures.dart';
-import 'package:payinall/domain/entities/avatar_image.dart';
+import 'package:uskudar_mobile/core/error/failures.dart';
+import 'package:uskudar_mobile/domain/entities/avatar_image.dart';
 
 abstract interface class AvatarImagesRepository {
   Future<Either<Failure, List<AvatarImage>>> getAvatarImages();

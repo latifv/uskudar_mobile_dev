@@ -1,4 +1,4 @@
-package com.erpapay.payinall
+package tr.bel.uskudar.mobile
 
 import android.content.Intent
 import android.util.Log
@@ -8,11 +8,11 @@ import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugins.GeneratedPluginRegistrant
 import java.util.HashMap
-import com.erpapay.payinall.AuthCallback
+import tr.bel.uskudar.mobile.AuthCallback
 
 
 class MainActivity : FlutterFragmentActivity() {
-    private val CHANNEL = "com.erpapay.payinall/liveauth"
+    private val CHANNEL = "tr.bel.uskudar.mobile/liveauth"
     override fun configureFlutterEngine(@NonNull flutterEngine: FlutterEngine
     ) {
 

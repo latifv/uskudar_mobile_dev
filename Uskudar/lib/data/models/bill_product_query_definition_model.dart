@@ -1,6 +1,6 @@
-import 'package:payinall/core/error/exceptions.dart';
-import 'package:payinall/data/dtos/responses/bill_product_query_definition_response.dart';
-import 'package:payinall/domain/entities/bill_product_query_definition.dart';
+import 'package:uskudar_mobile/core/error/exceptions.dart';
+import 'package:uskudar_mobile/data/dtos/responses/bill_product_query_definition_response.dart';
+import 'package:uskudar_mobile/domain/entities/bill_product_query_definition.dart';
 
 final class BillProductQueryDefinitionModel extends BillProductQueryDefinition {
   const BillProductQueryDefinitionModel({

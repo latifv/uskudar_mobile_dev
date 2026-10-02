@@ -1,8 +1,8 @@
 import 'package:dio/dio.dart';
-import 'package:payinall/core/managers/token_manager.dart';
-import 'package:payinall/core/utils/log_helper.dart';
-import 'package:payinall/core/utils/log_level.dart';
-import 'package:payinall/data/network/constants/header_constants.dart';
+import 'package:uskudar_mobile/core/managers/token_manager.dart';
+import 'package:uskudar_mobile/core/utils/log_helper.dart';
+import 'package:uskudar_mobile/core/utils/log_level.dart';
+import 'package:uskudar_mobile/data/network/constants/header_constants.dart';
 
 final class TokenInterceptor extends Interceptor {
   TokenInterceptor(this.tokenManager);

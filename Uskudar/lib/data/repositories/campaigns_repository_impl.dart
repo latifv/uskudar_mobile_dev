@@ -1,14 +1,14 @@
 import 'package:fpdart/fpdart.dart';
-import 'package:payinall/core/error/failures.dart';
-import 'package:payinall/data/core/data_source_handler.dart';
-import 'package:payinall/data/datasources/remote/campaigns_remote_data_source.dart';
-import 'package:payinall/data/dtos/requests/create_card_request.dart';
-import 'package:payinall/data/models/campaign_model.dart';
-import 'package:payinall/data/models/iwallet_agreement_model.dart';
-import 'package:payinall/domain/entities/campaign.dart';
-import 'package:payinall/domain/entities/iwallet_agreement.dart';
-import 'package:payinall/domain/params/create_card_params.dart';
-import 'package:payinall/domain/repositories/campaigns_repository.dart';
+import 'package:uskudar_mobile/core/error/failures.dart';
+import 'package:uskudar_mobile/data/core/data_source_handler.dart';
+import 'package:uskudar_mobile/data/datasources/remote/campaigns_remote_data_source.dart';
+import 'package:uskudar_mobile/data/dtos/requests/create_card_request.dart';
+import 'package:uskudar_mobile/data/models/campaign_model.dart';
+import 'package:uskudar_mobile/data/models/iwallet_agreement_model.dart';
+import 'package:uskudar_mobile/domain/entities/campaign.dart';
+import 'package:uskudar_mobile/domain/entities/iwallet_agreement.dart';
+import 'package:uskudar_mobile/domain/params/create_card_params.dart';
+import 'package:uskudar_mobile/domain/repositories/campaigns_repository.dart';
 
 final class CampaignsRepositoryImpl implements CampaignsRepository {
   CampaignsRepositoryImpl({required this.remoteDataSource})

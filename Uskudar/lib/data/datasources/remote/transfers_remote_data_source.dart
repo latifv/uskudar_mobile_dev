@@ -1,15 +1,15 @@
-import 'package:payinall/core/error/exceptions.dart';
-import 'package:payinall/data/core/base_remote_data_source.dart';
-import 'package:payinall/data/dtos/requests/merchant_transfer_request.dart';
-import 'package:payinall/data/dtos/requests/merchant_withdraw_transfer_request.dart';
-import 'package:payinall/data/dtos/requests/wallet_transfer_request.dart';
-import 'package:payinall/data/dtos/requests/withdraw_transfer_request.dart';
-import 'package:payinall/data/dtos/responses/wallet_transfer_response.dart';
-import 'package:payinall/data/dtos/responses/withdraw_transfer_response.dart';
-import 'package:payinall/data/models/wallet_transfer_model.dart';
-import 'package:payinall/data/models/withdraw_transfer_model.dart';
-import 'package:payinall/data/network/config/endpoints.dart';
-import 'package:payinall/data/network/models/network_response.dart';
+import 'package:uskudar_mobile/core/error/exceptions.dart';
+import 'package:uskudar_mobile/data/core/base_remote_data_source.dart';
+import 'package:uskudar_mobile/data/dtos/requests/merchant_transfer_request.dart';
+import 'package:uskudar_mobile/data/dtos/requests/merchant_withdraw_transfer_request.dart';
+import 'package:uskudar_mobile/data/dtos/requests/wallet_transfer_request.dart';
+import 'package:uskudar_mobile/data/dtos/requests/withdraw_transfer_request.dart';
+import 'package:uskudar_mobile/data/dtos/responses/wallet_transfer_response.dart';
+import 'package:uskudar_mobile/data/dtos/responses/withdraw_transfer_response.dart';
+import 'package:uskudar_mobile/data/models/wallet_transfer_model.dart';
+import 'package:uskudar_mobile/data/models/withdraw_transfer_model.dart';
+import 'package:uskudar_mobile/data/network/config/endpoints.dart';
+import 'package:uskudar_mobile/data/network/models/network_response.dart';
 
 abstract interface class TransfersRemoteDataSource {
   Future<NetworkResponse<WalletTransferModel>> walletTransfer(

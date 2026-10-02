@@ -1,7 +1,7 @@
 import 'package:easy_localization/easy_localization.dart';
-import 'package:payinall/core/generated/locale_keys.g.dart';
-import 'package:payinall/presentation/shared/constants/validator_constants.dart';
-import 'package:payinall/presentation/shared/extensions/string_extension.dart';
+import 'package:uskudar_mobile/core/generated/locale_keys.g.dart';
+import 'package:uskudar_mobile/presentation/shared/constants/validator_constants.dart';
+import 'package:uskudar_mobile/presentation/shared/extensions/string_extension.dart';
 
 final class AppValidators {
   const AppValidators._();

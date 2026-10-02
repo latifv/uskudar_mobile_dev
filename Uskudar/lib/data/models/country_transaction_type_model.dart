@@ -1,7 +1,7 @@
-import 'package:payinall/core/error/exceptions.dart';
-import 'package:payinall/data/dtos/responses/country_transaction_type_response.dart';
-import 'package:payinall/domain/entities/country_transaction_type.dart';
-import 'package:payinall/domain/entities/transaction_type.dart';
+import 'package:uskudar_mobile/core/error/exceptions.dart';
+import 'package:uskudar_mobile/data/dtos/responses/country_transaction_type_response.dart';
+import 'package:uskudar_mobile/domain/entities/country_transaction_type.dart';
+import 'package:uskudar_mobile/domain/entities/transaction_type.dart';
 
 final class CountryTransactionTypeModel extends CountryTransactionType {
   const CountryTransactionTypeModel({

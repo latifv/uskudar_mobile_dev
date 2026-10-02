@@ -1,4 +1,4 @@
-package com.erpapay.payinall;
+package tr.bel.uskudar.mobile;
 
 import android.content.Intent;
 import android.nfc.NfcAdapter;
@@ -16,8 +16,8 @@ import com.arksigner.liveauth.tckk.nfc.internal.structs.DatagroupBase;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import java.util.HashMap;
 import java.util.Map;
-import com.erpapay.payinall.AuthManager;
-import com.erpapay.payinall.AuthCallback;
+import tr.bel.uskudar.mobile.AuthManager;
+import tr.bel.uskudar.mobile.AuthCallback;
 
 public class NfcReaderActivity extends AppCompatActivity implements NFCDataReaderListener {
     private BottomSheetDialog bottomSheetDialog;

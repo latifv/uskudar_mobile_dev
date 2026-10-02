@@ -1,10 +1,10 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:payinall/di/di.dart';
-import 'package:payinall/presentation/pages/transaction_detail/bloc/transaction_detail_bloc.dart';
-import 'package:payinall/presentation/shared/components/toast_component.dart';
-import 'package:payinall/presentation/shared/extensions/launch_url_extension.dart';
+import 'package:uskudar_mobile/di/di.dart';
+import 'package:uskudar_mobile/presentation/pages/transaction_detail/bloc/transaction_detail_bloc.dart';
+import 'package:uskudar_mobile/presentation/shared/components/toast_component.dart';
+import 'package:uskudar_mobile/presentation/shared/extensions/launch_url_extension.dart';
 
 mixin TransactionDetailMixin<T extends StatefulWidget> on State<T> {
   late final TransactionDetailBloc bloc;

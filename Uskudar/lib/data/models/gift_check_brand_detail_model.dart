@@ -1,6 +1,6 @@
-import 'package:payinall/core/error/exceptions.dart';
-import 'package:payinall/data/dtos/responses/gift_check_brand_detail_response.dart';
-import 'package:payinall/domain/entities/gift_check_brand_detail.dart';
+import 'package:uskudar_mobile/core/error/exceptions.dart';
+import 'package:uskudar_mobile/data/dtos/responses/gift_check_brand_detail_response.dart';
+import 'package:uskudar_mobile/domain/entities/gift_check_brand_detail.dart';
 
 final class GiftCheckBrandDetailModel extends GiftCheckBrandDetail {
   const GiftCheckBrandDetailModel({

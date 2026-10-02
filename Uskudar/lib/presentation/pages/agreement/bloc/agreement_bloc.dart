@@ -1,8 +1,8 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:payinall/core/error/failures.dart';
-import 'package:payinall/domain/enums/agreement_type.dart';
-import 'package:payinall/domain/usecases/get_contract_by_contract_code_usecase.dart';
+import 'package:uskudar_mobile/core/error/failures.dart';
+import 'package:uskudar_mobile/domain/enums/agreement_type.dart';
+import 'package:uskudar_mobile/domain/usecases/get_contract_by_contract_code_usecase.dart';
 
 part 'agreement_event.dart';
 part 'agreement_state.dart';

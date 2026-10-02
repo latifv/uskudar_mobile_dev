@@ -1,13 +1,13 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:payinall/core/error/failures.dart';
-import 'package:payinall/core/services/firebase_service.dart';
-import 'package:payinall/core/services/root_check_service.dart';
-import 'package:payinall/domain/entities/logged_in.dart';
-import 'package:payinall/domain/usecases/get_contracts_usecase.dart';
-import 'package:payinall/domain/usecases/get_is_first_run_usecase.dart';
-import 'package:payinall/domain/usecases/get_logged_in_usecase.dart';
+import 'package:uskudar_mobile/core/error/failures.dart';
+import 'package:uskudar_mobile/core/services/firebase_service.dart';
+import 'package:uskudar_mobile/core/services/root_check_service.dart';
+import 'package:uskudar_mobile/domain/entities/logged_in.dart';
+import 'package:uskudar_mobile/domain/usecases/get_contracts_usecase.dart';
+import 'package:uskudar_mobile/domain/usecases/get_is_first_run_usecase.dart';
+import 'package:uskudar_mobile/domain/usecases/get_logged_in_usecase.dart';
 
 part 'splash_event.dart';
 part 'splash_state.dart';

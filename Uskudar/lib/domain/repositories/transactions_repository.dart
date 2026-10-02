@@ -1,9 +1,9 @@
 import 'package:fpdart/fpdart.dart';
-import 'package:payinall/core/error/failures.dart';
-import 'package:payinall/domain/entities/customer_process.dart';
-import 'package:payinall/domain/entities/transaction.dart';
-import 'package:payinall/domain/entities/transaction_receipt.dart';
-import 'package:payinall/domain/params/transactions_params.dart';
+import 'package:uskudar_mobile/core/error/failures.dart';
+import 'package:uskudar_mobile/domain/entities/customer_process.dart';
+import 'package:uskudar_mobile/domain/entities/transaction.dart';
+import 'package:uskudar_mobile/domain/entities/transaction_receipt.dart';
+import 'package:uskudar_mobile/domain/params/transactions_params.dart';
 
 abstract interface class TransactionsRepository {
   Future<Either<Failure, List<Transaction>>> getLastTransactions(int dataSize);

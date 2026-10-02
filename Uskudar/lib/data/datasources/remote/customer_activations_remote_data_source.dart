@@ -1,12 +1,12 @@
-import 'package:payinall/core/error/exceptions.dart';
-import 'package:payinall/data/core/base_remote_data_source.dart';
-import 'package:payinall/data/dtos/requests/check_activation_code_request.dart';
-import 'package:payinall/data/dtos/requests/check_merchant_activation_code_request.dart';
-import 'package:payinall/data/dtos/requests/send_new_code_request.dart';
-import 'package:payinall/data/dtos/responses/auth_token_response.dart';
-import 'package:payinall/data/models/auth_token_model.dart';
-import 'package:payinall/data/network/config/endpoints.dart';
-import 'package:payinall/data/network/models/network_response.dart';
+import 'package:uskudar_mobile/core/error/exceptions.dart';
+import 'package:uskudar_mobile/data/core/base_remote_data_source.dart';
+import 'package:uskudar_mobile/data/dtos/requests/check_activation_code_request.dart';
+import 'package:uskudar_mobile/data/dtos/requests/check_merchant_activation_code_request.dart';
+import 'package:uskudar_mobile/data/dtos/requests/send_new_code_request.dart';
+import 'package:uskudar_mobile/data/dtos/responses/auth_token_response.dart';
+import 'package:uskudar_mobile/data/models/auth_token_model.dart';
+import 'package:uskudar_mobile/data/network/config/endpoints.dart';
+import 'package:uskudar_mobile/data/network/models/network_response.dart';
 
 abstract interface class CustomerActivationsRemoteDataSource {
   Future<NetworkResponse<String>> sendNewCode(SendNewCodeRequest request);

@@ -1,24 +1,24 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:payinall/core/generated/locale_keys.g.dart';
-import 'package:payinall/presentation/pages/home/bloc/home_bloc.dart';
-import 'package:payinall/presentation/pages/home/mixin/home_mixin.dart';
-import 'package:payinall/presentation/pages/home/widgets/campaign_banner.dart';
-import 'package:payinall/presentation/pages/home/widgets/home_advantage_sections.dart';
-import 'package:payinall/presentation/pages/home/widgets/home_app_bar.dart';
-import 'package:payinall/presentation/pages/home/widgets/home_balance_section.dart';
-import 'package:payinall/presentation/pages/home/widgets/home_discount_points_preview.dart';
-import 'package:payinall/presentation/pages/home/widgets/home_paycore_cards_carousel.dart';
-import 'package:payinall/presentation/pages/home/widgets/home_tab_section.dart';
-import 'package:payinall/presentation/pages/home/widgets/user_info_card.dart';
-import 'package:payinall/presentation/shared/extensions/padding_extension.dart';
-import 'package:payinall/presentation/shared/extensions/spacing_extension.dart';
-import 'package:payinall/presentation/shared/extensions/string_extension.dart';
-import 'package:payinall/presentation/shared/extensions/theme_extension.dart';
-import 'package:payinall/presentation/widgets/app_drawer.dart';
-import 'package:payinall/presentation/widgets/custom_loading.dart';
-import 'package:payinall/presentation/widgets/error_try_again.dart';
+import 'package:uskudar_mobile/core/generated/locale_keys.g.dart';
+import 'package:uskudar_mobile/presentation/pages/home/bloc/home_bloc.dart';
+import 'package:uskudar_mobile/presentation/pages/home/mixin/home_mixin.dart';
+import 'package:uskudar_mobile/presentation/pages/home/widgets/campaign_banner.dart';
+import 'package:uskudar_mobile/presentation/pages/home/widgets/home_advantage_sections.dart';
+import 'package:uskudar_mobile/presentation/pages/home/widgets/home_app_bar.dart';
+import 'package:uskudar_mobile/presentation/pages/home/widgets/home_balance_section.dart';
+import 'package:uskudar_mobile/presentation/pages/home/widgets/home_discount_points_preview.dart';
+import 'package:uskudar_mobile/presentation/pages/home/widgets/home_paycore_cards_carousel.dart';
+import 'package:uskudar_mobile/presentation/pages/home/widgets/home_tab_section.dart';
+import 'package:uskudar_mobile/presentation/pages/home/widgets/user_info_card.dart';
+import 'package:uskudar_mobile/presentation/shared/extensions/padding_extension.dart';
+import 'package:uskudar_mobile/presentation/shared/extensions/spacing_extension.dart';
+import 'package:uskudar_mobile/presentation/shared/extensions/string_extension.dart';
+import 'package:uskudar_mobile/presentation/shared/extensions/theme_extension.dart';
+import 'package:uskudar_mobile/presentation/widgets/app_drawer.dart';
+import 'package:uskudar_mobile/presentation/widgets/custom_loading.dart';
+import 'package:uskudar_mobile/presentation/widgets/error_try_again.dart';
 
 @RoutePage()
 final class HomeScreen extends StatefulWidget {

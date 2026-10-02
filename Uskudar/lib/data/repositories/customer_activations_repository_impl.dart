@@ -1,18 +1,18 @@
 import 'package:fpdart/fpdart.dart';
-import 'package:payinall/core/error/failures.dart';
-import 'package:payinall/core/managers/token_manager.dart';
-import 'package:payinall/data/core/data_source_handler.dart';
-import 'package:payinall/data/datasources/remote/customer_activations_remote_data_source.dart';
-import 'package:payinall/data/dtos/requests/check_activation_code_request.dart';
-import 'package:payinall/data/dtos/requests/check_merchant_activation_code_request.dart';
-import 'package:payinall/data/dtos/requests/send_new_code_request.dart';
-import 'package:payinall/data/models/auth_token_model.dart';
-import 'package:payinall/domain/base/data_with_message.dart';
-import 'package:payinall/domain/entities/auth_token.dart';
-import 'package:payinall/domain/params/check_activation_code_params.dart';
-import 'package:payinall/domain/params/check_merchant_activation_code_params.dart';
-import 'package:payinall/domain/params/send_new_code_params.dart';
-import 'package:payinall/domain/repositories/customer_activations_repository.dart';
+import 'package:uskudar_mobile/core/error/failures.dart';
+import 'package:uskudar_mobile/core/managers/token_manager.dart';
+import 'package:uskudar_mobile/data/core/data_source_handler.dart';
+import 'package:uskudar_mobile/data/datasources/remote/customer_activations_remote_data_source.dart';
+import 'package:uskudar_mobile/data/dtos/requests/check_activation_code_request.dart';
+import 'package:uskudar_mobile/data/dtos/requests/check_merchant_activation_code_request.dart';
+import 'package:uskudar_mobile/data/dtos/requests/send_new_code_request.dart';
+import 'package:uskudar_mobile/data/models/auth_token_model.dart';
+import 'package:uskudar_mobile/domain/base/data_with_message.dart';
+import 'package:uskudar_mobile/domain/entities/auth_token.dart';
+import 'package:uskudar_mobile/domain/params/check_activation_code_params.dart';
+import 'package:uskudar_mobile/domain/params/check_merchant_activation_code_params.dart';
+import 'package:uskudar_mobile/domain/params/send_new_code_params.dart';
+import 'package:uskudar_mobile/domain/repositories/customer_activations_repository.dart';
 
 final class CustomerActivationsRepositoryImpl
     implements CustomerActivationsRepository {

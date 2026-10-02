@@ -1,16 +1,16 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:payinall/core/error/failures.dart';
-import 'package:payinall/core/managers/user_info_manager.dart';
-import 'package:payinall/domain/entities/frequent_iban.dart';
-import 'package:payinall/domain/entities/frequently_sent.dart';
-import 'package:payinall/domain/params/add_frequent_iban_params.dart';
-import 'package:payinall/domain/usecases/add_frequent_iban_usecase.dart';
-import 'package:payinall/domain/usecases/add_frequently_sent_usecase.dart';
-import 'package:payinall/domain/usecases/delete_frequent_iban_usecase.dart';
-import 'package:payinall/domain/usecases/delete_frequently_sent_usecase.dart';
-import 'package:payinall/domain/usecases/get_frequent_ibans_usecase.dart';
-import 'package:payinall/domain/usecases/get_frequently_sents_usecase.dart';
+import 'package:uskudar_mobile/core/error/failures.dart';
+import 'package:uskudar_mobile/core/managers/user_info_manager.dart';
+import 'package:uskudar_mobile/domain/entities/frequent_iban.dart';
+import 'package:uskudar_mobile/domain/entities/frequently_sent.dart';
+import 'package:uskudar_mobile/domain/params/add_frequent_iban_params.dart';
+import 'package:uskudar_mobile/domain/usecases/add_frequent_iban_usecase.dart';
+import 'package:uskudar_mobile/domain/usecases/add_frequently_sent_usecase.dart';
+import 'package:uskudar_mobile/domain/usecases/delete_frequent_iban_usecase.dart';
+import 'package:uskudar_mobile/domain/usecases/delete_frequently_sent_usecase.dart';
+import 'package:uskudar_mobile/domain/usecases/get_frequent_ibans_usecase.dart';
+import 'package:uskudar_mobile/domain/usecases/get_frequently_sents_usecase.dart';
 
 part 'registered_users_event.dart';
 part 'registered_users_state.dart';

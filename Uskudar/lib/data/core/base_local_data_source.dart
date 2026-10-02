@@ -1,5 +1,5 @@
 import 'package:hive_ce_flutter/hive_flutter.dart';
-import 'package:payinall/core/error/exceptions.dart';
+import 'package:uskudar_mobile/core/error/exceptions.dart';
 
 abstract class BaseLocalDataSource {
   BaseLocalDataSource(this.boxName);

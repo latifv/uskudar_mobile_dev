@@ -1,5 +1,5 @@
 import 'package:flutter/widgets.dart';
-import 'package:payinall/presentation/shared/extensions/radius_extension.dart';
+import 'package:uskudar_mobile/presentation/shared/extensions/radius_extension.dart';
 
 extension BorderRadiusExtension on BuildContext {
   BorderRadius get borderRadiusLowAll => BorderRadius.all(lowRadius);

@@ -1,7 +1,7 @@
 import 'package:hive_ce_flutter/hive_flutter.dart';
-import 'package:payinall/core/error/exceptions.dart';
-import 'package:payinall/data/dtos/responses/auth_token_response.dart';
-import 'package:payinall/domain/entities/auth_token.dart';
+import 'package:uskudar_mobile/core/error/exceptions.dart';
+import 'package:uskudar_mobile/data/dtos/responses/auth_token_response.dart';
+import 'package:uskudar_mobile/domain/entities/auth_token.dart';
 
 part 'auth_token_model.g.dart';
 

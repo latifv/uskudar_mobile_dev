@@ -1,11 +1,11 @@
 import 'package:fpdart/fpdart.dart';
-import 'package:payinall/core/error/failures.dart';
-import 'package:payinall/domain/entities/customer_coupon.dart';
-import 'package:payinall/domain/entities/gift_check_brand.dart';
-import 'package:payinall/domain/entities/gift_check_brand_detail.dart';
-import 'package:payinall/domain/entities/gift_check_category.dart';
-import 'package:payinall/domain/entities/gift_check_coupon.dart';
-import 'package:payinall/domain/params/coupon_take_params.dart';
+import 'package:uskudar_mobile/core/error/failures.dart';
+import 'package:uskudar_mobile/domain/entities/customer_coupon.dart';
+import 'package:uskudar_mobile/domain/entities/gift_check_brand.dart';
+import 'package:uskudar_mobile/domain/entities/gift_check_brand_detail.dart';
+import 'package:uskudar_mobile/domain/entities/gift_check_category.dart';
+import 'package:uskudar_mobile/domain/entities/gift_check_coupon.dart';
+import 'package:uskudar_mobile/domain/params/coupon_take_params.dart';
 
 abstract interface class GiftChecksRepository {
   Future<Either<Failure, List<GiftCheckCategory>>> getCategories();

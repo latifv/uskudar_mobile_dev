@@ -4,15 +4,15 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:dio/io.dart';
 import 'package:flutter/foundation.dart';
-import 'package:payinall/core/generated/locale_keys.g.dart';
-import 'package:payinall/core/utils/log_helper.dart';
-import 'package:payinall/core/utils/log_level.dart';
-import 'package:payinall/data/network/config/network_config.dart';
-import 'package:payinall/data/network/constants/header_constants.dart';
-import 'package:payinall/data/network/interceptors/network_interceptor.dart';
-import 'package:payinall/data/network/interceptors/token_interceptor.dart';
-import 'package:payinall/di/di.dart';
-import 'package:payinall/presentation/shared/extensions/string_extension.dart';
+import 'package:uskudar_mobile/core/generated/locale_keys.g.dart';
+import 'package:uskudar_mobile/core/utils/log_helper.dart';
+import 'package:uskudar_mobile/core/utils/log_level.dart';
+import 'package:uskudar_mobile/data/network/config/network_config.dart';
+import 'package:uskudar_mobile/data/network/constants/header_constants.dart';
+import 'package:uskudar_mobile/data/network/interceptors/network_interceptor.dart';
+import 'package:uskudar_mobile/data/network/interceptors/token_interceptor.dart';
+import 'package:uskudar_mobile/di/di.dart';
+import 'package:uskudar_mobile/presentation/shared/extensions/string_extension.dart';
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 
 final class NetworkClient with DioMixin implements Dio {

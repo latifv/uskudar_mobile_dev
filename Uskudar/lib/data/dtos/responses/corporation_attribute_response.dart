@@ -1,5 +1,5 @@
 import 'package:json_annotation/json_annotation.dart';
-import 'package:payinall/data/dtos/responses/required_attribute_response.dart';
+import 'package:uskudar_mobile/data/dtos/responses/required_attribute_response.dart';
 
 part 'corporation_attribute_response.g.dart';
 

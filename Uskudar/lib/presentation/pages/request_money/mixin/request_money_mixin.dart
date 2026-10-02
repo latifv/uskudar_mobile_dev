@@ -2,13 +2,13 @@ import 'dart:async';
 
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
-import 'package:payinall/core/generated/locale_keys.g.dart';
-import 'package:payinall/di/di.dart';
-import 'package:payinall/presentation/pages/request_money/bloc/request_money_bloc.dart';
-import 'package:payinall/presentation/shared/extensions/double_extension.dart';
-import 'package:payinall/presentation/shared/extensions/string_extension.dart';
-import 'package:payinall/presentation/shared/extensions/theme_extension.dart';
-import 'package:payinall/presentation/widgets/custom_dialog.dart';
+import 'package:uskudar_mobile/core/generated/locale_keys.g.dart';
+import 'package:uskudar_mobile/di/di.dart';
+import 'package:uskudar_mobile/presentation/pages/request_money/bloc/request_money_bloc.dart';
+import 'package:uskudar_mobile/presentation/shared/extensions/double_extension.dart';
+import 'package:uskudar_mobile/presentation/shared/extensions/string_extension.dart';
+import 'package:uskudar_mobile/presentation/shared/extensions/theme_extension.dart';
+import 'package:uskudar_mobile/presentation/widgets/custom_dialog.dart';
 
 mixin RequestMoneyMixin<T extends StatefulWidget> on State<T> {
   final TextEditingController amountController = TextEditingController();

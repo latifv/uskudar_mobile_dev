@@ -2,9 +2,9 @@ import 'dart:async';
 
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:payinall/core/error/failures.dart';
-import 'package:payinall/domain/params/forgot_password_params.dart';
-import 'package:payinall/domain/usecases/forgot_password_usecase.dart';
+import 'package:uskudar_mobile/core/error/failures.dart';
+import 'package:uskudar_mobile/domain/params/forgot_password_params.dart';
+import 'package:uskudar_mobile/domain/usecases/forgot_password_usecase.dart';
 
 part 'forgot_password_event.dart';
 part 'forgot_password_state.dart';

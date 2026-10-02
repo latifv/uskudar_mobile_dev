@@ -1,8 +1,8 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:payinall/core/error/failures.dart';
-import 'package:payinall/domain/entities/campaign.dart';
-import 'package:payinall/domain/usecases/get_campaigns_usecase.dart';
+import 'package:uskudar_mobile/core/error/failures.dart';
+import 'package:uskudar_mobile/domain/entities/campaign.dart';
+import 'package:uskudar_mobile/domain/usecases/get_campaigns_usecase.dart';
 
 part 'campaigns_event.dart';
 part 'campaigns_state.dart';

@@ -1,5 +1,5 @@
 import 'package:json_annotation/json_annotation.dart';
-import 'package:payinall/domain/params/score_operation_params.dart';
+import 'package:uskudar_mobile/domain/params/score_operation_params.dart';
 
 part 'score_operation_request.g.dart';
 

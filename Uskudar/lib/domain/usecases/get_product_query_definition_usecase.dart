@@ -1,8 +1,8 @@
 import 'package:fpdart/fpdart.dart';
-import 'package:payinall/core/error/failures.dart';
-import 'package:payinall/domain/base/usecases/base_usecase.dart';
-import 'package:payinall/domain/entities/bill_product_query_definition.dart';
-import 'package:payinall/domain/repositories/bills_repository.dart';
+import 'package:uskudar_mobile/core/error/failures.dart';
+import 'package:uskudar_mobile/domain/base/usecases/base_usecase.dart';
+import 'package:uskudar_mobile/domain/entities/bill_product_query_definition.dart';
+import 'package:uskudar_mobile/domain/repositories/bills_repository.dart';
 
 final class GetProductQueryDefinitionUsecase
     implements BaseUsecase<List<BillProductQueryDefinition>, String> {

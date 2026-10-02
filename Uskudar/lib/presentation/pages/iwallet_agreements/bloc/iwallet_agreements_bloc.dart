@@ -1,11 +1,11 @@
 import 'package:dio/dio.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:payinall/core/error/failures.dart';
-import 'package:payinall/core/utils/log_helper.dart';
-import 'package:payinall/core/utils/log_level.dart';
-import 'package:payinall/domain/entities/iwallet_agreement.dart';
-import 'package:payinall/domain/usecases/get_iwallet_agreements_usecase.dart';
+import 'package:uskudar_mobile/core/error/failures.dart';
+import 'package:uskudar_mobile/core/utils/log_helper.dart';
+import 'package:uskudar_mobile/core/utils/log_level.dart';
+import 'package:uskudar_mobile/domain/entities/iwallet_agreement.dart';
+import 'package:uskudar_mobile/domain/usecases/get_iwallet_agreements_usecase.dart';
 
 part 'iwallet_agreements_event.dart';
 part 'iwallet_agreements_state.dart';

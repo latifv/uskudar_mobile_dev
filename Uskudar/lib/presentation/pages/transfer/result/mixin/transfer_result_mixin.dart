@@ -2,12 +2,12 @@ import 'dart:async';
 
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
-import 'package:payinall/core/utils/app_utils.dart';
-import 'package:payinall/di/di.dart';
-import 'package:payinall/presentation/pages/home/bloc/home_bloc.dart';
-import 'package:payinall/presentation/pages/transfer/result/bloc/transfer_result_bloc.dart';
-import 'package:payinall/presentation/route/app_router.dart';
-import 'package:payinall/presentation/shared/extensions/launch_url_extension.dart';
+import 'package:uskudar_mobile/core/utils/app_utils.dart';
+import 'package:uskudar_mobile/di/di.dart';
+import 'package:uskudar_mobile/presentation/pages/home/bloc/home_bloc.dart';
+import 'package:uskudar_mobile/presentation/pages/transfer/result/bloc/transfer_result_bloc.dart';
+import 'package:uskudar_mobile/presentation/route/app_router.dart';
+import 'package:uskudar_mobile/presentation/shared/extensions/launch_url_extension.dart';
 
 mixin TransferResultMixin<T extends StatefulWidget> on State<T> {
   late final TransferResultBloc _transferResultBloc;

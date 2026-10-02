@@ -3,12 +3,12 @@ import 'dart:io';
 
 import 'package:auto_route/auto_route.dart';
 import 'package:dio/dio.dart';
-import 'package:payinall/data/datasources/local/app_local_data_source.dart';
-import 'package:payinall/data/network/constants/header_constants.dart';
-import 'package:payinall/di/di.dart';
-import 'package:payinall/domain/usecases/logout_usecase.dart';
-import 'package:payinall/presentation/route/app_router.dart';
-import 'package:payinall/presentation/route/route_paths.dart';
+import 'package:uskudar_mobile/data/datasources/local/app_local_data_source.dart';
+import 'package:uskudar_mobile/data/network/constants/header_constants.dart';
+import 'package:uskudar_mobile/di/di.dart';
+import 'package:uskudar_mobile/domain/usecases/logout_usecase.dart';
+import 'package:uskudar_mobile/presentation/route/app_router.dart';
+import 'package:uskudar_mobile/presentation/route/route_paths.dart';
 
 final class NetworkInterceptor extends Interceptor {
   const NetworkInterceptor();

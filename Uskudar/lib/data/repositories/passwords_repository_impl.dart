@@ -1,20 +1,20 @@
 import 'package:fpdart/fpdart.dart';
-import 'package:payinall/core/error/failures.dart';
-import 'package:payinall/data/core/data_source_handler.dart';
-import 'package:payinall/data/datasources/remote/passwords_remote_data_source.dart';
-import 'package:payinall/data/dtos/requests/change_password_request.dart';
-import 'package:payinall/data/dtos/requests/forgot_change_password_request.dart';
-import 'package:payinall/data/dtos/requests/forgot_password_request.dart';
-import 'package:payinall/data/dtos/requests/merchant_user_forgot_change_password_request.dart';
-import 'package:payinall/data/dtos/requests/merchant_user_forgot_password_request.dart';
-import 'package:payinall/data/dtos/requests/question_name_request.dart';
-import 'package:payinall/domain/params/change_password_params.dart';
-import 'package:payinall/domain/params/forgot_change_password_params.dart';
-import 'package:payinall/domain/params/forgot_password_params.dart';
-import 'package:payinall/domain/params/merchant_user_forgot_change_password_params.dart';
-import 'package:payinall/domain/params/merchant_user_forgot_password_params.dart';
-import 'package:payinall/domain/params/question_name_params.dart';
-import 'package:payinall/domain/repositories/passwords_repository.dart';
+import 'package:uskudar_mobile/core/error/failures.dart';
+import 'package:uskudar_mobile/data/core/data_source_handler.dart';
+import 'package:uskudar_mobile/data/datasources/remote/passwords_remote_data_source.dart';
+import 'package:uskudar_mobile/data/dtos/requests/change_password_request.dart';
+import 'package:uskudar_mobile/data/dtos/requests/forgot_change_password_request.dart';
+import 'package:uskudar_mobile/data/dtos/requests/forgot_password_request.dart';
+import 'package:uskudar_mobile/data/dtos/requests/merchant_user_forgot_change_password_request.dart';
+import 'package:uskudar_mobile/data/dtos/requests/merchant_user_forgot_password_request.dart';
+import 'package:uskudar_mobile/data/dtos/requests/question_name_request.dart';
+import 'package:uskudar_mobile/domain/params/change_password_params.dart';
+import 'package:uskudar_mobile/domain/params/forgot_change_password_params.dart';
+import 'package:uskudar_mobile/domain/params/forgot_password_params.dart';
+import 'package:uskudar_mobile/domain/params/merchant_user_forgot_change_password_params.dart';
+import 'package:uskudar_mobile/domain/params/merchant_user_forgot_password_params.dart';
+import 'package:uskudar_mobile/domain/params/question_name_params.dart';
+import 'package:uskudar_mobile/domain/repositories/passwords_repository.dart';
 
 final class PasswordsRepositoryImpl implements PasswordsRepository {
   PasswordsRepositoryImpl({required this.remoteDataSource})

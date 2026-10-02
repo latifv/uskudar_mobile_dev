@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:payinall/presentation/widgets/price_text_form_field.dart';
+import 'package:uskudar_mobile/presentation/widgets/price_text_form_field.dart';
 
 final class QrGenerateFormWidget extends StatelessWidget {
   const QrGenerateFormWidget({

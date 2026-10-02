@@ -2,9 +2,9 @@ import 'dart:async';
 
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
-import 'package:payinall/core/generated/locale_keys.g.dart';
-import 'package:payinall/domain/enums/agreement_type.dart';
-import 'package:payinall/presentation/route/app_router.dart';
+import 'package:uskudar_mobile/core/generated/locale_keys.g.dart';
+import 'package:uskudar_mobile/domain/enums/agreement_type.dart';
+import 'package:uskudar_mobile/presentation/route/app_router.dart';
 
 final class AgreementListItem {
   const AgreementListItem({

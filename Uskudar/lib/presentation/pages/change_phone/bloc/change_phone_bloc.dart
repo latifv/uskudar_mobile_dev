@@ -3,9 +3,9 @@ import 'dart:async';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:payinall/core/error/failures.dart';
-import 'package:payinall/domain/params/change_phone_code_params.dart';
-import 'package:payinall/domain/usecases/change_phone_code_usecase.dart';
+import 'package:uskudar_mobile/core/error/failures.dart';
+import 'package:uskudar_mobile/domain/params/change_phone_code_params.dart';
+import 'package:uskudar_mobile/domain/usecases/change_phone_code_usecase.dart';
 
 part 'change_phone_event.dart';
 part 'change_phone_state.dart';

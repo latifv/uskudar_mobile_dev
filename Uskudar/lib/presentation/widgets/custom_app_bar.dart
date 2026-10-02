@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:payinall/presentation/shared/extensions/theme_extension.dart';
+import 'package:uskudar_mobile/presentation/shared/extensions/theme_extension.dart';
 
 final class CustomAppBar extends StatelessWidget
     implements PreferredSizeWidget {

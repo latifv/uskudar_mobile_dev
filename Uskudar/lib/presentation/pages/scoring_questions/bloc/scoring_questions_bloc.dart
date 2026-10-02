@@ -1,16 +1,16 @@
 import 'dart:async';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:payinall/core/error/failures.dart';
-import 'package:payinall/domain/enums/score_operation_type.dart';
-import 'package:payinall/domain/params/score_operation_params.dart';
-import 'package:payinall/domain/params/user_score_calculate_params.dart';
-import 'package:payinall/domain/usecases/get_average_revenue_types_usecase.dart';
-import 'package:payinall/domain/usecases/get_monthly_transaction_count_types_usecase.dart';
-import 'package:payinall/domain/usecases/get_score_operations_usecase.dart';
-import 'package:payinall/domain/usecases/user_score_calculate_usecase.dart';
-import 'package:payinall/presentation/pages/scoring_questions/bloc/scoring_questions_event.dart';
-import 'package:payinall/presentation/pages/scoring_questions/bloc/scoring_questions_state.dart';
+import 'package:uskudar_mobile/core/error/failures.dart';
+import 'package:uskudar_mobile/domain/enums/score_operation_type.dart';
+import 'package:uskudar_mobile/domain/params/score_operation_params.dart';
+import 'package:uskudar_mobile/domain/params/user_score_calculate_params.dart';
+import 'package:uskudar_mobile/domain/usecases/get_average_revenue_types_usecase.dart';
+import 'package:uskudar_mobile/domain/usecases/get_monthly_transaction_count_types_usecase.dart';
+import 'package:uskudar_mobile/domain/usecases/get_score_operations_usecase.dart';
+import 'package:uskudar_mobile/domain/usecases/user_score_calculate_usecase.dart';
+import 'package:uskudar_mobile/presentation/pages/scoring_questions/bloc/scoring_questions_event.dart';
+import 'package:uskudar_mobile/presentation/pages/scoring_questions/bloc/scoring_questions_state.dart';
 
 final class ScoringQuestionsBloc
     extends Bloc<ScoringQuestionsEvent, ScoringQuestionsState> {

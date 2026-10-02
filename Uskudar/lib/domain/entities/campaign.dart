@@ -1,4 +1,4 @@
-import 'package:payinall/domain/entities/campaign_merchant.dart';
+import 'package:uskudar_mobile/domain/entities/campaign_merchant.dart';
 
 class Campaign {
   const Campaign({

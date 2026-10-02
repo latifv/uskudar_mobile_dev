@@ -1,6 +1,6 @@
-import 'package:payinall/core/error/exceptions.dart';
-import 'package:payinall/data/dtos/responses/international_transfer_result_response.dart';
-import 'package:payinall/domain/entities/international_transfer_result.dart';
+import 'package:uskudar_mobile/core/error/exceptions.dart';
+import 'package:uskudar_mobile/data/dtos/responses/international_transfer_result_response.dart';
+import 'package:uskudar_mobile/domain/entities/international_transfer_result.dart';
 
 final class InternationalTransferResultModel
     extends InternationalTransferResult {

@@ -1,19 +1,19 @@
 import 'package:fpdart/fpdart.dart';
-import 'package:payinall/core/error/failures.dart';
-import 'package:payinall/core/managers/token_manager.dart';
-import 'package:payinall/data/core/data_source_handler.dart';
-import 'package:payinall/data/datasources/local/auth_local_data_source.dart';
-import 'package:payinall/data/datasources/remote/auth_remote_data_source.dart';
-import 'package:payinall/data/dtos/requests/auth_merchant_request.dart';
-import 'package:payinall/data/dtos/requests/auth_mobile_request.dart';
-import 'package:payinall/data/models/auth_mobile_model.dart';
-import 'package:payinall/data/models/logged_in_model.dart';
-import 'package:payinall/domain/entities/auth_mobile.dart';
-import 'package:payinall/domain/entities/auth_token.dart';
-import 'package:payinall/domain/entities/logged_in.dart';
-import 'package:payinall/domain/params/auth_merchant_params.dart';
-import 'package:payinall/domain/params/auth_mobile_params.dart';
-import 'package:payinall/domain/repositories/auth_repository.dart';
+import 'package:uskudar_mobile/core/error/failures.dart';
+import 'package:uskudar_mobile/core/managers/token_manager.dart';
+import 'package:uskudar_mobile/data/core/data_source_handler.dart';
+import 'package:uskudar_mobile/data/datasources/local/auth_local_data_source.dart';
+import 'package:uskudar_mobile/data/datasources/remote/auth_remote_data_source.dart';
+import 'package:uskudar_mobile/data/dtos/requests/auth_merchant_request.dart';
+import 'package:uskudar_mobile/data/dtos/requests/auth_mobile_request.dart';
+import 'package:uskudar_mobile/data/models/auth_mobile_model.dart';
+import 'package:uskudar_mobile/data/models/logged_in_model.dart';
+import 'package:uskudar_mobile/domain/entities/auth_mobile.dart';
+import 'package:uskudar_mobile/domain/entities/auth_token.dart';
+import 'package:uskudar_mobile/domain/entities/logged_in.dart';
+import 'package:uskudar_mobile/domain/params/auth_merchant_params.dart';
+import 'package:uskudar_mobile/domain/params/auth_mobile_params.dart';
+import 'package:uskudar_mobile/domain/repositories/auth_repository.dart';
 
 final class AuthRepositoryImpl implements AuthRepository {
   AuthRepositoryImpl({

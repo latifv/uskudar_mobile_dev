@@ -2,13 +2,13 @@ import 'dart:async';
 
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
-import 'package:payinall/di/di.dart';
-import 'package:payinall/presentation/pages/receive_money/bloc/receive_money_bloc.dart';
-import 'package:payinall/presentation/pages/receive_money/bloc/receive_money_event.dart';
-import 'package:payinall/presentation/pages/receive_money/bloc/receive_money_state.dart';
-import 'package:payinall/presentation/pages/receive_money/screen/receive_money_screen.dart';
-import 'package:payinall/presentation/route/app_router.dart';
-import 'package:payinall/presentation/shared/components/toast_component.dart';
+import 'package:uskudar_mobile/di/di.dart';
+import 'package:uskudar_mobile/presentation/pages/receive_money/bloc/receive_money_bloc.dart';
+import 'package:uskudar_mobile/presentation/pages/receive_money/bloc/receive_money_event.dart';
+import 'package:uskudar_mobile/presentation/pages/receive_money/bloc/receive_money_state.dart';
+import 'package:uskudar_mobile/presentation/pages/receive_money/screen/receive_money_screen.dart';
+import 'package:uskudar_mobile/presentation/route/app_router.dart';
+import 'package:uskudar_mobile/presentation/shared/components/toast_component.dart';
 
 mixin ReceiveMoneyMixin on State<ReceiveMoneyScreen> {
   late final ReceiveMoneyBloc bloc;

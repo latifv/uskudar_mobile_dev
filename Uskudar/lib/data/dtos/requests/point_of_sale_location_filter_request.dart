@@ -1,5 +1,5 @@
 import 'package:json_annotation/json_annotation.dart';
-import 'package:payinall/domain/params/point_of_sale_location_filter_params.dart';
+import 'package:uskudar_mobile/domain/params/point_of_sale_location_filter_params.dart';
 
 part 'point_of_sale_location_filter_request.g.dart';
 

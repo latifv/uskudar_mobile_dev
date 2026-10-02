@@ -1,5 +1,5 @@
 import 'package:json_annotation/json_annotation.dart';
-import 'package:payinall/domain/params/coupon_take_params.dart';
+import 'package:uskudar_mobile/domain/params/coupon_take_params.dart';
 
 part 'coupon_take_request.g.dart';
 

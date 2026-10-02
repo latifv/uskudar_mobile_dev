@@ -1,10 +1,10 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:payinall/core/error/failures.dart';
-import 'package:payinall/domain/entities/country.dart';
-import 'package:payinall/domain/entities/country_transaction_type.dart';
-import 'package:payinall/domain/usecases/get_country_list_usecase.dart';
-import 'package:payinall/domain/usecases/get_country_transaction_type_usecase.dart';
+import 'package:uskudar_mobile/core/error/failures.dart';
+import 'package:uskudar_mobile/domain/entities/country.dart';
+import 'package:uskudar_mobile/domain/entities/country_transaction_type.dart';
+import 'package:uskudar_mobile/domain/usecases/get_country_list_usecase.dart';
+import 'package:uskudar_mobile/domain/usecases/get_country_transaction_type_usecase.dart';
 
 part 'country_selection_event.dart';
 part 'country_selection_state.dart';

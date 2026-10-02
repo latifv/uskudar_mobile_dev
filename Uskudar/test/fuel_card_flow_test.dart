@@ -1,7 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:payinall/data/dtos/requests/create_fuel_card_request.dart';
-import 'package:payinall/domain/entities/fuel_provider.dart';
-import 'package:payinall/domain/params/create_fuel_card_params.dart';
+import 'package:uskudar_mobile/data/dtos/requests/create_fuel_card_request.dart';
+import 'package:uskudar_mobile/domain/entities/fuel_provider.dart';
+import 'package:uskudar_mobile/domain/params/create_fuel_card_params.dart';
 
 void main() {
   test('fuel providers use the documented card type values', () {

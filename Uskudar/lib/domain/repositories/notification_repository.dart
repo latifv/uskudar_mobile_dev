@@ -1,6 +1,6 @@
 import 'package:fpdart/fpdart.dart';
-import 'package:payinall/core/error/failures.dart';
-import 'package:payinall/domain/entities/notification_item.dart';
+import 'package:uskudar_mobile/core/error/failures.dart';
+import 'package:uskudar_mobile/domain/entities/notification_item.dart';
 
 abstract interface class NotificationRepository {
   Future<Either<Failure, List<NotificationItem>>> getNotifications();

@@ -1,8 +1,8 @@
-import 'package:payinall/core/error/exceptions.dart';
-import 'package:payinall/data/dtos/responses/required_attribute_response.dart';
-import 'package:payinall/data/models/attribute_item_model.dart';
-import 'package:payinall/domain/entities/attribute_item.dart';
-import 'package:payinall/domain/entities/required_attribute.dart';
+import 'package:uskudar_mobile/core/error/exceptions.dart';
+import 'package:uskudar_mobile/data/dtos/responses/required_attribute_response.dart';
+import 'package:uskudar_mobile/data/models/attribute_item_model.dart';
+import 'package:uskudar_mobile/domain/entities/attribute_item.dart';
+import 'package:uskudar_mobile/domain/entities/required_attribute.dart';
 
 final class RequiredAttributeModel extends RequiredAttribute {
   const RequiredAttributeModel({

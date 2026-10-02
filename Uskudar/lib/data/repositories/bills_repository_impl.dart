@@ -1,17 +1,17 @@
 import 'package:fpdart/fpdart.dart';
-import 'package:payinall/core/error/failures.dart';
-import 'package:payinall/core/generated/locale_keys.g.dart';
-import 'package:payinall/data/datasources/remote/bills_remote_data_source.dart';
-import 'package:payinall/data/dtos/requests/bill_inquiry_request.dart';
-import 'package:payinall/data/dtos/requests/bill_payment_request.dart';
-import 'package:payinall/domain/entities/bill_inquiry.dart';
-import 'package:payinall/domain/entities/bill_product.dart';
-import 'package:payinall/domain/entities/bill_product_query_definition.dart';
-import 'package:payinall/domain/entities/bill_product_type.dart';
-import 'package:payinall/domain/params/bill_inquiry_params.dart';
-import 'package:payinall/domain/params/bill_payment_params.dart';
-import 'package:payinall/domain/repositories/bills_repository.dart';
-import 'package:payinall/presentation/shared/extensions/string_extension.dart';
+import 'package:uskudar_mobile/core/error/failures.dart';
+import 'package:uskudar_mobile/core/generated/locale_keys.g.dart';
+import 'package:uskudar_mobile/data/datasources/remote/bills_remote_data_source.dart';
+import 'package:uskudar_mobile/data/dtos/requests/bill_inquiry_request.dart';
+import 'package:uskudar_mobile/data/dtos/requests/bill_payment_request.dart';
+import 'package:uskudar_mobile/domain/entities/bill_inquiry.dart';
+import 'package:uskudar_mobile/domain/entities/bill_product.dart';
+import 'package:uskudar_mobile/domain/entities/bill_product_query_definition.dart';
+import 'package:uskudar_mobile/domain/entities/bill_product_type.dart';
+import 'package:uskudar_mobile/domain/params/bill_inquiry_params.dart';
+import 'package:uskudar_mobile/domain/params/bill_payment_params.dart';
+import 'package:uskudar_mobile/domain/repositories/bills_repository.dart';
+import 'package:uskudar_mobile/presentation/shared/extensions/string_extension.dart';
 
 final class BillsRepositoryImpl implements BillsRepository {
   BillsRepositoryImpl({required this.remoteDataSource});

@@ -1,6 +1,6 @@
-import 'package:payinall/core/error/exceptions.dart';
-import 'package:payinall/data/dtos/responses/transaction_response.dart';
-import 'package:payinall/domain/entities/transaction.dart';
+import 'package:uskudar_mobile/core/error/exceptions.dart';
+import 'package:uskudar_mobile/data/dtos/responses/transaction_response.dart';
+import 'package:uskudar_mobile/domain/entities/transaction.dart';
 
 final class TransactionModel extends Transaction {
   const TransactionModel({

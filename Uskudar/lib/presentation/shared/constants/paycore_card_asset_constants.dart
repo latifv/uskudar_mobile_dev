@@ -1,5 +1,5 @@
-import 'package:payinall/core/models/paycore_mobile_models.dart';
-import 'package:payinall/presentation/shared/constants/image_asset_constants.dart';
+import 'package:uskudar_mobile/core/models/paycore_mobile_models.dart';
+import 'package:uskudar_mobile/presentation/shared/constants/image_asset_constants.dart';
 
 final class PaycoreCardAssetConstants {
   const PaycoreCardAssetConstants._();

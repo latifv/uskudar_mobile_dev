@@ -1,7 +1,7 @@
-import 'package:payinall/core/error/exceptions.dart';
-import 'package:payinall/data/dtos/responses/merchant_response.dart';
-import 'package:payinall/data/models/sector_array_model.dart';
-import 'package:payinall/domain/entities/merchant.dart';
+import 'package:uskudar_mobile/core/error/exceptions.dart';
+import 'package:uskudar_mobile/data/dtos/responses/merchant_response.dart';
+import 'package:uskudar_mobile/data/models/sector_array_model.dart';
+import 'package:uskudar_mobile/domain/entities/merchant.dart';
 
 final class MerchantModel extends Merchant {
   const MerchantModel({

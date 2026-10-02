@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:payinall/domain/entities/bill_product.dart';
-import 'package:payinall/domain/entities/bill_product_type.dart';
-import 'package:payinall/presentation/pages/bill_payment/bloc/bill_payment_bloc.dart';
-import 'package:payinall/presentation/pages/bill_payment/widgets/bill_inquiry_section.dart';
-import 'package:payinall/presentation/pages/bill_payment/widgets/bill_payment_confirmation_section.dart';
-import 'package:payinall/presentation/pages/bill_payment/widgets/bill_product_types_section.dart';
-import 'package:payinall/presentation/pages/bill_payment/widgets/bill_products_section.dart';
+import 'package:uskudar_mobile/domain/entities/bill_product.dart';
+import 'package:uskudar_mobile/domain/entities/bill_product_type.dart';
+import 'package:uskudar_mobile/presentation/pages/bill_payment/bloc/bill_payment_bloc.dart';
+import 'package:uskudar_mobile/presentation/pages/bill_payment/widgets/bill_inquiry_section.dart';
+import 'package:uskudar_mobile/presentation/pages/bill_payment/widgets/bill_payment_confirmation_section.dart';
+import 'package:uskudar_mobile/presentation/pages/bill_payment/widgets/bill_product_types_section.dart';
+import 'package:uskudar_mobile/presentation/pages/bill_payment/widgets/bill_products_section.dart';
 
 final class BillPaymentSection extends StatelessWidget {
   const BillPaymentSection({

@@ -1,6 +1,6 @@
-import 'package:payinall/core/error/exceptions.dart';
-import 'package:payinall/data/dtos/responses/nfc_response.dart';
-import 'package:payinall/domain/entities/nfc.dart';
+import 'package:uskudar_mobile/core/error/exceptions.dart';
+import 'package:uskudar_mobile/data/dtos/responses/nfc_response.dart';
+import 'package:uskudar_mobile/domain/entities/nfc.dart';
 
 final class NfcModel extends Nfc {
   const NfcModel({required super.image});

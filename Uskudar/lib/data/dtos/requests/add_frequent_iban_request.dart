@@ -1,5 +1,5 @@
 import 'package:json_annotation/json_annotation.dart';
-import 'package:payinall/domain/params/add_frequent_iban_params.dart';
+import 'package:uskudar_mobile/domain/params/add_frequent_iban_params.dart';
 
 part 'add_frequent_iban_request.g.dart';
 

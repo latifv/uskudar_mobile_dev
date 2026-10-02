@@ -1,9 +1,9 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:payinall/core/services/permission_service.dart';
-import 'package:payinall/core/services/qr_code_service/qr_code_service.dart';
-import 'package:payinall/core/utils/log_helper.dart';
-import 'package:payinall/core/utils/log_level.dart';
+import 'package:uskudar_mobile/core/services/permission_service.dart';
+import 'package:uskudar_mobile/core/services/qr_code_service/qr_code_service.dart';
+import 'package:uskudar_mobile/core/utils/log_helper.dart';
+import 'package:uskudar_mobile/core/utils/log_level.dart';
 
 part 'qr_scan_event.dart';
 part 'qr_scan_state.dart';

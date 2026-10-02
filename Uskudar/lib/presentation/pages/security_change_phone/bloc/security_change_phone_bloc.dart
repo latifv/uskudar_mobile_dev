@@ -4,9 +4,9 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:payinall/core/error/failures.dart';
-import 'package:payinall/domain/params/question_name_params.dart';
-import 'package:payinall/domain/usecases/get_question_name_usecase.dart';
+import 'package:uskudar_mobile/core/error/failures.dart';
+import 'package:uskudar_mobile/domain/params/question_name_params.dart';
+import 'package:uskudar_mobile/domain/usecases/get_question_name_usecase.dart';
 
 part 'security_change_phone_event.dart';
 part 'security_change_phone_state.dart';

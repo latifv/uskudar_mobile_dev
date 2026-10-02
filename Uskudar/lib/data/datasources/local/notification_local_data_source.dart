@@ -1,8 +1,8 @@
-import 'package:payinall/core/error/exceptions.dart';
-import 'package:payinall/data/core/base_local_data_source.dart';
-import 'package:payinall/data/local_storage/hive_boxes.dart';
-import 'package:payinall/data/local_storage/preferences_keys.dart';
-import 'package:payinall/data/models/notification_item_model.dart';
+import 'package:uskudar_mobile/core/error/exceptions.dart';
+import 'package:uskudar_mobile/data/core/base_local_data_source.dart';
+import 'package:uskudar_mobile/data/local_storage/hive_boxes.dart';
+import 'package:uskudar_mobile/data/local_storage/preferences_keys.dart';
+import 'package:uskudar_mobile/data/models/notification_item_model.dart';
 
 abstract interface class NotificationLocalDataSource {
   Future<List<NotificationItemModel>> getNotifications();

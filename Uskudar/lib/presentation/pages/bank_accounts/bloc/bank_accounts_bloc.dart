@@ -2,10 +2,10 @@ import 'dart:async';
 
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:payinall/core/error/failures.dart';
-import 'package:payinall/domain/entities/customer_bank.dart';
-import 'package:payinall/domain/usecases/delete_customer_bank_usecase.dart';
-import 'package:payinall/domain/usecases/get_customer_banks_usecase.dart';
+import 'package:uskudar_mobile/core/error/failures.dart';
+import 'package:uskudar_mobile/domain/entities/customer_bank.dart';
+import 'package:uskudar_mobile/domain/usecases/delete_customer_bank_usecase.dart';
+import 'package:uskudar_mobile/domain/usecases/get_customer_banks_usecase.dart';
 
 part 'bank_accounts_event.dart';
 part 'bank_accounts_state.dart';

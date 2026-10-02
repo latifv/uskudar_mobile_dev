@@ -1,12 +1,12 @@
 import 'package:fpdart/fpdart.dart';
-import 'package:payinall/core/error/failures.dart';
-import 'package:payinall/data/core/data_source_handler.dart';
-import 'package:payinall/data/datasources/remote/frequent_ibans_remote_data_source.dart';
-import 'package:payinall/data/dtos/requests/add_frequent_iban_request.dart';
-import 'package:payinall/data/models/frequent_iban_model.dart';
-import 'package:payinall/domain/entities/frequent_iban.dart';
-import 'package:payinall/domain/params/add_frequent_iban_params.dart';
-import 'package:payinall/domain/repositories/frequent_ibans_repository.dart';
+import 'package:uskudar_mobile/core/error/failures.dart';
+import 'package:uskudar_mobile/data/core/data_source_handler.dart';
+import 'package:uskudar_mobile/data/datasources/remote/frequent_ibans_remote_data_source.dart';
+import 'package:uskudar_mobile/data/dtos/requests/add_frequent_iban_request.dart';
+import 'package:uskudar_mobile/data/models/frequent_iban_model.dart';
+import 'package:uskudar_mobile/domain/entities/frequent_iban.dart';
+import 'package:uskudar_mobile/domain/params/add_frequent_iban_params.dart';
+import 'package:uskudar_mobile/domain/repositories/frequent_ibans_repository.dart';
 
 final class FrequentIbansRepositoryImpl implements FrequentIbansRepository {
   FrequentIbansRepositoryImpl({required this.remoteDataSource})

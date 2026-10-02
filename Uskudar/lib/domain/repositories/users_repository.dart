@@ -1,11 +1,11 @@
 import 'package:fpdart/fpdart.dart';
-import 'package:payinall/core/error/failures.dart';
-import 'package:payinall/domain/entities/current_user_info.dart';
-import 'package:payinall/domain/params/email_verification_confirm_params.dart';
-import 'package:payinall/domain/params/register_params.dart';
-import 'package:payinall/domain/params/update_email_confirm_params.dart';
-import 'package:payinall/domain/params/update_email_send_code_params.dart';
-import 'package:payinall/domain/params/update_secret_question_params.dart';
+import 'package:uskudar_mobile/core/error/failures.dart';
+import 'package:uskudar_mobile/domain/entities/current_user_info.dart';
+import 'package:uskudar_mobile/domain/params/email_verification_confirm_params.dart';
+import 'package:uskudar_mobile/domain/params/register_params.dart';
+import 'package:uskudar_mobile/domain/params/update_email_confirm_params.dart';
+import 'package:uskudar_mobile/domain/params/update_email_send_code_params.dart';
+import 'package:uskudar_mobile/domain/params/update_secret_question_params.dart';
 
 abstract interface class UsersRepository {
   Future<Either<Failure, void>> register(RegisterParams params);

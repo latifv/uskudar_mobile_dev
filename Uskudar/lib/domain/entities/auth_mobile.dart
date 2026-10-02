@@ -1,4 +1,4 @@
-import 'package:payinall/domain/entities/auth_token.dart';
+import 'package:uskudar_mobile/domain/entities/auth_token.dart';
 
 class AuthMobile {
   const AuthMobile({

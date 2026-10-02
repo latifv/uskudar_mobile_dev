@@ -1,6 +1,6 @@
-import 'package:payinall/core/error/exceptions.dart';
-import 'package:payinall/data/dtos/responses/attribute_item_response.dart';
-import 'package:payinall/domain/entities/attribute_item.dart';
+import 'package:uskudar_mobile/core/error/exceptions.dart';
+import 'package:uskudar_mobile/data/dtos/responses/attribute_item_response.dart';
+import 'package:uskudar_mobile/domain/entities/attribute_item.dart';
 
 final class AttributeItemModel extends AttributeItem {
   const AttributeItemModel({

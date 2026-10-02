@@ -1,6 +1,6 @@
 import 'package:fpdart/fpdart.dart';
-import 'package:payinall/core/error/failures.dart';
-import 'package:payinall/domain/entities/contract.dart';
+import 'package:uskudar_mobile/core/error/failures.dart';
+import 'package:uskudar_mobile/domain/entities/contract.dart';
 
 abstract interface class ContractsRepository {
   Future<Either<Failure, List<Contract>>> getContracts();

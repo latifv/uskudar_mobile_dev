@@ -2,11 +2,11 @@ import 'dart:async';
 
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
-import 'package:payinall/di/di.dart';
-import 'package:payinall/presentation/pages/bill_payment/bloc/bill_payment_bloc.dart';
-import 'package:payinall/presentation/pages/page_search/bloc/page_search_bloc.dart';
-import 'package:payinall/presentation/pages/page_search/models/app_page_item.dart';
-import 'package:payinall/presentation/route/app_router.dart';
+import 'package:uskudar_mobile/di/di.dart';
+import 'package:uskudar_mobile/presentation/pages/bill_payment/bloc/bill_payment_bloc.dart';
+import 'package:uskudar_mobile/presentation/pages/page_search/bloc/page_search_bloc.dart';
+import 'package:uskudar_mobile/presentation/pages/page_search/models/app_page_item.dart';
+import 'package:uskudar_mobile/presentation/route/app_router.dart';
 
 mixin PageSearchMixin<T extends StatefulWidget> on State<T> {
   late final PageSearchBloc bloc;

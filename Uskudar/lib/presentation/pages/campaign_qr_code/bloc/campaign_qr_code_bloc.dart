@@ -1,7 +1,7 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:payinall/core/error/failures.dart';
-import 'package:payinall/domain/usecases/create_qr_code_usecase.dart';
+import 'package:uskudar_mobile/core/error/failures.dart';
+import 'package:uskudar_mobile/domain/usecases/create_qr_code_usecase.dart';
 
 part 'campaign_qr_code_event.dart';
 part 'campaign_qr_code_state.dart';

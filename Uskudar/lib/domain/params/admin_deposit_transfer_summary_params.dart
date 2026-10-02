@@ -1,4 +1,4 @@
-import 'package:payinall/domain/enums/time_type.dart';
+import 'package:uskudar_mobile/domain/enums/time_type.dart';
 
 class AdminDepositTransferSummaryParams {
   const AdminDepositTransferSummaryParams({required this.timeType});

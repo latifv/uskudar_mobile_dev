@@ -1,13 +1,13 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:payinall/core/error/failures.dart';
-import 'package:payinall/domain/entities/metropol_city.dart';
-import 'package:payinall/domain/entities/point_of_sale_location.dart';
-import 'package:payinall/domain/params/point_of_sale_location_filter_params.dart';
-import 'package:payinall/domain/params/point_of_sale_location_params.dart';
-import 'package:payinall/domain/usecases/get_metropol_cities_usecase.dart';
-import 'package:payinall/domain/usecases/get_point_of_sale_location_filter_list_usecase.dart';
-import 'package:payinall/domain/usecases/get_point_of_sale_location_list_usecase.dart';
+import 'package:uskudar_mobile/core/error/failures.dart';
+import 'package:uskudar_mobile/domain/entities/metropol_city.dart';
+import 'package:uskudar_mobile/domain/entities/point_of_sale_location.dart';
+import 'package:uskudar_mobile/domain/params/point_of_sale_location_filter_params.dart';
+import 'package:uskudar_mobile/domain/params/point_of_sale_location_params.dart';
+import 'package:uskudar_mobile/domain/usecases/get_metropol_cities_usecase.dart';
+import 'package:uskudar_mobile/domain/usecases/get_point_of_sale_location_filter_list_usecase.dart';
+import 'package:uskudar_mobile/domain/usecases/get_point_of_sale_location_list_usecase.dart';
 
 part 'metropol_locations_event.dart';
 part 'metropol_locations_state.dart';

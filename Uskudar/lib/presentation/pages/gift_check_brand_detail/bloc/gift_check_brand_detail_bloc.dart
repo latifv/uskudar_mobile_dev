@@ -1,12 +1,12 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:payinall/core/error/failures.dart';
-import 'package:payinall/domain/entities/gift_check_brand_detail.dart';
-import 'package:payinall/domain/entities/gift_check_coupon.dart';
-import 'package:payinall/domain/params/coupon_take_params.dart';
-import 'package:payinall/domain/usecases/coupon_take_usecase.dart';
-import 'package:payinall/domain/usecases/get_gift_check_brand_detail_usecase.dart';
-import 'package:payinall/domain/usecases/get_gift_check_coupons_usecase.dart';
+import 'package:uskudar_mobile/core/error/failures.dart';
+import 'package:uskudar_mobile/domain/entities/gift_check_brand_detail.dart';
+import 'package:uskudar_mobile/domain/entities/gift_check_coupon.dart';
+import 'package:uskudar_mobile/domain/params/coupon_take_params.dart';
+import 'package:uskudar_mobile/domain/usecases/coupon_take_usecase.dart';
+import 'package:uskudar_mobile/domain/usecases/get_gift_check_brand_detail_usecase.dart';
+import 'package:uskudar_mobile/domain/usecases/get_gift_check_coupons_usecase.dart';
 
 part 'gift_check_brand_detail_event.dart';
 part 'gift_check_brand_detail_state.dart';

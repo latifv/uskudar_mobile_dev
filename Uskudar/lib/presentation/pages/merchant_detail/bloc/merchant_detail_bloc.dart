@@ -1,10 +1,10 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:payinall/core/error/failures.dart';
-import 'package:payinall/core/managers/user_info_manager.dart';
-import 'package:payinall/domain/params/create_card_params.dart';
-import 'package:payinall/domain/usecases/create_card_usecase.dart';
-import 'package:payinall/domain/usecases/create_qr_code_usecase.dart';
+import 'package:uskudar_mobile/core/error/failures.dart';
+import 'package:uskudar_mobile/core/managers/user_info_manager.dart';
+import 'package:uskudar_mobile/domain/params/create_card_params.dart';
+import 'package:uskudar_mobile/domain/usecases/create_card_usecase.dart';
+import 'package:uskudar_mobile/domain/usecases/create_qr_code_usecase.dart';
 
 part 'merchant_detail_event.dart';
 part 'merchant_detail_state.dart';

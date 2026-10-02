@@ -1,4 +1,4 @@
-import 'package:payinall/domain/entities/attribute_item.dart';
+import 'package:uskudar_mobile/domain/entities/attribute_item.dart';
 
 class RequiredAttribute {
   const RequiredAttribute({

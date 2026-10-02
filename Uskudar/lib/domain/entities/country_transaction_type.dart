@@ -1,4 +1,4 @@
-import 'package:payinall/domain/entities/transaction_type.dart';
+import 'package:uskudar_mobile/domain/entities/transaction_type.dart';
 
 class CountryTransactionType {
   const CountryTransactionType({

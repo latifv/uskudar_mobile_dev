@@ -1,20 +1,20 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:payinall/core/generated/locale_keys.g.dart';
-import 'package:payinall/domain/entities/fuel_provider.dart';
-import 'package:payinall/presentation/pages/fuel_cards/bloc/fuel_cards_bloc.dart';
-import 'package:payinall/presentation/pages/fuel_cards/fuel_provider_detail_screen.dart';
-import 'package:payinall/presentation/pages/fuel_cards/mixin/fuel_cards_mixin.dart';
-import 'package:payinall/presentation/pages/fuel_cards/widgets/fuel_card_item.dart';
-import 'package:payinall/presentation/pages/fuel_cards/widgets/fuel_provider_card.dart';
-import 'package:payinall/presentation/shared/extensions/spacing_extension.dart';
-import 'package:payinall/presentation/shared/extensions/string_extension.dart';
-import 'package:payinall/presentation/shared/extensions/theme_extension.dart';
-import 'package:payinall/presentation/widgets/custom_app_bar.dart';
-import 'package:payinall/presentation/widgets/custom_loading.dart';
-import 'package:payinall/presentation/widgets/error_try_again.dart';
-import 'package:payinall/presentation/widgets/integration_components.dart';
+import 'package:uskudar_mobile/core/generated/locale_keys.g.dart';
+import 'package:uskudar_mobile/domain/entities/fuel_provider.dart';
+import 'package:uskudar_mobile/presentation/pages/fuel_cards/bloc/fuel_cards_bloc.dart';
+import 'package:uskudar_mobile/presentation/pages/fuel_cards/fuel_provider_detail_screen.dart';
+import 'package:uskudar_mobile/presentation/pages/fuel_cards/mixin/fuel_cards_mixin.dart';
+import 'package:uskudar_mobile/presentation/pages/fuel_cards/widgets/fuel_card_item.dart';
+import 'package:uskudar_mobile/presentation/pages/fuel_cards/widgets/fuel_provider_card.dart';
+import 'package:uskudar_mobile/presentation/shared/extensions/spacing_extension.dart';
+import 'package:uskudar_mobile/presentation/shared/extensions/string_extension.dart';
+import 'package:uskudar_mobile/presentation/shared/extensions/theme_extension.dart';
+import 'package:uskudar_mobile/presentation/widgets/custom_app_bar.dart';
+import 'package:uskudar_mobile/presentation/widgets/custom_loading.dart';
+import 'package:uskudar_mobile/presentation/widgets/error_try_again.dart';
+import 'package:uskudar_mobile/presentation/widgets/integration_components.dart';
 
 @RoutePage()
 final class FuelCardsScreen extends StatefulWidget {

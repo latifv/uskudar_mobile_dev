@@ -1,13 +1,13 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:payinall/presentation/pages/splash/bloc/splash_bloc.dart';
-import 'package:payinall/presentation/pages/splash/mixin/splash_mixin.dart';
-import 'package:payinall/presentation/shared/constants/icon_asset_constants.dart';
-import 'package:payinall/presentation/shared/extensions/spacing_extension.dart';
-import 'package:payinall/presentation/shared/extensions/theme_extension.dart';
-import 'package:payinall/presentation/widgets/custom_loading.dart';
-import 'package:payinall/presentation/widgets/logo_image.dart';
+import 'package:uskudar_mobile/presentation/pages/splash/bloc/splash_bloc.dart';
+import 'package:uskudar_mobile/presentation/pages/splash/mixin/splash_mixin.dart';
+import 'package:uskudar_mobile/presentation/shared/constants/icon_asset_constants.dart';
+import 'package:uskudar_mobile/presentation/shared/extensions/spacing_extension.dart';
+import 'package:uskudar_mobile/presentation/shared/extensions/theme_extension.dart';
+import 'package:uskudar_mobile/presentation/widgets/custom_loading.dart';
+import 'package:uskudar_mobile/presentation/widgets/logo_image.dart';
 
 @RoutePage()
 final class SplashScreen extends StatefulWidget {

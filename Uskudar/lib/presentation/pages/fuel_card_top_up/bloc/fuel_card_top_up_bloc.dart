@@ -1,9 +1,9 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:payinall/core/error/failures.dart';
-import 'package:payinall/domain/params/fuel_card_top_up_params.dart';
-import 'package:payinall/domain/usecases/fuel_card_top_up_usecase.dart';
-import 'package:payinall/domain/usecases/get_fuel_card_balance_usecase.dart';
+import 'package:uskudar_mobile/core/error/failures.dart';
+import 'package:uskudar_mobile/domain/params/fuel_card_top_up_params.dart';
+import 'package:uskudar_mobile/domain/usecases/fuel_card_top_up_usecase.dart';
+import 'package:uskudar_mobile/domain/usecases/get_fuel_card_balance_usecase.dart';
 
 part 'fuel_card_top_up_event.dart';
 part 'fuel_card_top_up_state.dart';

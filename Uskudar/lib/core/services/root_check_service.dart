@@ -1,5 +1,5 @@
 import 'package:jailbreak_root_detection/jailbreak_root_detection.dart';
-import 'package:payinall/core/utils/log_helper.dart';
+import 'package:uskudar_mobile/core/utils/log_helper.dart';
 
 abstract interface class RootCheckService {
   Future<bool> isDeviceRooted();

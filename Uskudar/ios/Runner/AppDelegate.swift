@@ -10,7 +10,7 @@ import UIKit
     ) -> Bool {
         controller = window?.rootViewController as! FlutterViewController
         let liveAuth = FlutterMethodChannel(
-            name: "com.erpapay.payinall/liveauth",
+            name: "tr.bel.uskudar.mobile/liveauth",
             binaryMessenger: controller.binaryMessenger)
         liveAuth.setMethodCallHandler({
             (call: FlutterMethodCall, result: @escaping FlutterResult) -> Void in

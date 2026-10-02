@@ -1,9 +1,9 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
-import 'package:payinall/presentation/pages/alisverislio/shopping_navigation_controller.dart';
-import 'package:payinall/presentation/pages/fuel_cards/fuel_cards_screen.dart';
-import 'package:payinall/presentation/pages/gift_checks/gift_checks_screen.dart';
-import 'package:payinall/presentation/pages/metropol_locations/metropol_locations_screen.dart';
+import 'package:uskudar_mobile/presentation/pages/alisverislio/shopping_navigation_controller.dart';
+import 'package:uskudar_mobile/presentation/pages/fuel_cards/fuel_cards_screen.dart';
+import 'package:uskudar_mobile/presentation/pages/gift_checks/gift_checks_screen.dart';
+import 'package:uskudar_mobile/presentation/pages/metropol_locations/metropol_locations_screen.dart';
 
 @RoutePage()
 final class AlisverislioScreen extends StatefulWidget {

@@ -1,8 +1,8 @@
-import 'package:payinall/core/error/exceptions.dart';
-import 'package:payinall/core/models/paycore_mobile_models.dart';
-import 'package:payinall/data/core/base_remote_data_source.dart';
-import 'package:payinall/data/network/config/endpoints.dart';
-import 'package:payinall/data/network/models/network_response.dart';
+import 'package:uskudar_mobile/core/error/exceptions.dart';
+import 'package:uskudar_mobile/core/models/paycore_mobile_models.dart';
+import 'package:uskudar_mobile/data/core/base_remote_data_source.dart';
+import 'package:uskudar_mobile/data/network/config/endpoints.dart';
+import 'package:uskudar_mobile/data/network/models/network_response.dart';
 
 final class PaycoreMobileService extends BaseRemoteDataSource {
   PaycoreMobileService(super.networkClient);

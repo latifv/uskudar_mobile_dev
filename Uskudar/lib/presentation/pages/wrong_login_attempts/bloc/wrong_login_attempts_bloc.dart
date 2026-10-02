@@ -1,9 +1,9 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:payinall/core/error/failures.dart';
-import 'package:payinall/domain/entities/wrong_password_history.dart';
-import 'package:payinall/domain/usecases/get_current_customer_wrong_password_histories_usecase.dart';
+import 'package:uskudar_mobile/core/error/failures.dart';
+import 'package:uskudar_mobile/domain/entities/wrong_password_history.dart';
+import 'package:uskudar_mobile/domain/usecases/get_current_customer_wrong_password_histories_usecase.dart';
 
 part 'wrong_login_attempts_event.dart';
 part 'wrong_login_attempts_state.dart';

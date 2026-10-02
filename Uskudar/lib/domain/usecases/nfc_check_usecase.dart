@@ -1,9 +1,9 @@
 import 'package:fpdart/fpdart.dart';
-import 'package:payinall/core/error/failures.dart';
-import 'package:payinall/domain/base/usecases/base_usecase.dart';
-import 'package:payinall/domain/entities/nfc.dart';
-import 'package:payinall/domain/params/nfc_check_params.dart';
-import 'package:payinall/domain/repositories/ark_signers_repository.dart';
+import 'package:uskudar_mobile/core/error/failures.dart';
+import 'package:uskudar_mobile/domain/base/usecases/base_usecase.dart';
+import 'package:uskudar_mobile/domain/entities/nfc.dart';
+import 'package:uskudar_mobile/domain/params/nfc_check_params.dart';
+import 'package:uskudar_mobile/domain/repositories/ark_signers_repository.dart';
 
 final class NfcCheckUsecase implements BaseUsecase<Nfc, NfcCheckParams> {
   NfcCheckUsecase(this.repository);

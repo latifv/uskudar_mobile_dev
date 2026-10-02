@@ -1,5 +1,4 @@
-import 'package:payinall/data/network/config/api_constants.dart';
-import 'package:payinall/domain/entities/current_user_info.dart';
+import 'package:uskudar_mobile/domain/entities/current_user_info.dart';
 
 final class UserInfoManager {
   // Ortak
@@ -51,23 +50,7 @@ final class UserInfoManager {
     _user.customerTypeName = userInfo.customerTypeName;
     _user.addressType = userInfo.addressType;
 
-    if (ApiConstants.baseUrl ==
-        'https://payinallwallettestapi.erpapay.com/api') {
-      if (userInfo.gsmNumber == '5303862054' ||
-          userInfo.gsmNumber == '5537285227' ||
-          userInfo.gsmNumber == '5511699629' ||
-          userInfo.gsmNumber == '5558500020') {
-        _user.isAdmin = true;
-      } else {
-        _user.isAdmin = false;
-      }
-    } else {
-      if (userInfo.gsmNumber == '5321660606') {
-        _user.isAdmin = true;
-      } else {
-        _user.isAdmin = false;
-      }
-    }
+    _user.isAdmin = false;
     _user.isExWallet = userInfo.isExWallet;
     _user.image = userInfo.image;
     _user.isUserQuestionChange = userInfo.isUserQuestionChange;

@@ -1,6 +1,6 @@
-import 'package:payinall/core/error/exceptions.dart';
-import 'package:payinall/data/dtos/responses/score_operation_response.dart';
-import 'package:payinall/domain/entities/score_operation.dart';
+import 'package:uskudar_mobile/core/error/exceptions.dart';
+import 'package:uskudar_mobile/data/dtos/responses/score_operation_response.dart';
+import 'package:uskudar_mobile/domain/entities/score_operation.dart';
 
 final class ScoreOperationModel extends ScoreOperation {
   const ScoreOperationModel({

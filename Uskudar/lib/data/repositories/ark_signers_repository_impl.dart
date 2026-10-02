@@ -1,18 +1,18 @@
 import 'package:fpdart/fpdart.dart';
-import 'package:payinall/core/error/failures.dart';
-import 'package:payinall/data/core/data_source_handler.dart';
-import 'package:payinall/data/datasources/remote/ark_signers_remote_data_source.dart';
-import 'package:payinall/data/dtos/requests/back_image_check_request.dart';
-import 'package:payinall/data/dtos/requests/face_image_check_request.dart';
-import 'package:payinall/data/dtos/requests/front_image_check_request.dart';
-import 'package:payinall/data/dtos/requests/nfc_check_request.dart';
-import 'package:payinall/data/models/nfc_model.dart';
-import 'package:payinall/domain/entities/nfc.dart';
-import 'package:payinall/domain/params/back_image_check_params.dart';
-import 'package:payinall/domain/params/face_image_check_params.dart';
-import 'package:payinall/domain/params/front_image_check_params.dart';
-import 'package:payinall/domain/params/nfc_check_params.dart';
-import 'package:payinall/domain/repositories/ark_signers_repository.dart';
+import 'package:uskudar_mobile/core/error/failures.dart';
+import 'package:uskudar_mobile/data/core/data_source_handler.dart';
+import 'package:uskudar_mobile/data/datasources/remote/ark_signers_remote_data_source.dart';
+import 'package:uskudar_mobile/data/dtos/requests/back_image_check_request.dart';
+import 'package:uskudar_mobile/data/dtos/requests/face_image_check_request.dart';
+import 'package:uskudar_mobile/data/dtos/requests/front_image_check_request.dart';
+import 'package:uskudar_mobile/data/dtos/requests/nfc_check_request.dart';
+import 'package:uskudar_mobile/data/models/nfc_model.dart';
+import 'package:uskudar_mobile/domain/entities/nfc.dart';
+import 'package:uskudar_mobile/domain/params/back_image_check_params.dart';
+import 'package:uskudar_mobile/domain/params/face_image_check_params.dart';
+import 'package:uskudar_mobile/domain/params/front_image_check_params.dart';
+import 'package:uskudar_mobile/domain/params/nfc_check_params.dart';
+import 'package:uskudar_mobile/domain/repositories/ark_signers_repository.dart';
 
 final class ArkSignersRepositoryImpl implements ArkSignersRepository {
   ArkSignersRepositoryImpl({required this.remoteDataSource})

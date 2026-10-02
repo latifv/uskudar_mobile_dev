@@ -1,5 +1,5 @@
 import 'package:json_annotation/json_annotation.dart';
-import 'package:payinall/domain/params/transactions_params.dart';
+import 'package:uskudar_mobile/domain/params/transactions_params.dart';
 
 part 'transactions_request.g.dart';
 

@@ -1,20 +1,20 @@
 import 'package:fpdart/fpdart.dart';
-import 'package:payinall/core/error/failures.dart';
-import 'package:payinall/data/core/data_source_handler.dart';
-import 'package:payinall/data/datasources/remote/transfers_remote_data_source.dart';
-import 'package:payinall/data/dtos/requests/merchant_transfer_request.dart';
-import 'package:payinall/data/dtos/requests/merchant_withdraw_transfer_request.dart';
-import 'package:payinall/data/dtos/requests/wallet_transfer_request.dart';
-import 'package:payinall/data/dtos/requests/withdraw_transfer_request.dart';
-import 'package:payinall/data/models/wallet_transfer_model.dart';
-import 'package:payinall/data/models/withdraw_transfer_model.dart';
-import 'package:payinall/domain/entities/wallet_transfer.dart';
-import 'package:payinall/domain/entities/withdraw_transfer.dart';
-import 'package:payinall/domain/params/merchant_transfer_params.dart';
-import 'package:payinall/domain/params/merchant_withdraw_transfer_params.dart';
-import 'package:payinall/domain/params/wallet_transfer_params.dart';
-import 'package:payinall/domain/params/withdraw_transfer_params.dart';
-import 'package:payinall/domain/repositories/transfers_repository.dart';
+import 'package:uskudar_mobile/core/error/failures.dart';
+import 'package:uskudar_mobile/data/core/data_source_handler.dart';
+import 'package:uskudar_mobile/data/datasources/remote/transfers_remote_data_source.dart';
+import 'package:uskudar_mobile/data/dtos/requests/merchant_transfer_request.dart';
+import 'package:uskudar_mobile/data/dtos/requests/merchant_withdraw_transfer_request.dart';
+import 'package:uskudar_mobile/data/dtos/requests/wallet_transfer_request.dart';
+import 'package:uskudar_mobile/data/dtos/requests/withdraw_transfer_request.dart';
+import 'package:uskudar_mobile/data/models/wallet_transfer_model.dart';
+import 'package:uskudar_mobile/data/models/withdraw_transfer_model.dart';
+import 'package:uskudar_mobile/domain/entities/wallet_transfer.dart';
+import 'package:uskudar_mobile/domain/entities/withdraw_transfer.dart';
+import 'package:uskudar_mobile/domain/params/merchant_transfer_params.dart';
+import 'package:uskudar_mobile/domain/params/merchant_withdraw_transfer_params.dart';
+import 'package:uskudar_mobile/domain/params/wallet_transfer_params.dart';
+import 'package:uskudar_mobile/domain/params/withdraw_transfer_params.dart';
+import 'package:uskudar_mobile/domain/repositories/transfers_repository.dart';
 
 final class TransfersRepositoryImpl implements TransfersRepository {
   TransfersRepositoryImpl({required this.remoteDataSource})

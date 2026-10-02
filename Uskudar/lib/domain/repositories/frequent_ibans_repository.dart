@@ -1,7 +1,7 @@
 import 'package:fpdart/fpdart.dart';
-import 'package:payinall/core/error/failures.dart';
-import 'package:payinall/domain/entities/frequent_iban.dart';
-import 'package:payinall/domain/params/add_frequent_iban_params.dart';
+import 'package:uskudar_mobile/core/error/failures.dart';
+import 'package:uskudar_mobile/domain/entities/frequent_iban.dart';
+import 'package:uskudar_mobile/domain/params/add_frequent_iban_params.dart';
 
 abstract interface class FrequentIbansRepository {
   Future<Either<Failure, List<FrequentIban>>> getFrequentIbans();

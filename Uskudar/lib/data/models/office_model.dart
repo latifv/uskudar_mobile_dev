@@ -1,5 +1,5 @@
-import 'package:payinall/data/dtos/responses/office_response.dart';
-import 'package:payinall/domain/entities/office.dart';
+import 'package:uskudar_mobile/data/dtos/responses/office_response.dart';
+import 'package:uskudar_mobile/domain/entities/office.dart';
 
 final class OfficeModel extends Office {
   const OfficeModel({

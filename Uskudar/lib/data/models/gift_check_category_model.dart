@@ -1,6 +1,6 @@
-import 'package:payinall/core/error/exceptions.dart';
-import 'package:payinall/data/dtos/responses/gift_check_category_response.dart';
-import 'package:payinall/domain/entities/gift_check_category.dart';
+import 'package:uskudar_mobile/core/error/exceptions.dart';
+import 'package:uskudar_mobile/data/dtos/responses/gift_check_category_response.dart';
+import 'package:uskudar_mobile/domain/entities/gift_check_category.dart';
 
 final class GiftCheckCategoryModel extends GiftCheckCategory {
   const GiftCheckCategoryModel({

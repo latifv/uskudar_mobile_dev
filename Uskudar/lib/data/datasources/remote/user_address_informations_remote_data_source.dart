@@ -1,11 +1,11 @@
-import 'package:payinall/core/error/exceptions.dart';
-import 'package:payinall/data/core/base_remote_data_source.dart';
-import 'package:payinall/data/dtos/requests/address_number_inquiry_request.dart';
-import 'package:payinall/data/dtos/requests/user_address_information_approve_request.dart';
-import 'package:payinall/data/dtos/responses/user_address_information_response.dart';
-import 'package:payinall/data/models/user_address_information_model.dart';
-import 'package:payinall/data/network/config/endpoints.dart';
-import 'package:payinall/data/network/models/network_response.dart';
+import 'package:uskudar_mobile/core/error/exceptions.dart';
+import 'package:uskudar_mobile/data/core/base_remote_data_source.dart';
+import 'package:uskudar_mobile/data/dtos/requests/address_number_inquiry_request.dart';
+import 'package:uskudar_mobile/data/dtos/requests/user_address_information_approve_request.dart';
+import 'package:uskudar_mobile/data/dtos/responses/user_address_information_response.dart';
+import 'package:uskudar_mobile/data/models/user_address_information_model.dart';
+import 'package:uskudar_mobile/data/network/config/endpoints.dart';
+import 'package:uskudar_mobile/data/network/models/network_response.dart';
 
 abstract interface class UserAddressInformationsRemoteDataSource {
   Future<NetworkResponse<void>> addressNumberInquiry(

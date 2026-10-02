@@ -1,18 +1,18 @@
-import 'package:payinall/core/error/exceptions.dart';
-import 'package:payinall/data/core/base_remote_data_source.dart';
-import 'package:payinall/data/dtos/requests/bill_inquiry_request.dart';
-import 'package:payinall/data/dtos/requests/bill_payment_request.dart';
-import 'package:payinall/data/dtos/requests/bill_product_query_definition_request.dart';
-import 'package:payinall/data/dtos/responses/bill_inquiry_response.dart';
-import 'package:payinall/data/dtos/responses/bill_product_query_definition_response.dart';
-import 'package:payinall/data/dtos/responses/bill_product_response.dart';
-import 'package:payinall/data/dtos/responses/bill_product_type_response.dart';
-import 'package:payinall/data/models/bill_inquiry_model.dart';
-import 'package:payinall/data/models/bill_product_model.dart';
-import 'package:payinall/data/models/bill_product_query_definition_model.dart';
-import 'package:payinall/data/models/bill_product_type_model.dart';
-import 'package:payinall/data/network/config/endpoints.dart';
-import 'package:payinall/data/network/models/network_response.dart';
+import 'package:uskudar_mobile/core/error/exceptions.dart';
+import 'package:uskudar_mobile/data/core/base_remote_data_source.dart';
+import 'package:uskudar_mobile/data/dtos/requests/bill_inquiry_request.dart';
+import 'package:uskudar_mobile/data/dtos/requests/bill_payment_request.dart';
+import 'package:uskudar_mobile/data/dtos/requests/bill_product_query_definition_request.dart';
+import 'package:uskudar_mobile/data/dtos/responses/bill_inquiry_response.dart';
+import 'package:uskudar_mobile/data/dtos/responses/bill_product_query_definition_response.dart';
+import 'package:uskudar_mobile/data/dtos/responses/bill_product_response.dart';
+import 'package:uskudar_mobile/data/dtos/responses/bill_product_type_response.dart';
+import 'package:uskudar_mobile/data/models/bill_inquiry_model.dart';
+import 'package:uskudar_mobile/data/models/bill_product_model.dart';
+import 'package:uskudar_mobile/data/models/bill_product_query_definition_model.dart';
+import 'package:uskudar_mobile/data/models/bill_product_type_model.dart';
+import 'package:uskudar_mobile/data/network/config/endpoints.dart';
+import 'package:uskudar_mobile/data/network/models/network_response.dart';
 
 abstract interface class BillsRemoteDataSource {
   Future<NetworkResponse<List<BillProductTypeModel>>> getProductTypes();

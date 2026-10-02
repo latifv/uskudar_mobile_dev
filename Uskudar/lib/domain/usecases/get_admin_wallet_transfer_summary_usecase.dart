@@ -1,9 +1,9 @@
 import 'package:fpdart/fpdart.dart';
-import 'package:payinall/core/error/failures.dart';
-import 'package:payinall/domain/base/usecases/base_usecase.dart';
-import 'package:payinall/domain/entities/admin_wallet_transfer_summary.dart';
-import 'package:payinall/domain/params/admin_wallet_transfer_summary_params.dart';
-import 'package:payinall/domain/repositories/admin_repository.dart';
+import 'package:uskudar_mobile/core/error/failures.dart';
+import 'package:uskudar_mobile/domain/base/usecases/base_usecase.dart';
+import 'package:uskudar_mobile/domain/entities/admin_wallet_transfer_summary.dart';
+import 'package:uskudar_mobile/domain/params/admin_wallet_transfer_summary_params.dart';
+import 'package:uskudar_mobile/domain/repositories/admin_repository.dart';
 
 final class GetAdminWalletTransferSummaryUsecase
     implements

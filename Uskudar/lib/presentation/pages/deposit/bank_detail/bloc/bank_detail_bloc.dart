@@ -1,7 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:payinall/core/managers/user_info_manager.dart';
-import 'package:payinall/presentation/pages/deposit/bank_detail/bloc/bank_detail_event.dart';
-import 'package:payinall/presentation/pages/deposit/bank_detail/bloc/bank_detail_state.dart';
+import 'package:uskudar_mobile/core/managers/user_info_manager.dart';
+import 'package:uskudar_mobile/presentation/pages/deposit/bank_detail/bloc/bank_detail_event.dart';
+import 'package:uskudar_mobile/presentation/pages/deposit/bank_detail/bloc/bank_detail_state.dart';
 
 final class BankDetailBloc extends Bloc<BankDetailEvent, BankDetailState> {
   BankDetailBloc({required UserInfoManager userInfoManager})

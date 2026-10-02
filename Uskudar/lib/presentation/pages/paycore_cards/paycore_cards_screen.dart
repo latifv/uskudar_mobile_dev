@@ -7,23 +7,23 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart'
     show Clipboard, ClipboardData, rootBundle;
 import 'package:mobile_scanner/mobile_scanner.dart';
-import 'package:payinall/core/managers/token_manager.dart';
-import 'package:payinall/core/managers/user_info_manager.dart';
-import 'package:payinall/core/models/paycore_mobile_models.dart';
-import 'package:payinall/core/services/paycore_mobile_service.dart';
-import 'package:payinall/data/network/models/network_response.dart';
-import 'package:payinall/data/network/network_client.dart';
-import 'package:payinall/di/di.dart';
-import 'package:payinall/domain/entities/metropol_city.dart';
-import 'package:payinall/domain/usecases/get_metropol_cities_usecase.dart';
-import 'package:payinall/presentation/pages/paycore_cards/paycore_new_address_fields.dart';
-import 'package:payinall/presentation/shared/components/toast_component.dart';
-import 'package:payinall/presentation/shared/constants/icon_asset_constants.dart';
-import 'package:payinall/presentation/shared/constants/paycore_card_asset_constants.dart';
-import 'package:payinall/presentation/shared/extensions/theme_extension.dart';
-import 'package:payinall/presentation/widgets/custom_app_bar.dart';
-import 'package:payinall/presentation/widgets/custom_loading.dart';
-import 'package:payinall/presentation/widgets/error_try_again.dart';
+import 'package:uskudar_mobile/core/managers/token_manager.dart';
+import 'package:uskudar_mobile/core/managers/user_info_manager.dart';
+import 'package:uskudar_mobile/core/models/paycore_mobile_models.dart';
+import 'package:uskudar_mobile/core/services/paycore_mobile_service.dart';
+import 'package:uskudar_mobile/data/network/models/network_response.dart';
+import 'package:uskudar_mobile/data/network/network_client.dart';
+import 'package:uskudar_mobile/di/di.dart';
+import 'package:uskudar_mobile/domain/entities/metropol_city.dart';
+import 'package:uskudar_mobile/domain/usecases/get_metropol_cities_usecase.dart';
+import 'package:uskudar_mobile/presentation/pages/paycore_cards/paycore_new_address_fields.dart';
+import 'package:uskudar_mobile/presentation/shared/components/toast_component.dart';
+import 'package:uskudar_mobile/presentation/shared/constants/icon_asset_constants.dart';
+import 'package:uskudar_mobile/presentation/shared/constants/paycore_card_asset_constants.dart';
+import 'package:uskudar_mobile/presentation/shared/extensions/theme_extension.dart';
+import 'package:uskudar_mobile/presentation/widgets/custom_app_bar.dart';
+import 'package:uskudar_mobile/presentation/widgets/custom_loading.dart';
+import 'package:uskudar_mobile/presentation/widgets/error_try_again.dart';
 
 enum _PaycoreModule { customer, cards, security }
 

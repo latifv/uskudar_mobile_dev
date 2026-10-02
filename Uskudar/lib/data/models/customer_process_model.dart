@@ -1,6 +1,6 @@
-import 'package:payinall/core/error/exceptions.dart';
-import 'package:payinall/data/dtos/responses/customer_process_response.dart';
-import 'package:payinall/domain/entities/customer_process.dart';
+import 'package:uskudar_mobile/core/error/exceptions.dart';
+import 'package:uskudar_mobile/data/dtos/responses/customer_process_response.dart';
+import 'package:uskudar_mobile/domain/entities/customer_process.dart';
 
 final class CustomerProcessModel extends CustomerProcess {
   const CustomerProcessModel({

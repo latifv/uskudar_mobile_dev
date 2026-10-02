@@ -1,10 +1,10 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:payinall/core/error/failures.dart';
-import 'package:payinall/core/managers/user_info_manager.dart';
-import 'package:payinall/domain/entities/notification_setting.dart';
-import 'package:payinall/domain/usecases/change_notification_usecase.dart';
+import 'package:uskudar_mobile/core/error/failures.dart';
+import 'package:uskudar_mobile/core/managers/user_info_manager.dart';
+import 'package:uskudar_mobile/domain/entities/notification_setting.dart';
+import 'package:uskudar_mobile/domain/usecases/change_notification_usecase.dart';
 
 part 'notification_settings_event.dart';
 part 'notification_settings_state.dart';

@@ -2,9 +2,9 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:payinall/core/constants/app_constants.dart';
-import 'package:payinall/di/di.dart';
-import 'package:payinall/presentation/pages/back_id_scan/bloc/back_id_scan_bloc.dart';
+import 'package:uskudar_mobile/core/constants/app_constants.dart';
+import 'package:uskudar_mobile/di/di.dart';
+import 'package:uskudar_mobile/presentation/pages/back_id_scan/bloc/back_id_scan_bloc.dart';
 
 mixin BackIdScanMixin<T extends StatefulWidget> on State<T> {
   late final BackIdScanBloc bloc;

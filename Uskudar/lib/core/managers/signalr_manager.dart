@@ -1,14 +1,14 @@
 import 'dart:async';
 import 'package:auto_route/auto_route.dart';
-import 'package:payinall/core/generated/locale_keys.g.dart';
-import 'package:payinall/core/managers/token_manager.dart';
-import 'package:payinall/core/services/signalr_service.dart';
-import 'package:payinall/core/utils/log_helper.dart';
-import 'package:payinall/core/utils/log_level.dart';
-import 'package:payinall/di/di.dart';
-import 'package:payinall/domain/usecases/logout_usecase.dart';
-import 'package:payinall/presentation/route/app_router.dart';
-import 'package:payinall/presentation/shared/extensions/string_extension.dart';
+import 'package:uskudar_mobile/core/generated/locale_keys.g.dart';
+import 'package:uskudar_mobile/core/managers/token_manager.dart';
+import 'package:uskudar_mobile/core/services/signalr_service.dart';
+import 'package:uskudar_mobile/core/utils/log_helper.dart';
+import 'package:uskudar_mobile/core/utils/log_level.dart';
+import 'package:uskudar_mobile/di/di.dart';
+import 'package:uskudar_mobile/domain/usecases/logout_usecase.dart';
+import 'package:uskudar_mobile/presentation/route/app_router.dart';
+import 'package:uskudar_mobile/presentation/shared/extensions/string_extension.dart';
 
 abstract interface class SignalRManager {
   Future<void> initializeAndConnect();

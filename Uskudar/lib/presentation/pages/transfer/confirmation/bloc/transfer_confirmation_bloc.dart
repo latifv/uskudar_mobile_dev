@@ -1,12 +1,12 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:payinall/core/error/failures.dart';
-import 'package:payinall/core/managers/user_info_manager.dart';
-import 'package:payinall/domain/entities/wallet_transfer.dart';
-import 'package:payinall/domain/entities/withdraw_transfer.dart';
-import 'package:payinall/domain/usecases/merchant_withdraw_transfer_complete_usecase.dart';
-import 'package:payinall/domain/usecases/wallet_transfer_complete_usecase.dart';
-import 'package:payinall/domain/usecases/withdraw_transfer_complete_usecase.dart';
+import 'package:uskudar_mobile/core/error/failures.dart';
+import 'package:uskudar_mobile/core/managers/user_info_manager.dart';
+import 'package:uskudar_mobile/domain/entities/wallet_transfer.dart';
+import 'package:uskudar_mobile/domain/entities/withdraw_transfer.dart';
+import 'package:uskudar_mobile/domain/usecases/merchant_withdraw_transfer_complete_usecase.dart';
+import 'package:uskudar_mobile/domain/usecases/wallet_transfer_complete_usecase.dart';
+import 'package:uskudar_mobile/domain/usecases/withdraw_transfer_complete_usecase.dart';
 
 part 'transfer_confirmation_event.dart';
 part 'transfer_confirmation_state.dart';

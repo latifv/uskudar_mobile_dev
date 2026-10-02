@@ -1,22 +1,22 @@
 import 'dart:async';
 
 import 'package:get_it/get_it.dart';
-import 'package:payinall/core/managers/signalr_manager.dart';
-import 'package:payinall/core/services/firebase_service.dart';
-import 'package:payinall/core/utils/log_helper.dart';
-import 'package:payinall/core/utils/log_level.dart';
-import 'package:payinall/data/network/network_client.dart';
-import 'package:payinall/di/di_module.dart';
-import 'package:payinall/di/modules/bloc_module.dart';
-import 'package:payinall/di/modules/critical_service_module.dart';
-import 'package:payinall/di/modules/local_data_source_module.dart';
-import 'package:payinall/di/modules/manager_module.dart';
-import 'package:payinall/di/modules/network_module.dart';
-import 'package:payinall/di/modules/remote_data_source_module.dart';
-import 'package:payinall/di/modules/repository_module.dart';
-import 'package:payinall/di/modules/router_module.dart';
-import 'package:payinall/di/modules/service_module.dart';
-import 'package:payinall/di/modules/usecase_module.dart';
+import 'package:uskudar_mobile/core/managers/signalr_manager.dart';
+import 'package:uskudar_mobile/core/services/firebase_service.dart';
+import 'package:uskudar_mobile/core/utils/log_helper.dart';
+import 'package:uskudar_mobile/core/utils/log_level.dart';
+import 'package:uskudar_mobile/data/network/network_client.dart';
+import 'package:uskudar_mobile/di/di_module.dart';
+import 'package:uskudar_mobile/di/modules/bloc_module.dart';
+import 'package:uskudar_mobile/di/modules/critical_service_module.dart';
+import 'package:uskudar_mobile/di/modules/local_data_source_module.dart';
+import 'package:uskudar_mobile/di/modules/manager_module.dart';
+import 'package:uskudar_mobile/di/modules/network_module.dart';
+import 'package:uskudar_mobile/di/modules/remote_data_source_module.dart';
+import 'package:uskudar_mobile/di/modules/repository_module.dart';
+import 'package:uskudar_mobile/di/modules/router_module.dart';
+import 'package:uskudar_mobile/di/modules/service_module.dart';
+import 'package:uskudar_mobile/di/modules/usecase_module.dart';
 
 final GetIt getIt = GetIt.instance;
 

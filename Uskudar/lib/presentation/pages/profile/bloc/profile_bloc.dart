@@ -1,13 +1,13 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:payinall/core/error/failures.dart';
-import 'package:payinall/core/managers/user_info_manager.dart';
-import 'package:payinall/domain/usecases/email_verification_send_code_usecase.dart';
-import 'package:payinall/domain/usecases/get_current_user_info_usecase.dart';
-import 'package:payinall/domain/usecases/get_wallet_usecase.dart';
-import 'package:payinall/domain/usecases/logout_usecase.dart';
-import 'package:payinall/domain/usecases/remove_usecase.dart';
+import 'package:uskudar_mobile/core/error/failures.dart';
+import 'package:uskudar_mobile/core/managers/user_info_manager.dart';
+import 'package:uskudar_mobile/domain/usecases/email_verification_send_code_usecase.dart';
+import 'package:uskudar_mobile/domain/usecases/get_current_user_info_usecase.dart';
+import 'package:uskudar_mobile/domain/usecases/get_wallet_usecase.dart';
+import 'package:uskudar_mobile/domain/usecases/logout_usecase.dart';
+import 'package:uskudar_mobile/domain/usecases/remove_usecase.dart';
 
 part 'profile_event.dart';
 part 'profile_state.dart';

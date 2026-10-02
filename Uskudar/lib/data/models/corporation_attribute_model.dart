@@ -1,8 +1,8 @@
-import 'package:payinall/core/error/exceptions.dart';
-import 'package:payinall/data/dtos/responses/corporation_attribute_response.dart';
-import 'package:payinall/data/models/required_attribute_model.dart';
-import 'package:payinall/domain/entities/corporation_attribute.dart';
-import 'package:payinall/domain/entities/required_attribute.dart';
+import 'package:uskudar_mobile/core/error/exceptions.dart';
+import 'package:uskudar_mobile/data/dtos/responses/corporation_attribute_response.dart';
+import 'package:uskudar_mobile/data/models/required_attribute_model.dart';
+import 'package:uskudar_mobile/domain/entities/corporation_attribute.dart';
+import 'package:uskudar_mobile/domain/entities/required_attribute.dart';
 
 final class CorporationAttributeModel extends CorporationAttribute {
   const CorporationAttributeModel({

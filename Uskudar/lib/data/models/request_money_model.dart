@@ -1,6 +1,6 @@
-import 'package:payinall/core/error/exceptions.dart';
-import 'package:payinall/data/dtos/responses/request_money_response.dart';
-import 'package:payinall/domain/entities/request_money.dart';
+import 'package:uskudar_mobile/core/error/exceptions.dart';
+import 'package:uskudar_mobile/data/dtos/responses/request_money_response.dart';
+import 'package:uskudar_mobile/domain/entities/request_money.dart';
 
 final class RequestMoneyModel extends RequestMoney {
   const RequestMoneyModel({

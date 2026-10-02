@@ -1,11 +1,11 @@
-import 'package:payinall/core/error/exceptions.dart';
-import 'package:payinall/data/core/base_remote_data_source.dart';
-import 'package:payinall/data/dtos/requests/create_fuel_card_request.dart';
-import 'package:payinall/data/dtos/requests/fuel_card_top_up_request.dart';
-import 'package:payinall/data/dtos/responses/fuel_card_response.dart';
-import 'package:payinall/data/models/fuel_card_model.dart';
-import 'package:payinall/data/network/config/endpoints.dart';
-import 'package:payinall/data/network/models/network_response.dart';
+import 'package:uskudar_mobile/core/error/exceptions.dart';
+import 'package:uskudar_mobile/data/core/base_remote_data_source.dart';
+import 'package:uskudar_mobile/data/dtos/requests/create_fuel_card_request.dart';
+import 'package:uskudar_mobile/data/dtos/requests/fuel_card_top_up_request.dart';
+import 'package:uskudar_mobile/data/dtos/responses/fuel_card_response.dart';
+import 'package:uskudar_mobile/data/models/fuel_card_model.dart';
+import 'package:uskudar_mobile/data/network/config/endpoints.dart';
+import 'package:uskudar_mobile/data/network/models/network_response.dart';
 
 abstract interface class FuelCardsRemoteDataSource {
   Future<NetworkResponse<bool>> createFuelCard(CreateFuelCardRequest request);

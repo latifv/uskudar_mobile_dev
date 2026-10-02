@@ -1,9 +1,9 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:payinall/di/di.dart';
-import 'package:payinall/presentation/pages/metropol_transactions/bloc/metropol_transactions_bloc.dart';
-import 'package:payinall/presentation/shared/components/toast_component.dart';
+import 'package:uskudar_mobile/di/di.dart';
+import 'package:uskudar_mobile/presentation/pages/metropol_transactions/bloc/metropol_transactions_bloc.dart';
+import 'package:uskudar_mobile/presentation/shared/components/toast_component.dart';
 
 mixin MetropolTransactionsMixin<T extends StatefulWidget> on State<T> {
   late final MetropolTransactionsBloc bloc;

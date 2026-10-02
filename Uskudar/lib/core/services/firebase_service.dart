@@ -6,11 +6,11 @@ import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:get_it/get_it.dart';
-import 'package:payinall/core/services/local_notification_service.dart';
-import 'package:payinall/core/utils/log_helper.dart';
-import 'package:payinall/core/utils/log_level.dart';
-import 'package:payinall/domain/entities/notification_item.dart';
-import 'package:payinall/domain/usecases/save_notification_usecase.dart';
+import 'package:uskudar_mobile/core/services/local_notification_service.dart';
+import 'package:uskudar_mobile/core/utils/log_helper.dart';
+import 'package:uskudar_mobile/core/utils/log_level.dart';
+import 'package:uskudar_mobile/domain/entities/notification_item.dart';
+import 'package:uskudar_mobile/domain/usecases/save_notification_usecase.dart';
 
 abstract interface class FirebaseService {
   Future<String?> getFirebaseToken();

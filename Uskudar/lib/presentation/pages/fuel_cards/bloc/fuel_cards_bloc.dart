@@ -1,10 +1,10 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:payinall/core/error/failures.dart';
-import 'package:payinall/domain/entities/fuel_card.dart';
-import 'package:payinall/domain/usecases/delete_fuel_card_usecase.dart';
-import 'package:payinall/domain/usecases/get_fuel_card_balance_usecase.dart';
-import 'package:payinall/domain/usecases/get_fuel_cards_usecase.dart';
+import 'package:uskudar_mobile/core/error/failures.dart';
+import 'package:uskudar_mobile/domain/entities/fuel_card.dart';
+import 'package:uskudar_mobile/domain/usecases/delete_fuel_card_usecase.dart';
+import 'package:uskudar_mobile/domain/usecases/get_fuel_card_balance_usecase.dart';
+import 'package:uskudar_mobile/domain/usecases/get_fuel_cards_usecase.dart';
 
 part 'fuel_cards_event.dart';
 part 'fuel_cards_state.dart';

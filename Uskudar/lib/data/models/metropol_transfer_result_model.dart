@@ -1,6 +1,6 @@
-import 'package:payinall/core/error/exceptions.dart';
-import 'package:payinall/data/dtos/responses/metropol_transfer_result_response.dart';
-import 'package:payinall/domain/entities/metropol_transfer_result.dart';
+import 'package:uskudar_mobile/core/error/exceptions.dart';
+import 'package:uskudar_mobile/data/dtos/responses/metropol_transfer_result_response.dart';
+import 'package:uskudar_mobile/domain/entities/metropol_transfer_result.dart';
 
 final class MetropolTransferResultModel extends MetropolTransferResult {
   const MetropolTransferResultModel({
