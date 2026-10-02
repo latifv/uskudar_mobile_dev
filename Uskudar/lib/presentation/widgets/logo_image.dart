@@ -25,10 +25,33 @@ final class LogoImage extends StatelessWidget {
       width: context.dynamicWidth(widthFactor),
       child: ClipRRect(
         borderRadius: borderRadius ?? context.borderRadiusHighAll,
-        child: Image.asset(
-          imagePath ?? IconAssetsConstants.logo,
-          fit: fit,
-        ),
+        child: imagePath == null
+            ? ColorFiltered(
+                colorFilter: const ColorFilter.matrix([
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  0,
+                  -1,
+                  0,
+                  0,
+                  0,
+                  255,
+                ]),
+                child: Image.asset(IconAssetsConstants.logo, fit: fit),
+              )
+            : Image.asset(imagePath!, fit: fit),
       ),
     );
   }

@@ -3,7 +3,7 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 import 'package:uskudar_mobile/core/models/paycore_mobile_models.dart';
-import 'package:uskudar_mobile/presentation/shared/constants/paycore_card_asset_constants.dart';
+import 'package:uskudar_mobile/presentation/shared/widgets/uskudar_card_artwork.dart';
 
 final class PaycoreCardVisual extends StatefulWidget {
   const PaycoreCardVisual({
@@ -148,18 +148,10 @@ final class _PaycoreCardVisualState extends State<PaycoreCardVisual>
     required bool isBack,
     required Widget child,
   }) {
-    final backgroundAsset = isBack
-        ? PaycoreCardAssetConstants.backForSummary(widget.card)
-        : PaycoreCardAssetConstants.frontForSummary(widget.card);
-
     final content = Container(
       margin: widget.margin,
       decoration: BoxDecoration(
         borderRadius: widget.borderRadius,
-        image: DecorationImage(
-          image: AssetImage(backgroundAsset),
-          fit: BoxFit.cover,
-        ),
         boxShadow:
             widget.boxShadow ??
             [
@@ -170,27 +162,36 @@ final class _PaycoreCardVisualState extends State<PaycoreCardVisual>
               ),
             ],
       ),
-      child: Container(
-        decoration: BoxDecoration(
-          borderRadius: widget.borderRadius,
-          gradient: LinearGradient(
-            colors: isBack
-                ? [
-                    Colors.black.withValues(alpha: 0.04),
-                    Colors.black.withValues(alpha: 0.1),
-                    Colors.black.withValues(alpha: 0.18),
-                  ]
-                : [
-                    Colors.black.withValues(alpha: 0.05),
-                    Colors.black.withValues(alpha: 0.16),
-                    Colors.black.withValues(alpha: 0.3),
-                  ],
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-          ),
+      child: ClipRRect(
+        borderRadius: widget.borderRadius,
+        child: Stack(
+          fit: StackFit.expand,
+          children: [
+            UskudarCardArtwork(brand: widget.card.brand, isBack: isBack),
+            Container(
+              decoration: BoxDecoration(
+                borderRadius: widget.borderRadius,
+                gradient: LinearGradient(
+                  colors: isBack
+                      ? [
+                          Colors.black.withValues(alpha: 0.04),
+                          Colors.black.withValues(alpha: 0.1),
+                          Colors.black.withValues(alpha: 0.18),
+                        ]
+                      : [
+                          Colors.black.withValues(alpha: 0.05),
+                          Colors.black.withValues(alpha: 0.16),
+                          Colors.black.withValues(alpha: 0.3),
+                        ],
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                ),
+              ),
+              padding: widget.padding,
+              child: child,
+            ),
+          ],
         ),
-        padding: widget.padding,
-        child: child,
       ),
     );
 

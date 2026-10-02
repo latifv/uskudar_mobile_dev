@@ -2,6 +2,7 @@ final class IconAssetsConstants {
   const IconAssetsConstants._();
 
   static String get logo => _toPng('logo');
+  static String get municipalitySeal => _toPng('native_logo');
   static String get splash => _toPng('splash');
   static String get menu => _toPng('menu');
 

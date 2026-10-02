@@ -19,7 +19,7 @@ import 'package:uskudar_mobile/domain/usecases/get_metropol_cities_usecase.dart'
 import 'package:uskudar_mobile/presentation/pages/paycore_cards/paycore_new_address_fields.dart';
 import 'package:uskudar_mobile/presentation/shared/components/toast_component.dart';
 import 'package:uskudar_mobile/presentation/shared/constants/icon_asset_constants.dart';
-import 'package:uskudar_mobile/presentation/shared/constants/paycore_card_asset_constants.dart';
+import 'package:uskudar_mobile/presentation/shared/widgets/uskudar_card_artwork.dart';
 import 'package:uskudar_mobile/presentation/shared/extensions/theme_extension.dart';
 import 'package:uskudar_mobile/presentation/widgets/custom_app_bar.dart';
 import 'package:uskudar_mobile/presentation/widgets/custom_loading.dart';
@@ -1069,7 +1069,7 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
                         if (!_hasPaycoreCustomerRecord) ...[
                           const SizedBox(height: 12),
                           Text(
-                            'PayCore servisine anlık erişilemediği için kayıtlı cüzdan bilgileri gösteriliyor.',
+                            'Kart hizmetine anlık erişilemediği için kayıtlı cüzdan bilgileri gösteriliyor.',
                             style: context.textTheme.bodySmall?.copyWith(
                               color: context.colorScheme.outline,
                             ),
@@ -1625,14 +1625,14 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
                           ? 'Teslimat Adresi'
                           : 'Adres Güncelle',
                       description: address == null
-                          ? 'Müşteri kaydı bulundu. Kart üretimi için teslimat adresini tamamla ve PayCore ile senkronize et.'
-                          : 'Kart üretimi için kullanılan adres bilgilerini güncelle ve PayCore ile senkronize et.',
+                          ? 'Müşteri kaydı bulundu. Kart oluşturmak için teslimat adresini tamamla ve kart hizmetiyle eşitle.'
+                          : 'Kart oluşturmak için kullanılan adres bilgilerini güncelle ve kart hizmetiyle eşitle.',
                     ),
                     const SizedBox(height: 18),
                     _buildSheetSection(
                       title: 'Adres Bilgileri',
                       description:
-                          'İl ve ilçe PayCore listesinden seçilir. Kod alanları otomatik eşleşir; elle il kodu girilmez.',
+                          'İl ve ilçe listeden seçilir. Kod alanları otomatik eşleşir; elle il kodu girilmez.',
                       child: Column(
                         children: [
                           _buildPaycoreLocationSelectors(
@@ -1755,7 +1755,7 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
                   zipCode,
                 ].any((value) => value.isEmpty)) {
                   _showError(
-                    'Kart oluşturmak için zorunlu PayCore alanlarını tamamlayın.',
+                    'Kart oluşturmak için zorunlu alanları tamamlayın.',
                   );
                   return;
                 }
@@ -2263,7 +2263,7 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
                   address,
                 ].any((value) => value.isEmpty)) {
                   _showError(
-                    'PayCore müşteri kaydı için zorunlu alanları tamamlayın.',
+                    'Kart müşteri kaydı için zorunlu alanları tamamlayın.',
                   );
                   return;
                 }
@@ -2290,7 +2290,7 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
                       icon: Icons.add_card_rounded,
                       title: 'Müşteri Kaydı',
                       description:
-                          'Bu kullanıcı için PayCore müşteri kaydı bulunamadı. Devam edebilmek için müşteri bilgilerini bir kez onayla.',
+                          'Bu kullanıcı için kart müşteri kaydı bulunamadı. Devam edebilmek için müşteri bilgilerini bir kez onayla.',
                     ),
                     const SizedBox(height: 18),
                     _buildSheetSection(
@@ -3081,8 +3081,6 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
     final displayCvv = _displayCvv(cvv, reveal: isCvvVisible);
     final expiry = _cardExpiryLabel(card.expiryDate);
     final holder = _displayCardHolder(card);
-    final frontAsset = PaycoreCardAssetConstants.frontForSummary(card);
-    final backAsset = PaycoreCardAssetConstants.backForSummary(card);
 
     return GestureDetector(
       onTap: onToggle,
@@ -3116,9 +3114,9 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
                   child: Stack(
                     fit: StackFit.expand,
                     children: [
-                      Image.asset(
-                        showBack ? backAsset : frontAsset,
-                        fit: BoxFit.cover,
+                      UskudarCardArtwork(
+                        brand: card.brand,
+                        isBack: showBack,
                       ),
                       if (!showBack) ...[
                         Positioned(
@@ -4208,7 +4206,7 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
               if (pinStatus == null && cachedPinStatus != null) ...[
                 const SizedBox(height: 12),
                 Text(
-                  'Güncel PayCore yanıtı alınamadığı için son sorgulanan durum gösteriliyor.',
+                  'Güncel kart hizmeti yanıtı alınamadığı için son sorgulanan durum gösteriliyor.',
                   style: context.textTheme.bodySmall?.copyWith(
                     color: context.colorScheme.outline,
                   ),
@@ -4222,20 +4220,18 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
   }
 
   Widget _buildCardProductPreview(PaycoreCardSummary card) {
-    final frontAsset = PaycoreCardAssetConstants.frontForSummary(card);
-    final backAsset = PaycoreCardAssetConstants.backForSummary(card);
-
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Expanded(
-          child: _buildCardProductImage(label: 'Ön Yüz', assetPath: frontAsset),
+          child: _buildCardProductImage(label: 'Ön Yüz', brand: card.brand),
         ),
         const SizedBox(width: 10),
         Expanded(
           child: _buildCardProductImage(
             label: 'Arka Yüz',
-            assetPath: backAsset,
+            brand: card.brand,
+            isBack: true,
           ),
         ),
       ],
@@ -4244,7 +4240,8 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
 
   Widget _buildCardProductImage({
     required String label,
-    required String assetPath,
+    required PaycoreCardBrand brand,
+    bool isBack = false,
   }) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -4262,7 +4259,7 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
           borderRadius: BorderRadius.circular(16),
           child: AspectRatio(
             aspectRatio: 1.586,
-            child: Image.asset(assetPath, fit: BoxFit.cover),
+            child: UskudarCardArtwork(brand: brand, isBack: isBack),
           ),
         ),
       ],
@@ -4274,9 +4271,14 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
       borderRadius: BorderRadius.circular(12),
       child: AspectRatio(
         aspectRatio: 1.586,
-        child: Image.asset(
-          PaycoreCardAssetConstants.frontForProfile(profile),
-          fit: BoxFit.cover,
+        child: UskudarCardArtwork(
+          brand: switch (profile) {
+            PaycoreCardCreationProfile.troyVirtual ||
+            PaycoreCardCreationProfile.troyPhysical => PaycoreCardBrand.troy,
+            PaycoreCardCreationProfile.masterVirtual ||
+            PaycoreCardCreationProfile.masterPhysical =>
+              PaycoreCardBrand.mastercard,
+          },
         ),
       ),
     );
@@ -4964,7 +4966,7 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
               ),
               const SizedBox(height: 8),
               Text(
-                'Kartınla QR okutma veya PayCore ATM QR para çekme işlemini seç.',
+                'Kartınla QR okutma veya ATM QR para çekme işlemini seç.',
                 style: context.textTheme.bodyMedium?.copyWith(
                   color: context.colorScheme.onSurfaceVariant,
                 ),
@@ -6086,7 +6088,7 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
                     if (!_hasPaycoreCustomerRecord) ...[
                       const SizedBox(height: 12),
                       Text(
-                        'PayCore müşteri kaydı doğrulanamadı. Kartlar yerel cüzdan kaydına göre gösteriliyor.',
+                        'Kart müşteri kaydı doğrulanamadı. Kartlar yerel cüzdan kaydına göre gösteriliyor.',
                         style: context.textTheme.bodySmall?.copyWith(
                           color: context.colorScheme.outline,
                         ),
@@ -6788,28 +6790,12 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
   }
 
   Widget _buildCardListThumbnail(PaycoreCardSummary card) {
-    final asset = PaycoreCardAssetConstants.frontForSummary(card);
-
     return ClipRRect(
       borderRadius: BorderRadius.circular(4),
       child: SizedBox(
         width: 44,
         height: 28,
-        child: Image.asset(
-          asset,
-          fit: BoxFit.cover,
-          alignment: Alignment.center,
-          errorBuilder: (_, __, ___) => Container(
-            color: const Color(0xFF111827),
-            alignment: Alignment.bottomRight,
-            padding: const EdgeInsets.all(3),
-            child: Icon(
-              Icons.credit_card_rounded,
-              size: 12,
-              color: Colors.white.withValues(alpha: 0.9),
-            ),
-          ),
-        ),
+        child: UskudarCardArtwork(brand: card.brand),
       ),
     );
   }
@@ -7871,20 +7857,20 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
     if (normalized.contains('citydefinitionnotfound') ||
         normalized.contains('il tan') ||
         normalized.contains('sehir kodu tanimli degil')) {
-      return 'Adres bilgileri PayCore ile uyumlu değil. İl ve ilçe kodunu kontrol edip adresinizi güncelleyin.';
+      return 'Adres bilgileri kart hizmetiyle uyumlu değil. İl ve ilçe kodunu kontrol edip adresinizi güncelleyin.';
     }
 
     if (normalized.contains('urun tanimi bulunamadi') ||
         normalized.contains('productdefinitionnotfound') ||
         normalized.contains('urun kodu : mcpvb') ||
         normalized.contains('urun kodu : mcfzksl')) {
-      return 'Seçtiğiniz kart profili şu anda PayCore tarafında tanımlı değil. Lütfen Troy kart profillerinden birini deneyin.';
+      return 'Seçtiğiniz kart profili şu anda tanımlı değil. Lütfen Troy kart profillerinden birini deneyin.';
     }
 
     if (normalized.contains('timeout') ||
         normalized.contains('httpclient.timeout') ||
         normalized.contains('the request was canceled')) {
-      return 'PayCore servisi zamanında yanıt vermedi. Lütfen kısa süre sonra tekrar deneyin.';
+      return 'Kart hizmeti zamanında yanıt vermedi. Lütfen kısa süre sonra tekrar deneyin.';
     }
 
     if (normalized.contains('paycore create-prepaid-card exception:')) {
@@ -7915,7 +7901,7 @@ final class _PaycoreCardsScreenState extends State<PaycoreCardsScreen> {
       case 'master_physical':
         return 'Master Fiziki';
       default:
-        return 'PayCore';
+        return 'Üsküdar Kart';
     }
   }
 
