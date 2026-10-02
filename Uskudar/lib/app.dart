@@ -2,6 +2,9 @@ import 'dart:async';
 
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart'
+    as material_ui
+    show GlobalMaterialLocalizations;
 import 'package:uskudar_mobile/app_inherited_widget.dart';
 import 'package:uskudar_mobile/core/constants/app_constants.dart';
 import 'package:uskudar_mobile/core/constants/localization_constants.dart';
@@ -218,7 +221,10 @@ final class _AppState extends State<App> with WidgetsBindingObserver {
         locale: context.locale,
         debugShowCheckedModeBanner: false,
         onGenerateTitle: (_) => AppConstants.appName,
-        localizationsDelegates: context.localizationDelegates,
+        localizationsDelegates: [
+          ...context.localizationDelegates,
+          material_ui.GlobalMaterialLocalizations.delegate,
+        ],
         supportedLocales: context.supportedLocales,
         routerConfig: di.getIt<AppRouter>().config(
           deepLinkBuilder: (deepLink) {
