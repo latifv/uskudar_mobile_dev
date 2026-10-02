@@ -23,71 +23,25 @@ final class _SplashScreenState extends State<SplashScreen> with SplashMixin {
       child: BlocListener<SplashBloc, SplashState>(
         listener: blocListener,
         child: Scaffold(
-          backgroundColor: const Color(0xFFF7FAFC),
-          body: DecoratedBox(
-            decoration: const BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                colors: [Color(0xFFFFFFFF), Color(0xFFF0F7FB)],
-              ),
-            ),
-            child: SizedBox.expand(child: _buildBody()),
-          ),
+          backgroundColor: Colors.white,
+          body: SizedBox.expand(child: _buildBody()),
         ),
       ),
     );
   }
 
   Widget _buildBody() {
-    return Stack(
-      children: [
-        Positioned(
-          top: -130,
-          right: -120,
-          child: Container(
-            width: 320,
-            height: 320,
-            decoration: const BoxDecoration(
-              shape: BoxShape.circle,
-              color: Color(0x0D0D5789),
-            ),
-          ),
+    return SafeArea(
+      child: Center(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const LogoImage(heightFactor: .16, widthFactor: .94),
+            const SizedBox(height: 28),
+            CustomLoading(color: context.colorScheme.primary),
+          ],
         ),
-        Positioned(
-          bottom: -150,
-          left: -130,
-          child: Container(
-            width: 340,
-            height: 340,
-            decoration: const BoxDecoration(
-              shape: BoxShape.circle,
-              color: Color(0x0A0D5789),
-            ),
-          ),
-        ),
-        SafeArea(
-          child: Center(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                const LogoImage(heightFactor: .16, widthFactor: .94),
-                const SizedBox(height: 22),
-                Container(
-                  width: 56,
-                  height: 3,
-                  decoration: BoxDecoration(
-                    color: context.colorScheme.primary,
-                    borderRadius: BorderRadius.circular(3),
-                  ),
-                ),
-                const SizedBox(height: 25),
-                CustomLoading(color: context.colorScheme.primary),
-              ],
-            ),
-          ),
-        ),
-      ],
+      ),
     );
   }
 }
