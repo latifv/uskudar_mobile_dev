@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart' as material_ui show ScaffoldState;
 import 'package:payinall/core/managers/user_info_manager.dart';
 import 'package:payinall/di/di.dart';
 import 'package:payinall/presentation/route/app_router.dart';
@@ -12,8 +13,8 @@ import 'package:payinall/presentation/widgets/custom_bottom_navigation_bar.dart'
 final class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
 
-  static final GlobalKey<ScaffoldState> scaffoldKey =
-      GlobalKey<ScaffoldState>();
+  static final GlobalKey<material_ui.ScaffoldState> scaffoldKey =
+      GlobalKey<material_ui.ScaffoldState>();
 
   static void openDrawer(BuildContext context) {
     scaffoldKey.currentState?.openDrawer();

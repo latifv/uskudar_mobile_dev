@@ -54,6 +54,7 @@ dependencies:
   loading_indicator: ^3.1.1
   lottie: ^3.3.2
   latlong2: ^0.9.1
+  material_ui: ^1.2.0
   mask_text_input_formatter: ^2.9.0
   mobile_device_identifier: ^0.0.3
   mobile_scanner: ^7.1.3
